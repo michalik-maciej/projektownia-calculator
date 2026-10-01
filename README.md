@@ -1,109 +1,38 @@
 # Projektownia Calculator
 
+Quotes for shop shelving: you lay out the shelves, it counts the parts and prices them.
+
 [![CI](https://github.com/michalik-maciej/projektownia-calculator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalik-maciej/projektownia-calculator/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A quotation tool for retail shop fittings. You describe a store layout in terms of wall runs and
-gondola units, and the app derives the bill of materials, groups it by component category and turns
-it into a priced offer with a discount.
+**Try it: [projektownia.vercel.app](https://projektownia.vercel.app)** and click **Demo** on the
+login screen. No account needed, you start with an example layout that is already priced.
 
-It is not a demo. It was built for a single real user, a shop-fitting designer who uses it to price
-actual projects, and the domain model comes from how that work is really done rather than from an
-invented example.
+![The configurator with a wall run and a double sided gondola, and the editor for the selected unit
+on the right](docs/screenshots/configurator.png)
 
-**Live:** https://projektownia.vercel.app · **Stack:** TypeScript everywhere, React + Express,
-pnpm/Turborepo monorepo
+## Why
 
-> The link above shows a sign-in form, but there is no account to create: click **Demo**. Every
-> click starts a fresh, isolated session with one priced example offer already loaded, so you land
-> on a filled-in configuration instead of an empty one.
+Pricing a shelving system by hand means counting uprights, feet, legs, back panels and shelves across
+several layouts, then looking up each price. It is slow, and a mistake gives you an offer that looks
+fine and is wrong.
 
-![The configurator with two runs: a wall run of five shelf units and a double sided gondola, with
-the editor panel for the selected unit on the right](docs/screenshots/configurator.png)
+It was built for a shop-fitting designer who uses it to quote real projects. The UI is in Polish,
+because that is who uses it.
 
-_The configurator. Run 1 is a wall run repeated twice, run 2 a double sided gondola shown side by
-side with its end caps; the panel on the right edits whatever unit is selected. The interface is in
-Polish, the language of the people who use it._
+## What it does
 
-## What it computes
+- Wall runs and double sided gondolas, each with its own height, depth and shelf units
+- Turns a layout into a full bill of materials, grouped by component category
+- Prices it against an editable component catalogue and applies a discount
+- Saves each offer with the numbers it was quoted at, so reopening it later shows what was promised,
+  not today's prices
 
-A layout is not a list of parts. A wall run is a height, a depth and a set of shelf units, each with
-its own width and shelf configuration; a gondola is the double-sided variant. Turning that into
-something you can price means resolving how many uprights, feet, legs, back panels, base shelves and
-regular shelves the configuration actually implies, at which widths, and then costing them against a
-component inventory.
+![The bill of materials grouped by category](docs/screenshots/bill-of-materials.png)
 
-![The bill of materials grouped by category: backs, feet, legs, shelves and
-supports, each line carrying a quantity](docs/screenshots/bill-of-materials.png)
+## Quick start
 
-_What that resolving produces: every component the two runs above imply, grouped by category and
-summed across all layouts in the offer._
-
-The `domain` package does exactly that and nothing else:
-
-- `calculations/` — how many of one component a configuration needs
-  (`calculateShelfDemand`, `calculateBackPanelDemand`, `calculateFootDemand`, `calculateLegDemand`,
-  `calculateBaseShelfDemand`, `calculateBomPrice`)
-- `transformations/` — pure mappings over a computed bill of materials
-  (`breakdownDemandByCategory`, `countShelfUnitsByWidth`, `buildLayoutDescription`,
-  `mapLayoutsToOfferOutput`)
-- `orchestrations/` — compositions that produce a whole answer
-  (`calculateWallLayoutDemand`, `calculateGondolaLayoutDemand`, `calculateOfferDemand`,
-  `createOfferPreview`)
-- `models/` and `fixtures/` — domain types, constraints and test data
-
-![The offer screen with a description field, a discount field, one line per run with its price and
-the totals before and after the discount](docs/screenshots/offer.png)
-
-_The same configuration as an offer: one line per run, a discount, and the two totals. The offer is
-saved with the output it was quoted at, so reopening it later shows the numbers that were promised
-rather than today's prices._
-
-## Architecture
-
-```mermaid
-graph TD
-    web["apps/web · React + Vite"] --> domain
-    api["apps/api · Express + Prisma"] --> domain
-    web --> schemas
-    api --> schemas
-    domain["domain · pure business logic<br/>zero dependencies"] --> schemas
-    schemas["schemas · Valibot<br/>validation + inferred types"]
-```
-
-Two decisions carry the whole design.
-
-**The domain package has no dependencies.** Not "few" — none. It knows nothing about Express,
-React, Prisma or HTTP. That is what made it survive three full rewrites of everything around it
-(see [Project history](#project-history)), and it is why the pricing logic can be tested as plain
-functions with no test harness, no mocking and no database.
-
-**Validation schemas are shared between the front end and the back end.** Valibot schemas in
-`schemas/` are the single definition of what an offer, a layout or an inventory component is. The
-API validates requests against them, the React forms validate input against them, and both sides
-derive their TypeScript types from the same source with `v.InferOutput`. A change to the shape of a
-layout cannot drift between client and server, because there is only one shape.
-
-## Tech stack
-
-| Layer      | Choice                                                                  |
-| ---------- | ----------------------------------------------------------------------- |
-| Language   | TypeScript (composite project references)                               |
-| Front end  | React 19, Vite, TanStack Router, TanStack Query, react-hook-form        |
-| UI         | Tailwind CSS v4, Radix UI primitives, class-variance-authority          |
-| Back end   | Express, Prisma ORM                                                     |
-| Database   | PostgreSQL (Neon)                                                       |
-| Validation | Valibot, shared between client and server                               |
-| Auth       | JWT, stateless, httpOnly cookies, bcrypt, offers scoped to their author |
-| Monorepo   | pnpm workspaces + Turborepo                                             |
-| Tests      | Vitest, React Testing Library, Playwright                               |
-| Quality    | ESLint 9, Prettier                                                      |
-| Hosting    | Vercel (web), Fly.io (API, Docker)                                      |
-
-The reasoning behind several of these is recorded in [`docs/decisions.md`](docs/decisions.md).
-
-## Running locally
-
-Requires Node 24+, pnpm 9+ and a PostgreSQL connection string.
+You need Node 24+, pnpm 9+ and a PostgreSQL database.
 
 ```bash
 pnpm install
@@ -111,93 +40,88 @@ pnpm install
 # packages/apps/api/.env
 #   DATABASE_URL=postgresql://localhost:5432/projektownia_calculator
 #   JWT_SECRET=any-long-random-string
-#   PORT=3000
-
+#   WEBAPP_DOMAIN=http://localhost:5173
 # packages/apps/web/.env.local
 #   VITE_API_URL=http://localhost:3000/api
 
 pnpm --filter @projektownia-calculator/api exec prisma migrate deploy
 pnpm --filter @projektownia-calculator/api exec prisma db seed
-
-pnpm dev        # web on :5173, api on :3000
+pnpm dev
 ```
 
-Open http://localhost:5173 and click **Demo**, the same button the live link uses. The seed always
-loads the component catalogue, so the offer editor works immediately, no further setup needed.
+Open http://localhost:5173 and click **Demo**. The seed loads the component catalogue, so there is
+something to price straight away.
 
-![The component catalogue with the edit dialog open on a foot, showing name, price, category and
-the dimensions that category requires](docs/screenshots/inventory.png)
+Want to test the normal login form instead? Seed with `ALLOW_DEMO_SEED=1` and sign in as
+`demo@example.com` / `demo1234`. That account only exists where the variable is set, never in
+production.
 
-_That catalogue is editable in the app. Which dimensions a component needs follows from its
-category, so a foot asks for a depth and nothing else._
+## How it's built
 
-If you want to exercise the ordinary login form instead of the Demo button, set `ALLOW_DEMO_SEED=1`
-before seeding and the seed also creates **demo@example.com** / **demo1234** as a plain `USER`
-account. The password is published here on purpose: the deployment that holds real data is never
-given that variable, so the account cannot exist there.
+TypeScript monorepo (pnpm + Turborepo) with four packages:
 
-Other entry points: `pnpm dev:web`, `pnpm dev:api`, `pnpm build`.
+```mermaid
+%%{init: {"flowchart": {"curve": "step", "rankSpacing": 60}}}%%
+flowchart LR
+    subgraph apps ["apps"]
+        direction TB
+        web["<b>web</b><br/>React + Vite"]
+        api["<b>api</b><br/>Express + Prisma"]
+    end
+    domain["<b>domain</b><br/>pricing rules"]
+    schemas["<b>schemas</b><br/>Valibot"]
 
-## Tests and quality
+    apps --> domain
+    apps --> schemas
+    domain --> schemas
+
+    classDef app fill:#eef2ff,stroke:#4f46e5,stroke-width:2px,color:#1e1b4b
+    classDef core fill:#ecfdf5,stroke:#059669,stroke-width:2px,color:#064e3b
+    classDef shared fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#431407
+    class web,api app
+    class domain core
+    class schemas shared
+    style apps fill:transparent,stroke:#8b949e,stroke-width:1px,stroke-dasharray:4 4,color:#8b949e
+    linkStyle default stroke:#8b949e,stroke-width:1.5px
+```
+
+- **`domain`** holds all the counting and pricing rules and depends on nothing. No React, no Express,
+  no database. That is why it survived three rewrites of everything around it, and why it can be
+  tested as plain functions.
+- **`schemas`** are Valibot schemas shared by the API and the React forms. Both sides get their
+  types from the same place, so the shape of an offer can't drift between them.
+
+Stack: React 19, TanStack Router and Query, react-hook-form, Tailwind v4, Radix UI, Express 5,
+Prisma, PostgreSQL on Neon. Hosted on Vercel (web) and Fly.io (API).
+
+## Tests
 
 ```bash
-pnpm test
-pnpm test:coverage  # collected from the domain package
-pnpm test:e2e       # one Playwright smoke test, needs a database
-pnpm typecheck
-pnpm lint
-pnpm validate
+pnpm test           # domain, API and a few UI tests
+pnpm test:coverage  # coverage of the domain package
+pnpm test:e2e       # Playwright smoke test, needs a database
+pnpm validate       # typecheck, lint, format, build
 ```
 
-Tests concentrate on the domain package, where the logic that can actually be wrong lives, plus
-integration tests that exercise the API end to end. Most UI components stay unit-tested only through
-the app, because they are thin and the interesting behaviour sits below them; the ones with real
-logic (a formatting helper, a confirmation dialog's callbacks) get a React Testing Library test
-alongside the component, run under a JSDOM Vitest project separate from the Node one domain and API
-tests use. One layer above that, `e2e/offer.spec.ts` drives a real browser through the public
-entrance: it clicks **Demo**, configures a run and checks that it comes back priced. It exists
-because a public demo is opened by people who will not report that it is broken.
+Most tests sit in the domain package, because that is where a mistake costs money. API tests run
+against an in-memory store, so the suite needs no database and finishes in seconds. UI components get
+a test only when they have real logic in them. One Playwright test clicks through the public demo,
+because people trying a demo don't report bugs, they just leave.
 
-**The suite needs no database.** The offer endpoints receive both the component inventory and the
-offer storage as injected dependencies, wired in `createApp`, so the integration tests build an app
-around a fixture catalogue and an in-memory store. That is what lets the ownership rules (a user
-sees and edits only their own offers) be tested as HTTP requests, and the whole suite still runs
-offline in about a second. Every command above, and the CI
-workflow, runs on a clean clone with nothing installed but dependencies.
+## History
 
-## Project history
+This is the fourth version of the same calculator:
 
-The same problem has been rebuilt four times as the requirements and my own tooling changed:
-
-| Repository                    | Period    | Approach                                        |
+| Repository                    | Years     | What changed                                    |
 | ----------------------------- | --------- | ----------------------------------------------- |
-| `projektownia-kalkulator`     | 2023–2024 | first working version                           |
+| `projektownia-kalkulator`     | 2023-2024 | first working version                           |
 | `next-calculator`             | 2024      | Next.js, Prisma, shadcn                         |
-| `remix-calculator`            | 2024–2025 | Remix                                           |
-| **`projektownia-calculator`** | 2025–2026 | monorepo, isolated domain layer, shared schemas |
+| `remix-calculator`            | 2024-2025 | Remix                                           |
+| **`projektownia-calculator`** | 2025-2026 | monorepo, isolated domain layer, shared schemas |
 
-Each rewrite replaced the framework. None of them replaced the domain rules, which is the argument
-for keeping those rules in a package that depends on nothing.
-
-## How this was built
-
-Day-to-day work on this repository, including this README, is done with
-[Claude Code](https://claude.com/claude-code) as a pair programmer, not unattended automation.
-`CLAUDE.md` and `docs/standards/` are the standards the agent is told to follow; they were derived
-from this codebase's own conventions, not imposed on it. Every change still goes through the same
-gate: `pnpm validate` and the test suite pass before anything is reviewed, and the agent never
-stages, commits or pushes on its own (`.claude/hooks/block-agent-git-writes.mjs` blocks it): that
-stays a deliberate, manual step. A packaged multi-agent orchestrator was tried once on a real
-feature and dropped (decision 10 in `docs/decisions.md`): useful for the standards it produced,
-too much process for one maintainer working directly on `main`.
-
-## Status
-
-Feature-complete for its user's needs and in active use. Every push to `main` runs typecheck, lint,
-formatting and the test suite (see the badge at the top). The live link's **Demo** button is a
-public, one-click way to try it: no account, no waiting, and a priced example configuration from the
-first screen.
+The framework changed every time. The pricing rules didn't, which is the reason they now live in a
+package of their own.
 
 ## License
 
-MIT, see [`LICENSE`](LICENSE).
+MIT, see [LICENSE](LICENSE).
