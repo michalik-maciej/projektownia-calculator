@@ -1,6 +1,6 @@
 # Projektownia Calculator
 
-[![CI](https://github.com/michalik-maciej/offer-calculator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalik-maciej/offer-calculator/actions/workflows/ci.yml)
+[![CI](https://github.com/michalik-maciej/projektownia-calculator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalik-maciej/projektownia-calculator/actions/workflows/ci.yml)
 
 A quotation tool for retail shop fittings. You describe a store layout in terms of wall runs and
 gondola units, and the app derives the bill of materials, groups it by component category and turns
@@ -167,12 +167,12 @@ workflow, runs on a clean clone with nothing installed but dependencies.
 
 The same problem has been rebuilt four times as the requirements and my own tooling changed:
 
-| Repository                | Period    | Approach                                        |
-| ------------------------- | --------- | ----------------------------------------------- |
-| `projektownia-kalkulator` | 2023–2024 | first working version                           |
-| `next-calculator`         | 2024      | Next.js, Prisma, shadcn                         |
-| `remix-calculator`        | 2024–2025 | Remix                                           |
-| **`offer-calculator`**    | 2025–2026 | monorepo, isolated domain layer, shared schemas |
+| Repository                    | Period    | Approach                                        |
+| ----------------------------- | --------- | ----------------------------------------------- |
+| `projektownia-kalkulator`     | 2023–2024 | first working version                           |
+| `next-calculator`             | 2024      | Next.js, Prisma, shadcn                         |
+| `remix-calculator`            | 2024–2025 | Remix                                           |
+| **`projektownia-calculator`** | 2025–2026 | monorepo, isolated domain layer, shared schemas |
 
 Each rewrite replaced the framework. None of them replaced the domain rules, which is the argument
 for keeping those rules in a package that depends on nothing.
