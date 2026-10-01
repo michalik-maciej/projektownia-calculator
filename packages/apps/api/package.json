@@ -1,6 +1,5 @@
 {
   "name": "@projektownia-calculator/api",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "tsx watch --include \"../../domain/src/**/*.ts\" --include \"../../schemas/src/**/*.ts\" src/server.ts",

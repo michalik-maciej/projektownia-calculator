@@ -157,7 +157,7 @@ These standards govern how work moves through the repository: git usage and the 
 
 #### Git Workflow (`standards/workflow/git.md`)
 
-The agent never stages, commits or pushes, everything happens on `main` without task branches or pull requests, Conventional Commit messages, and never reaching for a destructive shortcut.
+The agent never stages, commits or pushes, everything happens on `main` without task branches or pull requests except the release PR Release Please keeps open, Conventional Commit messages, and never reaching for a destructive shortcut.
 
 #### Working Process (`standards/workflow/process.md`)
 

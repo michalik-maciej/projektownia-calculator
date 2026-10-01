@@ -21,6 +21,12 @@ speculative that should not touch `main` until it works.
 CI runs on push to `main`, so it reports on code that is already there. It is a safety net, not a
 gate: `pnpm validate` and `pnpm vitest run` before the commit are the gate.
 
+The one standing exception is the release PR Release Please keeps open (decision 13 in
+`docs/decisions.md`): a branch and a PR, opened and updated by that bot, not by the agent or typed by
+hand. It proposes the next version and changelog from Conventional Commit messages on `main`;
+merging it is the only merge this repository does routinely, and it is still the maintainer who
+merges it, never the agent.
+
 ### Conventional Commit Messages
 
 `{type}: {short description}`, where type is one of `feat`, `fix`, `refactor`, `test`, `chore`,

@@ -575,6 +575,11 @@ reports on code that has already landed. It is a safety net, not a gate. The rea
 A branch is still fine for something genuinely speculative that should not touch `main` until it
 works. That is an exception the maintainer decides on, not a routine.
 
+The one standing exception to "no pull requests" is the release PR that Release Please
+(`.github/workflows/release-please.yml`) keeps open and updates on every push to `main`: it proposes
+the next SemVer version and a generated changelog from Conventional Commit messages. See decision 13
+in `docs/decisions.md`. Merging it is still the maintainer's call, never the agent's.
+
 ### Commit Messages
 
 Format: `{type}: {short description}`

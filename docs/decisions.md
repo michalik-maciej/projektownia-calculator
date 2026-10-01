@@ -245,3 +245,34 @@ the demo again. The admin's user list filters role `DEMO` out, or it would fill 
 these is the price of not running a second environment, and each is reversible: a separate branch and
 deployment is still possible later without changing this code, because the role travels with the
 account.
+
+## 13. One SemVer number for the whole product, cut by a bot
+
+**Decision.** The product has a single version, in the root `package.json`, starting at `1.0.0`.
+Nothing inside `packages/*` is versioned independently: `domain`, `schemas` and `api` keep whatever
+number they happen to carry, because none of them is installed from a registry or depended on
+through `package.json` (decision 4), so a per-package version has never meant anything. Release
+Please (`.github/workflows/release-please.yml`) reads Conventional Commit messages on `main` and
+keeps a standing "release PR" with the next version and a generated `CHANGELOG.md`. Merging that PR
+is what cuts the release: it tags `main` as `v{version}` and opens a GitHub Release. Deploys stay
+exactly as they were, every push to `main` still ships through CI regardless of whether anyone ever
+merges a release PR; a version is a label applied after the fact, not a gate in front of shipping.
+
+**Why.** A product with one real deployment target per app does not benefit from independently
+versioned internal packages the way a published library monorepo would; the only reader of a version
+number here is a human looking at a tag or a changelog, which argues for exactly one number. Starting
+at `1.0.0` rather than drifting up from the `0.x` the packages were already sitting at is deliberate:
+`0.x` means "anything can still break," and that has not been true since a paying client started
+depending on this. Letting a bot propose the release PR instead of running `pnpm version` by hand
+keeps the changelog honest, it is generated from commit messages as they were actually written,
+not reconstructed from memory when a release feels due.
+
+**Cost.** A release PR is a standing exception to "no task branches and no pull requests"
+(`docs/standards/workflow/git.md`): it is opened and merged by Release Please, not by the agent or
+typed by hand, and it is merged, not pushed to directly, which is the one place in this repository's
+history where that happens routinely. The changelog it generates is only as good as the commit
+messages feeding it, and historically word-for-word adherence to Conventional Commits has not been
+enforced (`docs/decisions.md` predates it; the `commit-msg` hook that would have enforced it was
+proposed and declined). History before the first tag is not retrofitted into the changelog; the
+changelog starts clean at `v1.0.0` rather than trying to reconstruct 144 commits of prior history
+into sections that were never written with a changelog in mind.
