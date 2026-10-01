@@ -95,7 +95,7 @@ layout cannot drift between client and server, because there is only one shape.
 | Validation | Valibot, shared between client and server                               |
 | Auth       | JWT, stateless, httpOnly cookies, bcrypt, offers scoped to their author |
 | Monorepo   | pnpm workspaces + Turborepo                                             |
-| Tests      | Vitest                                                                  |
+| Tests      | Vitest, React Testing Library, Playwright                               |
 | Quality    | ESLint 9, Prettier                                                      |
 | Hosting    | Vercel (web), Fly.io (API, Docker)                                      |
 
@@ -150,11 +150,13 @@ pnpm validate
 ```
 
 Tests concentrate on the domain package, where the logic that can actually be wrong lives, plus
-integration tests that exercise the API end to end. UI components are deliberately not unit-tested:
-they are thin, and the interesting behaviour sits below them. One layer above that, `e2e/offer.spec.ts`
-drives a real browser through the public entrance: it clicks **Demo**, configures a run and checks
-that it comes back priced. It exists because the trade above assumes a maintainer who opens the app
-to notice a regression, and a public demo is opened by people who will not report that it is broken.
+integration tests that exercise the API end to end. Most UI components stay unit-tested only through
+the app, because they are thin and the interesting behaviour sits below them; the ones with real
+logic (a formatting helper, a confirmation dialog's callbacks) get a React Testing Library test
+alongside the component, run under a JSDOM Vitest project separate from the Node one domain and API
+tests use. One layer above that, `e2e/offer.spec.ts` drives a real browser through the public
+entrance: it clicks **Demo**, configures a run and checks that it comes back priced. It exists
+because a public demo is opened by people who will not report that it is broken.
 
 **The suite needs no database.** The offer endpoints receive both the component inventory and the
 offer storage as injected dependencies, wired in `createApp`, so the integration tests build an app

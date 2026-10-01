@@ -22,8 +22,9 @@ starts the API and the web server, and they need a real database, which is why C
 own job with a Postgres service rather than folding them into `test`.
 
 They cover the path, not the pixels: sign in through the demo entrance, create an offer, add a run,
-see a price. A test that asserts how a component renders belongs nowhere in this repository (see
-decision 5).
+see a price. Asserting what one component renders or does belongs in a `web`-project test beside
+that component (see decision 5 and below), not here: an end-to-end test proves the whole path holds
+together, never that one screen looks right.
 
 ### A Test Sets the Environment It Needs
 
@@ -65,13 +66,29 @@ shape matters, rather than picking at individual fields. A unit that can fail ge
 that succeeds and one that throws or returns the error branch. Test names read as sentences about
 behaviour, not about implementation.
 
-### Coverage Is Domain-Only, and UI Is Deliberately Untested
+### Two Vitest Projects: `node` and `web`
 
-Vitest runs in a Node environment with no JSDOM, and coverage is collected from
-`packages/domain/**/*.ts` only. UI components have no unit tests by decision: they are thin forms and
-lists, and testing them would mostly assert that React renders. The accepted trade is that a UI
-regression is caught by using the app, so a frontend change is not verified until it has been opened
-in a browser.
+`vitest.config.ts` defines `test.projects`. `node` runs domain and API tests in a Node environment,
+no JSDOM, exactly as before. `web` runs `packages/apps/web/**/*.test.{ts,tsx}` under JSDOM, set up by
+`packages/apps/web/src/vitest.setup.ts` (currently just `@testing-library/jest-dom/vitest`, which
+also has to be importable from that file for `tsc -b` to pick up its matcher types: the setup file
+lives in `src/` for that reason, not beside `vitest.config.ts`). Coverage stays collected from
+`packages/domain/**/*.ts` only; a `web` test is not measured against it (see decision 5).
+
+### A Component Earns a Test the Way a Domain Function Does
+
+Most UI stays covered only by using the app: it is thin forms and lists, and testing it would mostly
+assert that React renders. A component gets a `.test.tsx` beside it only when it carries logic that
+can fail quietly, the same bar domain code is held to, not because it is a component. A helper that
+formats or describes a value (`formatPrice.test.ts`, `describeSaveState.test.ts`) needs no DOM at
+all; a component whose buttons have to call the right prop (`confirm-dialog.test.tsx`) is rendered
+with `@testing-library/react` and driven with `fireEvent`, never `@testing-library/user-event`,
+which is not a dependency here. "Nothing is mocked" still holds: a callback under test is a plain
+closure recording what it was called with, never `vi.fn()`.
+
+Assert on behaviour the same way a domain test does: what text is on screen, what a click caused to
+happen, never a snapshot and never a class name. A component that only renders props back out, with
+no branch and no callback, still gets no test.
 
 ### The HTTP Layer Is Tested Through supertest
 

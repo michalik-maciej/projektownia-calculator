@@ -145,7 +145,7 @@ These standards apply to all testing code.
 
 #### Test Writing (`standards/testing/test-writing.md`)
 
-Nothing is mocked, a test sets the environment it needs instead of leaning on the maintainer's `.env`, tests sit beside their subject, explicit imports with a single `describe` and `it`, fixtures come from the domain package, assertions on the whole result and on the failure, coverage measured on the domain only with UI components deliberately untested, one Playwright smoke test in `e2e/` outside the Vitest glob, the HTTP layer exercised through supertest, and no domain change finished without a test change.
+Nothing is mocked, a test sets the environment it needs instead of leaning on the maintainer's `.env`, tests sit beside their subject, explicit imports with a single `describe` and `it`, fixtures come from the domain package, assertions on the whole result and on the failure, two Vitest projects (`node` for domain and API, JSDOM `web` for the frontend) with coverage still measured on the domain only, a component earning a test on the same terms a domain function does rather than by category, one Playwright smoke test in `e2e/` outside the Vitest glob, the HTTP layer exercised through supertest, and no domain change finished without a test change.
 
 ---
 

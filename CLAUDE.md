@@ -408,11 +408,13 @@ All packages compile with strict mode enabled. Checks enforced:
 
 ### Vitest Configuration
 
-Defined in `vitest.config.ts` (workspace root):
+Defined in `vitest.config.ts` (workspace root) as two `test.projects`:
 
-- **Environment**: Node.js (no JSDOM)
-- **Test files**: `packages/**/**/*.test.ts`, `tests/**/*.test.ts`
-- **Coverage**: Collected from `packages/domain/**/*.ts` only
+- **`node`**: domain and API tests, Node.js environment, no JSDOM. Files:
+  `packages/**/**/*.test.ts` (excluding `packages/apps/web`), `tests/**/*.test.ts`
+- **`web`**: component and helper tests, JSDOM environment, React Testing Library. Files:
+  `packages/apps/web/**/*.test.{ts,tsx}`, set up by `packages/apps/web/src/vitest.setup.ts`
+- **Coverage**: Collected from `packages/domain/**/*.ts` only, unaffected by the `web` project
 
 ### Running Tests
 
@@ -432,7 +434,8 @@ src/calculations/calculateBomPrice/
 └── calculateBomPrice.test.ts
 ```
 
-Use `.test.ts` suffix (picked up by glob pattern in `vitest.config.ts`).
+Use `.test.ts` suffix (`.test.tsx` for a component under `packages/apps/web`), picked up by the
+glob pattern of the matching `test.projects` entry in `vitest.config.ts`.
 
 ## API Clients & Integration
 

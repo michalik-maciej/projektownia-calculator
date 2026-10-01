@@ -2,10 +2,7 @@ import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
   test: {
-    environment: "node",
-    include: ["packages/**/**/*.test.ts", "tests/**/*.test.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
@@ -17,5 +14,25 @@ export default defineConfig({
         statements: 90,
       },
     },
+    projects: [
+      {
+        plugins: [tsconfigPaths()],
+        test: {
+          name: "node",
+          environment: "node",
+          include: ["packages/**/**/*.test.ts", "tests/**/*.test.ts"],
+          exclude: ["packages/apps/web/**"],
+        },
+      },
+      {
+        plugins: [tsconfigPaths()],
+        test: {
+          name: "web",
+          environment: "jsdom",
+          include: ["packages/apps/web/**/*.test.{ts,tsx}"],
+          setupFiles: ["./packages/apps/web/src/vitest.setup.ts"],
+        },
+      },
+    ],
   },
 })

@@ -83,23 +83,32 @@ leaving `tsx` dev mode working.
 
 ## 5. Tests sit in the domain layer
 
-**Decision.** Tests live next to the code in `packages/domain`, with one integration test that
-exercises the offer endpoint end to end (`packages/apps/api/src/tests/calculateOffer.test.ts`).
-Coverage is collected from `packages/domain` only, as configured in `vitest.config.ts`. UI
-components have no unit tests.
+**Decision.** Tests live next to the code they cover, in `packages/domain`, in `packages/apps/api`
+and, for a small set of components, in `packages/apps/web`. One integration test exercises the offer
+endpoint end to end (`packages/apps/api/src/tests/calculateOffer.test.ts`), and one Playwright test
+drives a real browser through the public demo entrance (`e2e/offer.spec.ts`). `vitest.config.ts`
+runs two `test.projects`: `node`, the original environment, for domain and API tests, and `web`, a
+JSDOM environment with React Testing Library, for the web package. Coverage is still collected from
+`packages/domain` only.
 
 **Why.** The domain is where a mistake is both possible and expensive: a wrong upright count or a
-mispriced back panel produces a plausible-looking offer that is quietly wrong. The components above
-it are thin, mostly forms and lists, and testing them would mostly assert that React renders.
+mispriced back panel produces a plausible-looking offer that is quietly wrong. Most components above
+it are thin, mostly forms and lists, and testing them would mostly assert that React renders, which
+is why they stay covered only by using the app. The minority that carry actual logic, a formatting
+helper, a confirmation dialog whose buttons have to call the right callback, fail the same way a
+domain function does: quietly, and only when someone happens to click the wrong thing by hand. Those
+earn a test on the same terms domain code does, not because "UI" as a category now needs covering.
+The end-to-end test exists separately because a public demo is opened by people who will not report
+that it is broken, and a smoke test is the only thing that checks the whole path holds together
+rather than one component.
 
-**Cost.** A regression in the UI is caught by using the app, not by the suite. That is an accepted
-trade for a tool with one user and a maintainer who runs it.
-
-**Amended 2026-09-15.** The rule stands for components, and one end-to-end test now sits above it:
-`e2e/offer.spec.ts` drives a browser through the demo entrance, creates an offer, adds a run and
-checks that it comes back priced. It exists because the trade above assumed a maintainer who opens
-the app; a public demo is opened by people who will not report that it is broken. It is a smoke test
-and stays one: it asserts that the whole path holds together, never how a component renders.
+**Cost.** A regression in an untested component is still caught by using the app, not by the suite,
+for the same tool-with-one-maintainer reason as before. Splitting Vitest into two projects means a
+JSDOM boot cost on the `web` project that the `node` one never pays, and a second place
+(`packages/apps/web/src/vitest.setup.ts`) a new matcher or global has to be registered. Coverage
+thresholds stay domain-only on purpose: a `web` test can pass or fail without moving the badge, so
+the numbers that gate CI still measure the layer where a mistake is most expensive, not the layer
+with the most tests in it.
 
 ## 6. Authentication is a stateless JWT in an httpOnly cookie
 
