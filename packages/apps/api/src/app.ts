@@ -47,7 +47,7 @@ export function createApp({
   app.use(cors({ credentials: true, origin: process.env.WEBAPP_DOMAIN }))
 
   app.use("/api/health", healthRoutes)
-  app.use("/api/auth", createAuthRouter({ users }))
+  app.use("/api/auth", createAuthRouter({ getInventory, offers, users }))
   app.use("/api/inventory", createInventoryRouter({ getInventory }))
   app.use("/api/offers", createOffersRouter({ getInventory, offers }))
   app.use("/api/users", createUsersRouter({ users }))

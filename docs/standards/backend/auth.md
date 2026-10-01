@@ -62,12 +62,15 @@ happen, because `parseEnv` refuses to boot without it (see `../global/convention
 
 `DEMO` exists so the login screen can offer a way in without an account. `POST /api/auth/demo`
 creates a fresh account on every call, with a random password nobody holds, so the ordinary login is
-not a way into it and two visitors never land on the same account. `requireInventoryWriter` is what
-makes the catalogue read-only for that role: the catalogue is shared by everybody, so a visitor
-editing it would be editing the real one. Offers are per author already, so a demo visitor writing
-offers touches nothing but their own. `deleteExpiredDemoAccounts` deletes `DEMO` accounts (and their
-offers) older than 24 hours as a side effect of the next `/demo` call, and `listUsers` excludes the
-role so the admin's user list is not the place that count shows up (see decision 12).
+not a way into it and two visitors never land on the same account. The new account is seeded with
+one priced offer (`demoExampleOffer`) before the response goes out, so the visitor's first screen is
+a filled-in configuration, not an empty one; seeding is best-effort and never fails the login, since
+`priceOffer` already turns a missing component into data instead of an error. `requireInventoryWriter`
+is what makes the catalogue read-only for that role: the catalogue is shared by everybody, so a
+visitor editing it would be editing the real one. Offers are per author already, so a demo visitor
+writing offers touches nothing but their own. `deleteExpiredDemoAccounts` deletes `DEMO` accounts
+(and their offers) older than 24 hours as a side effect of the next `/demo` call, and `listUsers`
+excludes the role so the admin's user list is not the place that count shows up (see decision 12).
 
 ### Registration Is an Admin Action
 

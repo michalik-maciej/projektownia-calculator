@@ -204,9 +204,10 @@ five offer controllers became factories assembled by `offerControllers`.
 ## 12. The demo is a role, not an environment
 
 **Decision.** Visitors reach the application through a `Demo` button on the login screen, which calls
-`POST /api/auth/demo` and creates a fresh account with the `DEMO` role on every call. That role may
-do everything an ordinary account may, except write to the component catalogue. There is no separate
-database, no separate API and no separate deployment.
+`POST /api/auth/demo` and creates a fresh account with the `DEMO` role on every call, seeded with one
+priced example offer so the visitor lands on a filled-in configuration rather than an empty one. That
+role may do everything an ordinary account may, except write to the component catalogue. There is no
+separate database, no separate API and no separate deployment.
 
 **Why.** The alternative that was designed first was a third Neon branch with its own Fly app and its
 own front end. It is the safer shape and it was rejected deliberately: it triples the number of
@@ -223,7 +224,12 @@ autosave, the one failure mode decision 11 cannot prevent on its own.
 
 **Cost.** A visitor sees the real component catalogue, prices included, because pricing an offer
 needs it. Demo offers are written into the production database alongside real ones, distinguishable
-only by their owner. `User` gains one row per visitor instead of one in total; `deleteExpiredDemoAccounts`
+only by their owner, and every fresh account adds one more: `demoExampleOffer` is a fixed
+`OfferInput` whose widths, depths and heights are chosen by hand to resolve against the catalogue
+`prisma/seed.ts` loads. Nothing enforces that match; if the seeded catalogue changes shape, the
+example silently falls back to an unpriced offer (`priceOffer` already treats a missing component as
+data, not an error) rather than failing a build or a test. `User` gains one row per visitor instead
+of one in total; `deleteExpiredDemoAccounts`
 removes accounts (and their offers) older than 24 hours as a side effect of the next `/demo` call
 rather than a scheduled job, so a repo nobody visits keeps its last visitors' rows until someone opens
 the demo again. The admin's user list filters role `DEMO` out, or it would fill with them. Each of

@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest"
 
 import { componentCatalogMock } from "@/domain/fixtures/componentCatalog"
 
+import { createInMemoryOfferStore } from "./inMemoryOfferStore"
 import { createInMemoryUserStore } from "./inMemoryUserStore"
 import { createApp } from "../app"
 
@@ -12,12 +13,14 @@ const secret = process.env.JWT_SECRET
 
 function setup() {
   const users = createInMemoryUserStore()
+  const offers = createInMemoryOfferStore()
   const app = createApp({
     getInventory: async () => componentCatalogMock,
+    offers,
     users,
   })
 
-  return { app, users }
+  return { app, offers, users }
 }
 
 function cookieFor(role: "ADMIN" | "DEMO" | "USER") {
@@ -41,6 +44,17 @@ describe("demo account", () => {
     expect(first.headers["set-cookie"]?.[0]).toContain("accessToken=")
     expect(second.body.user.id).not.toBe(first.body.user.id)
     expect(users.all()).toHaveLength(2)
+  })
+
+  it("seeds a priced example offer for a fresh demo account", async () => {
+    const { app, offers } = setup()
+
+    const res = await request(app).post("/api/auth/demo")
+    const seeded = offers.all()
+
+    expect(seeded).toHaveLength(1)
+    expect(seeded[0]?.userId).toBe(res.body.user.id)
+    expect(seeded[0]?.output).not.toBeNull()
   })
 
   it("cleans up demo accounts older than the retention window on the next login", async () => {
