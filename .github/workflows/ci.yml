@@ -118,4 +118,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: superfly/flyctl-actions/setup-flyctl@1.6
-      - run: flyctl deploy --remote-only
+      - run: flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}

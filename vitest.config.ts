@@ -26,6 +26,10 @@ export default defineConfig({
       },
       {
         plugins: [tsconfigPaths()],
+        define: {
+          __APP_VERSION__: JSON.stringify("test"),
+          __APP_COMMIT__: JSON.stringify("test"),
+        },
         test: {
           name: "web",
           environment: "jsdom",

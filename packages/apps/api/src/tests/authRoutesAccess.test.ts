@@ -76,4 +76,12 @@ describe("auth routes access", () => {
     expect(res.headers["x-frame-options"]).toBe("SAMEORIGIN")
     expect(res.headers["x-powered-by"]).toBeUndefined()
   })
+
+  it("answers health with its version and commit", async () => {
+    const res = await request(app).get("/api/health")
+
+    expect(res.body).toMatchObject({ status: "ok" })
+    expect(typeof res.body.version).toBe("string")
+    expect(typeof res.body.commit).toBe("string")
+  })
 })

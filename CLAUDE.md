@@ -218,7 +218,8 @@ src/
   account still owns offers)
 - `PUT /api/users/:id/password`: Reset an account's password (ADMIN only, no current password
   required)
-- `GET /api/health`: Health check
+- `GET /api/health`: Health check, returns `{ status, version, commit }` (version from the root
+  `package.json`, commit baked into the Docker image at build time via `COMMIT_SHA`)
 
 #### `packages/apps/web/` (React + Vite Frontend)
 

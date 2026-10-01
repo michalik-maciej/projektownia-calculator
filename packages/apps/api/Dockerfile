@@ -46,6 +46,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Baked in at build time so /api/health can report what is actually running
+ARG COMMIT_SHA
+ENV COMMIT_SHA=${COMMIT_SHA}
+
 COPY --from=build /app .
 
 # Install ONLY production deps for api and its workspace deps
