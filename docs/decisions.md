@@ -132,7 +132,7 @@ point, but it means an old offer and a new one can legitimately disagree.
 
 **Decision.** The web build is static output on Vercel. The API runs as a Docker image on Fly.io in
 `ams`, 256 MB, scaling to zero, with migrations run as a release command
-(`pnpm --filter @senior-calculator/api run migrate:deploy`). PostgreSQL is hosted on Neon.
+(`pnpm --filter @projektownia-calculator/api run migrate:deploy`). PostgreSQL is hosted on Neon.
 
 **Why.** The two halves have different needs: the front end is static files best served from a CDN,
 the API needs a real Node process and a database connection. Splitting them lets each scale to zero

@@ -10,7 +10,7 @@ so a migration that fails stops the release rather than corrupting a running app
 
 The generated client is an input to type checking, and both the API's `typecheck` and `build`
 scripts run `prisma generate` first. After editing `schema.prisma` by hand, run
-`pnpm --filter @senior-calculator/api run prisma generate` before trusting a local type check.
+`pnpm --filter @projektownia-calculator/api run prisma generate` before trusting a local type check.
 
 ### Small, Descriptive, One Concern
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-**Senior Calculator** is a monorepo for a full-stack offer calculation web application. It uses pnpm workspaces and Turborepo for managing multiple packages with shared domain logic.
+**Projektownia Calculator** is a monorepo for a full-stack offer calculation web application. It uses pnpm workspaces and Turborepo for managing multiple packages with shared domain logic.
 
 ### Purpose
 
@@ -103,10 +103,10 @@ Use `pnpm --filter <package-name>` to run commands on a single package:
 
 ```bash
 # Examples:
-pnpm --filter @senior-calculator/api run dev
-pnpm --filter web run build
-pnpm --filter @senior-calculator/schemas run lint
-pnpm --filter @senior-calculator/domain run test
+pnpm --filter @projektownia-calculator/api run dev
+pnpm --filter @projektownia-calculator/web run build
+pnpm --filter @projektownia-calculator/schemas run lint
+pnpm --filter @projektownia-calculator/domain run test
 ```
 
 ### TypeScript Project References
@@ -115,7 +115,7 @@ The monorepo uses composite TypeScript projects. Incremental builds are cached:
 
 ```bash
 # Clean and rebuild TypeScript
-pnpm --filter @senior-calculator/api run build
+pnpm --filter @projektownia-calculator/api run build
 # Internally runs: tsc -b --clean && tsc -b
 ```
 
@@ -273,11 +273,11 @@ pnpm build              # Builds all: domain → schemas → api → web
 ```bash
 # Docker builds from Dockerfile (multi-stage):
 # 1. deps: Install workspace dependencies
-# 2. build: Run pnpm turbo build --filter=@senior-calculator/api
+# 2. build: Run pnpm turbo build --filter=@projektownia-calculator/api
 # 3. runner: Minimal production image (Node.js + prisma deps only)
 
 # On deploy: Release command runs migrations
-# pnpm --filter @senior-calculator/api run migrate:deploy
+# pnpm --filter @projektownia-calculator/api run migrate:deploy
 ```
 
 The deploy is not manual. The `deploy-api` job in `.github/workflows/ci.yml` runs
@@ -452,7 +452,7 @@ Form submissions to API endpoints use React Hook Form + Valibot validation.
 
 ### Frontend → Domain
 
-Domain logic is backend-only. Frontend cannot import from `@senior-calculator/domain` (would break browser bundle). Use API endpoints to trigger calculations.
+Domain logic is backend-only. Frontend cannot import from `@projektownia-calculator/domain` (would break browser bundle). Use API endpoints to trigger calculations.
 
 ## Turborepo Task Orchestration
 
@@ -467,8 +467,9 @@ lists another in its `package.json` (see the package wiring section), Turbo sees
 packages and would run their builds in parallel. They are not unrelated: `tsc -b` in `api` and in
 `web` both write `packages/schemas/dist` and `packages/domain/dist` through project references, so
 two parallel builds race on the same files and fail with `TS6305` on a cold cache. That is why
-`turbo.json` spells out `@senior-calculator/api#build` and `web#build` depending on the domain and
-schemas builds, and why `domain` and `schemas` have `build` scripts of their own.
+`turbo.json` spells out `@projektownia-calculator/api#build` and `@projektownia-calculator/web#build`
+depending on the domain and schemas builds, and why `domain` and `schemas` have `build` scripts of
+their own.
 
 For the same reason the API's build script is `prisma generate && tsc -b` and must not regain
 `tsc -b --clean`: a clean run from `api` deletes the shared `schemas` and `domain` output that a
@@ -530,18 +531,18 @@ Frontend reads from environment at build time (Vite). Set in Vercel dashboard or
 
 ## Gotchas & Important Notes
 
-1. **Workspace filtering**: Use `pnpm --filter @senior-calculator/api` to run commands on single packages. Without filter, commands run on all packages.
+1. **Workspace filtering**: Use `pnpm --filter @projektownia-calculator/api` to run commands on single packages. Without filter, commands run on all packages.
 
 2. **Import aliases required**: When importing between packages, use `@/domain/*` and `@/schemas/*` aliases (defined in `tsconfig.base.json`). Relative imports like `../../src/*` are ESLint errors.
 
-3. **Domain is backend-only**: Frontend cannot import from `@senior-calculator/domain`. This would include domain logic in the browser bundle. Call domain orchestrations via API endpoints only.
+3. **Domain is backend-only**: Frontend cannot import from `@projektownia-calculator/domain`. This would include domain logic in the browser bundle. Call domain orchestrations via API endpoints only.
 
 4. **Schemas are the contract**: All frontend-backend communication must be validated against Valibot schemas. Add new schemas to `packages/schemas/` before API changes.
 
 5. **Prisma codegen**: Running `prisma generate` is required before building the API. This is included in the build script, but if you modify `schema.prisma`, run manually:
 
    ```bash
-   pnpm --filter @senior-calculator/api run prisma generate
+   pnpm --filter @projektownia-calculator/api run prisma generate
    ```
 
 6. **TanStack Router auto-generation**: File-based routing in web generates `routeTree.gen.ts` automatically. Don't edit this file manually—place `.route.ts` files in `src/routes/`.

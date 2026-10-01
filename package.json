@@ -1,13 +1,13 @@
 {
-  "name": "senior-calculator",
+  "name": "projektownia-calculator",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "dev:api": "turbo run dev --filter=@senior-calculator/api",
-    "dev:web": "turbo run dev --filter=web",
-    "dev:local": "turbo run dev --filter=@senior-calculator/api --filter=web",
+    "dev:api": "turbo run dev --filter=@projektownia-calculator/api",
+    "dev:web": "turbo run dev --filter=@projektownia-calculator/web",
+    "dev:local": "turbo run dev --filter=@projektownia-calculator/api --filter=@projektownia-calculator/web",
     "lint": "turbo run lint",
     "format": "prettier --write . && eslint --fix .",
     "format:check": "prettier --check .",

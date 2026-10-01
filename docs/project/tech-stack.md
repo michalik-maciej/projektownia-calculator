@@ -2,7 +2,7 @@
 
 ## Overview
 
-Technology choices for Senior Calculator, a pnpm + Turborepo monorepo with four packages: `domain`,
+Technology choices for Projektownia Calculator, a pnpm + Turborepo monorepo with four packages: `domain`,
 `schemas`, `apps/api` and `apps/web`. The rationale behind the structural choices is recorded in
 `docs/decisions.md`; this document lists what is actually in use.
 

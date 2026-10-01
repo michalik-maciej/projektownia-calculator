@@ -2,7 +2,7 @@
 
 ## Overview
 
-Senior Calculator is an internal web application that turns a shelf configuration (wall runs and
+Projektownia Calculator is an internal web application that turns a shelf configuration (wall runs and
 gondola displays) into a bill of materials and a priced offer.
 
 ## Current State

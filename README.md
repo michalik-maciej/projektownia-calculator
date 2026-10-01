@@ -1,4 +1,4 @@
-# Offer Calculator
+# Projektownia Calculator
 
 [![CI](https://github.com/michalik-maciej/offer-calculator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalik-maciej/offer-calculator/actions/workflows/ci.yml)
 
@@ -108,15 +108,15 @@ Requires Node 24+, pnpm 9+ and a PostgreSQL connection string.
 pnpm install
 
 # packages/apps/api/.env
-#   DATABASE_URL=postgresql://localhost:5432/senior_calculator
+#   DATABASE_URL=postgresql://localhost:5432/projektownia_calculator
 #   JWT_SECRET=any-long-random-string
 #   PORT=3000
 
 # packages/apps/web/.env.local
 #   VITE_API_URL=http://localhost:3000/api
 
-pnpm --filter @senior-calculator/api exec prisma migrate deploy
-ALLOW_DEMO_SEED=1 pnpm --filter @senior-calculator/api exec prisma db seed
+pnpm --filter @projektownia-calculator/api exec prisma migrate deploy
+ALLOW_DEMO_SEED=1 pnpm --filter @projektownia-calculator/api exec prisma db seed
 
 pnpm dev        # web on :5173, api on :3000
 ```

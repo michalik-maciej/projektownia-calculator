@@ -55,7 +55,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Generate Prisma client
-        run: pnpm --filter @senior-calculator/api exec prisma generate
+        run: pnpm --filter @projektownia-calculator/api exec prisma generate
       - name: Test
         run: pnpm test:coverage
 
@@ -88,11 +88,11 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Generate Prisma client
-        run: pnpm --filter @senior-calculator/api exec prisma generate
+        run: pnpm --filter @projektownia-calculator/api exec prisma generate
       - name: Prepare the database
         run: |
-          pnpm --filter @senior-calculator/api exec prisma migrate deploy
-          pnpm --filter @senior-calculator/api exec tsx prisma/seed.ts
+          pnpm --filter @projektownia-calculator/api exec prisma migrate deploy
+          pnpm --filter @projektownia-calculator/api exec tsx prisma/seed.ts
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: End to end

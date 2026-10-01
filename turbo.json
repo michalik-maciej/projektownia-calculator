@@ -7,22 +7,22 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },
-    "@senior-calculator/domain#build": {
-      "dependsOn": ["@senior-calculator/schemas#build"],
+    "@projektownia-calculator/domain#build": {
+      "dependsOn": ["@projektownia-calculator/schemas#build"],
       "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },
-    "@senior-calculator/api#build": {
+    "@projektownia-calculator/api#build": {
       "dependsOn": [
-        "@senior-calculator/schemas#build",
-        "@senior-calculator/domain#build"
+        "@projektownia-calculator/schemas#build",
+        "@projektownia-calculator/domain#build"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },
-    "web#build": {
+    "@projektownia-calculator/web#build": {
       "dependsOn": [
-        "@senior-calculator/schemas#build",
-        "@senior-calculator/domain#build"
+        "@projektownia-calculator/schemas#build",
+        "@projektownia-calculator/domain#build"
       ],
       "outputs": ["dist/**"]
     },
@@ -30,21 +30,21 @@
       "dependsOn": ["^typecheck"],
       "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },
-    "@senior-calculator/domain#typecheck": {
-      "dependsOn": ["@senior-calculator/schemas#typecheck"],
+    "@projektownia-calculator/domain#typecheck": {
+      "dependsOn": ["@projektownia-calculator/schemas#typecheck"],
       "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },
-    "@senior-calculator/api#typecheck": {
+    "@projektownia-calculator/api#typecheck": {
       "dependsOn": [
-        "@senior-calculator/schemas#typecheck",
-        "@senior-calculator/domain#typecheck"
+        "@projektownia-calculator/schemas#typecheck",
+        "@projektownia-calculator/domain#typecheck"
       ],
       "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },
-    "web#typecheck": {
+    "@projektownia-calculator/web#typecheck": {
       "dependsOn": [
-        "@senior-calculator/schemas#typecheck",
-        "@senior-calculator/domain#typecheck"
+        "@projektownia-calculator/schemas#typecheck",
+        "@projektownia-calculator/domain#typecheck"
       ],
       "outputs": ["dist/**", "tsconfig.tsbuildinfo"]
     },

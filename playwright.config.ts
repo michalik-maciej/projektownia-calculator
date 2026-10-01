@@ -19,7 +19,8 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: "pnpm --filter @senior-calculator/api exec tsx src/server.ts",
+      command:
+        "pnpm --filter @projektownia-calculator/api exec tsx src/server.ts",
       url: `${API_URL}/api/health`,
       reuseExistingServer: !process.env.CI,
       env: {
@@ -30,7 +31,8 @@ export default defineConfig({
       },
     },
     {
-      command: "pnpm --filter web exec vite --port 5173 --strictPort",
+      command:
+        "pnpm --filter @projektownia-calculator/web exec vite --port 5173 --strictPort",
       url: WEB_URL,
       reuseExistingServer: !process.env.CI,
       env: { VITE_API_URL: `${API_URL}/api` },

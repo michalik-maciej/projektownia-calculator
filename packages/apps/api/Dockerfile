@@ -35,7 +35,7 @@ RUN pnpm install --frozen-lockfile
 # =================================
 FROM deps AS build
 
-RUN pnpm turbo run build --filter=@senior-calculator/api
+RUN pnpm turbo run build --filter=@projektownia-calculator/api
 
 # =================================
 # 3️⃣ Production image
@@ -49,7 +49,7 @@ ENV NODE_ENV=production
 COPY --from=build /app .
 
 # Install ONLY production deps for api and its workspace deps
-RUN pnpm install --prod --filter=@senior-calculator/api
+RUN pnpm install --prod --filter=@projektownia-calculator/api
 
 EXPOSE 3000
 
