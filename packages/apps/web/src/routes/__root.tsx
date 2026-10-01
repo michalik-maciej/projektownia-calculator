@@ -1,6 +1,6 @@
+import { lazy, Suspense } from "react"
 import type { QueryClient } from "@tanstack/react-query"
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
-import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 
 import { RouteError } from "../app/RouteError"
 import { RouteNotFound } from "../app/RouteNotFound"
@@ -15,6 +15,14 @@ export type OfferSearch = {
   offerId?: string
 }
 
+const TanStackRouterDevtools = import.meta.env.DEV
+  ? lazy(() =>
+      import("@tanstack/router-devtools").then((module) => ({
+        default: module.TanStackRouterDevtools,
+      })),
+    )
+  : () => null
+
 export const Route = createRootRouteWithContext<RouterContext>()({
   validateSearch: (search: Record<string, unknown>): OfferSearch => ({
     offerId: typeof search.offerId === "string" ? search.offerId : undefined,
@@ -26,7 +34,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           <Outlet />
         </AppLayout>
       </OfferFormProvider>
-      <TanStackRouterDevtools />
+      <Suspense fallback={null}>
+        <TanStackRouterDevtools />
+      </Suspense>
     </>
   ),
   errorComponent: ({ error }) => <RouteError error={error} />,
