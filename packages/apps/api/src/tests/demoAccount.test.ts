@@ -30,7 +30,7 @@ function cookieFor(role: "ADMIN" | "DEMO" | "USER") {
 }
 
 describe("demo account", () => {
-  it("starts a session on the demo account and creates it once", async () => {
+  it("starts a fresh demo account on every session", async () => {
     const { app, users } = setup()
 
     const first = await request(app).post("/api/auth/demo")
@@ -39,8 +39,23 @@ describe("demo account", () => {
     expect(first.status).toBe(200)
     expect(first.body.user).toMatchObject({ role: "DEMO" })
     expect(first.headers["set-cookie"]?.[0]).toContain("accessToken=")
-    expect(second.body.user.id).toBe(first.body.user.id)
+    expect(second.body.user.id).not.toBe(first.body.user.id)
+    expect(users.all()).toHaveLength(2)
+  })
+
+  it("cleans up demo accounts older than the retention window on the next login", async () => {
+    const { app, users } = setup()
+
+    await request(app).post("/api/auth/demo")
+    const [stale] = users.all()
+    if (stale) {
+      stale.createdAt = new Date(Date.now() - 25 * 60 * 60 * 1000)
+    }
+
+    const res = await request(app).post("/api/auth/demo")
+
     expect(users.all()).toHaveLength(1)
+    expect(users.all()[0]?.id).toBe(res.body.user.id)
   })
 
   it("gives the demo account a password nobody was told", async () => {

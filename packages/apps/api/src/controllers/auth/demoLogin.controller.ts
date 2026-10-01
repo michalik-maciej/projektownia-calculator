@@ -6,13 +6,13 @@ import { Role } from "@prisma/client"
 import { issueSession } from "./issueSession"
 import { UserStore } from "../../db/user.repository"
 
-const DEMO_EMAIL = "demo@projektownia.app"
+const DEMO_EMAIL_DOMAIN = "projektownia.app"
 const PASSWORD_SALT_ROUNDS = 10
 
 export function demoLoginController({
   createUser,
-  getUserByEmail,
-}: Pick<UserStore, "createUser" | "getUserByEmail">) {
+  deleteExpiredDemoAccounts,
+}: Pick<UserStore, "createUser" | "deleteExpiredDemoAccounts">) {
   return async (_req: Request, res: Response) => {
     const secret = process.env.JWT_SECRET
 
@@ -22,14 +22,15 @@ export function demoLoginController({
     }
 
     try {
-      const existing = await getUserByEmail(DEMO_EMAIL)
-      const user =
-        existing ??
-        (await createUser(
-          DEMO_EMAIL,
-          await bcrypt.hash(randomUUID(), PASSWORD_SALT_ROUNDS),
-          Role.DEMO,
-        ))
+      await deleteExpiredDemoAccounts().catch((error: unknown) => {
+        console.error("Demo account cleanup failed:", error)
+      })
+
+      const user = await createUser(
+        `demo+${randomUUID()}@${DEMO_EMAIL_DOMAIN}`,
+        await bcrypt.hash(randomUUID(), PASSWORD_SALT_ROUNDS),
+        Role.DEMO,
+      )
 
       return res.status(200).json({
         user: issueSession(

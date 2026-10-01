@@ -203,7 +203,8 @@ src/
 **API Endpoints**:
 
 - `POST /api/auth/login`: Authenticate, return JWT cookie
-- `POST /api/auth/demo`: Start a session on the shared demo account (role DEMO, catalogue read-only)
+- `POST /api/auth/demo`: Create a fresh session account (role DEMO, catalogue read-only); expired
+  demo accounts (24h+) are cleaned up as a side effect of this call
 - `GET /api/inventory`: List components
 - `POST /api/inventory`: Add component
 - `PATCH /api/inventory/:id`: Update component

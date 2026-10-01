@@ -204,7 +204,7 @@ five offer controllers became factories assembled by `offerControllers`.
 ## 12. The demo is a role, not an environment
 
 **Decision.** Visitors reach the application through a `Demo` button on the login screen, which calls
-`POST /api/auth/demo` and starts a session on one shared account with the `DEMO` role. That role may
+`POST /api/auth/demo` and creates a fresh account with the `DEMO` role on every call. That role may
 do everything an ordinary account may, except write to the component catalogue. There is no separate
 database, no separate API and no separate deployment.
 
@@ -216,11 +216,17 @@ path that real users are on, which is also what makes the demo honest.
 
 The catalogue is the only shared thing anyone can write, which is why it is the only thing the role
 takes away. Offers already belong to their author (decision 11), so a visitor cannot see or damage
-anybody else's work.
+anybody else's work. That guarantee only holds between visitors if they are not also sharing the same
+account, which is why `/demo` creates one rather than finding-or-creating a single standing account:
+a shared account would let two visitors land in the same workspace and overwrite each other through
+autosave, the one failure mode decision 11 cannot prevent on its own.
 
 **Cost.** A visitor sees the real component catalogue, prices included, because pricing an offer
 needs it. Demo offers are written into the production database alongside real ones, distinguishable
-only by their owner. Every visitor shares one account, so two people using the demo at the same time
-share a workspace and the autosave lets them overwrite each other. Each of these is the price of not
-running a second environment, and each is reversible: a separate branch and deployment is still
-possible later without changing this code, because the role travels with the account.
+only by their owner. `User` gains one row per visitor instead of one in total; `deleteExpiredDemoAccounts`
+removes accounts (and their offers) older than 24 hours as a side effect of the next `/demo` call
+rather than a scheduled job, so a repo nobody visits keeps its last visitors' rows until someone opens
+the demo again. The admin's user list filters role `DEMO` out, or it would fill with them. Each of
+these is the price of not running a second environment, and each is reversible: a separate branch and
+deployment is still possible later without changing this code, because the role travels with the
+account.

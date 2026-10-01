@@ -1,7 +1,11 @@
 import { randomUUID } from "node:crypto"
 import { Prisma, Role, User } from "@prisma/client"
 
-import { UserStore, UserSummary } from "../db/user.repository"
+import {
+  DEMO_ACCOUNT_TTL_HOURS,
+  UserStore,
+  UserSummary,
+} from "../db/user.repository"
 
 type TestUserStore = UserStore & {
   all: () => User[]
@@ -43,6 +47,20 @@ export function createInMemoryUserStore(): TestUserStore {
       return user
     },
 
+    deleteExpiredDemoAccounts: async () => {
+      const cutoff = Date.now() - DEMO_ACCOUNT_TTL_HOURS * 60 * 60 * 1000
+      const expired = [...stored.values()].filter(
+        (user) => user.role === Role.DEMO && user.createdAt.getTime() < cutoff,
+      )
+
+      for (const user of expired) {
+        stored.delete(user.id)
+        withOffers.delete(user.id)
+      }
+
+      return expired.length
+    },
+
     deleteUser: async (id: string) => {
       const user = stored.get(id)
 
@@ -66,6 +84,7 @@ export function createInMemoryUserStore(): TestUserStore {
 
     listUsers: async (): Promise<UserSummary[]> =>
       [...stored.values()]
+        .filter((user) => user.role !== Role.DEMO)
         .map(({ id, email, role }) => ({ id, email, role }))
         .sort((a, b) => a.email.localeCompare(b.email)),
 

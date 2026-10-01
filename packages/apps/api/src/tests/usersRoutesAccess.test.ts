@@ -65,6 +65,18 @@ describe("user management routes", () => {
     ])
   })
 
+  it("excludes demo accounts from the user list", async () => {
+    const { app, users } = await setup()
+    await users.createUser("demo+abc@projektownia.app", "hash", "DEMO")
+
+    const res = await request(app).get("/api/users").set("Cookie", adminCookie)
+
+    expect(res.status).toBe(200)
+    expect(res.body.map((user: { role: string }) => user.role)).not.toContain(
+      "DEMO",
+    )
+  })
+
   it("refuses to let an admin delete their own account", async () => {
     const { app } = await setup()
 
