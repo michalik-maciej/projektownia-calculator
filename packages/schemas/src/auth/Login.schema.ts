@@ -13,4 +13,9 @@ export const LoginResponseSchema = v.object({
   }),
 })
 
+export const DemoLoginResponseSchema = v.object({
+  ...LoginResponseSchema.entries,
+  exampleOfferId: v.optional(v.string()),
+})
+
 export type LoginInput = v.InferInput<typeof LoginInputSchema>

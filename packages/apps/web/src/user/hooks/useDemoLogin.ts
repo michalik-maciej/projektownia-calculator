@@ -10,9 +10,13 @@ export function useDemoLogin() {
 
   return useMutation({
     mutationFn: () => authApi.demo(),
-    onSuccess: () => {
+    onSuccess: ({ exampleOfferId }) => {
       queryClient.invalidateQueries({ queryKey: ["auth"] })
-      navigate({ to: "/" })
+      navigate(
+        exampleOfferId
+          ? { to: "/offer", search: { offerId: exampleOfferId } }
+          : { to: "/" },
+      )
     },
     onError: (error) => {
       console.error("Starting the demo session failed:", error)

@@ -1,5 +1,9 @@
 import { AuthUserResponseSchema } from "@/schemas/auth/AuthUser.schema"
-import { LoginInput, LoginResponseSchema } from "@/schemas/auth/Login.schema"
+import {
+  DemoLoginResponseSchema,
+  LoginInput,
+  LoginResponseSchema,
+} from "@/schemas/auth/Login.schema"
 
 import {
   apiType,
@@ -23,7 +27,7 @@ export const authApi = {
   demo: createApiMethod({
     method: "POST",
     path: `${apiUrl}/auth/demo`,
-    response: LoginResponseSchema,
+    response: DemoLoginResponseSchema,
   }),
   logout: createApiMethod({
     method: "POST",

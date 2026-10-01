@@ -39,9 +39,14 @@ export function demoLoginController({
         Role.DEMO,
       )
 
-      await seedExampleOffer({ createOffer, getInventory, userId: user.id })
+      const exampleOfferId = await seedExampleOffer({
+        createOffer,
+        getInventory,
+        userId: user.id,
+      })
 
       return res.status(200).json({
+        exampleOfferId,
         user: issueSession(
           res,
           { email: user.email, id: user.id, role: user.role },
@@ -62,19 +67,22 @@ async function seedExampleOffer({
 }: Pick<OfferStore, "createOffer"> & {
   getInventory: InventorySource
   userId: string
-}) {
+}): Promise<string | undefined> {
   try {
     const inventory = await getInventory()
     const { output } = priceOffer(demoExampleOffer, inventory)
 
-    await createOffer({
+    const offer = await createOffer({
       title: demoExampleOffer.title,
       discountPercentage: demoExampleOffer.discountPercentage,
       input: demoExampleOffer,
       output: output ?? undefined,
       userId,
     })
+
+    return offer.id
   } catch (error) {
     console.error("Seeding the demo account's example offer failed:", error)
+    return undefined
   }
 }

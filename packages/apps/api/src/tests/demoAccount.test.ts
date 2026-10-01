@@ -55,6 +55,7 @@ describe("demo account", () => {
     expect(seeded).toHaveLength(1)
     expect(seeded[0]?.userId).toBe(res.body.user.id)
     expect(seeded[0]?.output).not.toBeNull()
+    expect(res.body.exampleOfferId).toBe(seeded[0]?.id)
   })
 
   it("cleans up demo accounts older than the retention window on the next login", async () => {

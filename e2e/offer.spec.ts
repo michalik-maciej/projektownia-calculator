@@ -6,10 +6,15 @@ test("a visitor can open the demo, configure a run and see it priced", async ({
   await page.goto("/")
   await page.getByRole("button", { name: "Demo" }).click()
 
-  await expect(page).toHaveURL(/\/offer/)
+  await expect(page).toHaveURL(/\/offer\?offerId=/)
+  await expect(page.getByText("Wartość")).toBeVisible()
+
+  const exampleOfferUrl = page.url()
 
   await page.getByRole("button", { name: "Nowa" }).click()
+  await page.getByRole("button", { name: "Utwórz nową ofertę" }).click()
   await expect(page).toHaveURL(/offerId=/)
+  await expect(page).not.toHaveURL(exampleOfferUrl)
 
   await page.getByRole("link", { name: "Konfigurator" }).click()
   await page.getByRole("button", { name: "Dodaj ciąg przyścienny" }).click()
