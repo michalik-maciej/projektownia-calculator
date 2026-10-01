@@ -13,8 +13,9 @@ invented example.
 **Live:** https://projektownia.vercel.app · **Stack:** TypeScript everywhere, React + Express,
 pnpm/Turborepo monorepo
 
-> The hosted app sits behind a login, so the link above shows a sign-in form. To see the calculator
-> itself, run it locally with the steps below: the seed creates an account to sign in with.
+> The link above shows a sign-in form, but there is no account to create: click **Demo**. Every
+> click starts a fresh, isolated session with one priced example offer already loaded, so you land
+> on a filled-in configuration instead of an empty one.
 
 ![The configurator with two runs: a wall run of five shelf units and a double sided gondola, with
 the editor panel for the selected unit on the right](docs/screenshots/configurator.png)
@@ -116,14 +117,13 @@ pnpm install
 #   VITE_API_URL=http://localhost:3000/api
 
 pnpm --filter @projektownia-calculator/api exec prisma migrate deploy
-ALLOW_DEMO_SEED=1 pnpm --filter @projektownia-calculator/api exec prisma db seed
+pnpm --filter @projektownia-calculator/api exec prisma db seed
 
 pnpm dev        # web on :5173, api on :3000
 ```
 
-Open http://localhost:5173 and sign in as **demo@example.com** / **demo1234**, the account the seed
-creates. The catalogue it seeds alongside gives the calculator something to price, so the offer
-editor works immediately.
+Open http://localhost:5173 and click **Demo**, the same button the live link uses. The seed always
+loads the component catalogue, so the offer editor works immediately, no further setup needed.
 
 ![The component catalogue with the edit dialog open on a foot, showing name, price, category and
 the dimensions that category requires](docs/screenshots/inventory.png)
@@ -131,26 +131,30 @@ the dimensions that category requires](docs/screenshots/inventory.png)
 _That catalogue is editable in the app. Which dimensions a component needs follows from its
 category, so a foot asks for a depth and nothing else._
 
-The seed always loads the component catalogue. It creates the demo account only when
-`ALLOW_DEMO_SEED=1` is set, because the password above is published here: the deployment that holds
-real data is never given that variable, so the account cannot exist there. The account is an
-ordinary user, so it sees its own offers and nobody else's.
+If you want to exercise the ordinary login form instead of the Demo button, set `ALLOW_DEMO_SEED=1`
+before seeding and the seed also creates **demo@example.com** / **demo1234** as a plain `USER`
+account. The password is published here on purpose: the deployment that holds real data is never
+given that variable, so the account cannot exist there.
 
 Other entry points: `pnpm dev:web`, `pnpm dev:api`, `pnpm build`.
 
 ## Tests and quality
 
 ```bash
-pnpm test           # 56 tests across 19 files
+pnpm test
 pnpm test:coverage  # collected from the domain package
+pnpm test:e2e       # one Playwright smoke test, needs a database
 pnpm typecheck
 pnpm lint
 pnpm validate
 ```
 
-Tests concentrate on the domain package, where the logic that can actually be wrong lives, plus one
-integration test that exercises the offer endpoint end to end. UI components are deliberately not
-unit-tested: they are thin, and the interesting behaviour sits below them.
+Tests concentrate on the domain package, where the logic that can actually be wrong lives, plus
+integration tests that exercise the API end to end. UI components are deliberately not unit-tested:
+they are thin, and the interesting behaviour sits below them. One layer above that, `e2e/offer.spec.ts`
+drives a real browser through the public entrance: it clicks **Demo**, configures a run and checks
+that it comes back priced. It exists because the trade above assumes a maintainer who opens the app
+to notice a regression, and a public demo is opened by people who will not report that it is broken.
 
 **The suite needs no database.** The offer endpoints receive both the component inventory and the
 offer storage as injected dependencies, wired in `createApp`, so the integration tests build an app
@@ -173,11 +177,24 @@ The same problem has been rebuilt four times as the requirements and my own tool
 Each rewrite replaced the framework. None of them replaced the domain rules, which is the argument
 for keeping those rules in a package that depends on nothing.
 
+## How this was built
+
+Day-to-day work on this repository, including this README, is done with
+[Claude Code](https://claude.com/claude-code) as a pair programmer, not unattended automation.
+`CLAUDE.md` and `docs/standards/` are the standards the agent is told to follow; they were derived
+from this codebase's own conventions, not imposed on it. Every change still goes through the same
+gate: `pnpm validate` and the test suite pass before anything is reviewed, and the agent never
+stages, commits or pushes on its own (`.claude/hooks/block-agent-git-writes.mjs` blocks it): that
+stays a deliberate, manual step. A packaged multi-agent orchestrator was tried once on a real
+feature and dropped (decision 10 in `docs/decisions.md`): useful for the standards it produced,
+too much process for one maintainer working directly on `main`.
+
 ## Status
 
 Feature-complete for its user's needs and in active use. Every push to `main` runs typecheck, lint,
-formatting and the test suite (see the badge at the top). There is no public demo account yet, so
-the live link shows a sign-in form; running it locally is the way to see the calculator itself.
+formatting and the test suite (see the badge at the top). The live link's **Demo** button is a
+public, one-click way to try it: no account, no waiting, and a priced example configuration from the
+first screen.
 
 ## License
 
