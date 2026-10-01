@@ -188,7 +188,8 @@ src/
 │   ├── health.routes.ts
 │   ├── auth.routes.ts
 │   ├── inventory.routes.ts
-│   └── offers.routes.ts
+│   ├── offers.routes.ts
+│   └── users.routes.ts
 ├── controllers/        # Route handlers
 └── db/                 # Prisma client, migrations
 ```
@@ -210,6 +211,13 @@ src/
 - `PATCH /api/inventory/:id`: Update component
 - `POST /api/offers`: Create offer (calls domain logic)
 - `GET /api/offers`: List offers (only the caller's own, unless they are an ADMIN)
+- `POST /api/auth/register`: Create a user account (ADMIN only; this is how the user management
+  dialog adds accounts, there is no public sign-up)
+- `GET /api/users`: List accounts (ADMIN only; excludes role DEMO)
+- `DELETE /api/users/:id`: Delete an account (ADMIN only; refuses to delete your own, 409 if the
+  account still owns offers)
+- `PUT /api/users/:id/password`: Reset an account's password (ADMIN only, no current password
+  required)
 - `GET /api/health`: Health check
 
 #### `packages/apps/web/` (React + Vite Frontend)

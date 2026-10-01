@@ -79,9 +79,12 @@ the `ADMIN` role is answered 403 and an anonymous one 401. It was public for mon
 application where offers belong to their author meant anybody could give themselves a working
 account.
 
-The endpoint has no client: the browser never calls it, accounts are made deliberately. That leaves
-the question of where the first admin comes from, and the answer is the database, not the API. On a
-fresh deployment, promote the account you created:
+Its only client is the user management dialog (`UserManagementButton` in the top bar, admin-only):
+creating an account there calls this endpoint directly rather than going through a dedicated
+`/api/users` route, since creation and registration are the same operation. Accounts are still made
+deliberately, by an admin, not by anyone signing themselves up. That leaves the question of where the
+first admin comes from, and the answer is the database, not the API. On a fresh deployment, promote
+the account you created:
 
 ```sql
 UPDATE "User" SET role = 'ADMIN' WHERE email = 'you@example.com';
@@ -89,6 +92,25 @@ UPDATE "User" SET role = 'ADMIN' WHERE email = 'you@example.com';
 
 `prisma.user.create` in the repository sets no role, so every account starts as `USER`, including
 the one the seed makes for the demo.
+
+### User Management Is Three ADMIN-Only Routes
+
+`createUsersRouter` (`routes/users.routes.ts`) mounts at `/api/users`, every path behind
+`requireAuth` and `requireAdmin`:
+
+- `GET /` lists accounts (id, email, role, no password hash), excluding role `DEMO` so an endless
+  stream of ephemeral demo sessions never shows up next to the accounts an admin actually manages
+  (decision 12).
+- `DELETE /:id` refuses to delete the caller's own account (400, checked by `sub` against the
+  param) and answers 409 when the account still owns offers, because the foreign key is
+  `ON DELETE RESTRICT`: an offer is never silently orphaned or cascaded away.
+- `PUT /:id/password` resets a password without the admin knowing the old one, the same bcrypt hash
+  the registration path produces.
+
+There is no `POST /api/users`: creating an account is `POST /api/auth/register` (above), reused
+rather than duplicated because the two operations are identical. `/:id/password` is the one place
+in this API where a path nests past the identifier; `api.md`'s "nesting is avoided" is a default,
+not an absolute, and a sub-resource this small did not earn its own router.
 
 ### Login Has a Budget of Failed Attempts
 

@@ -57,7 +57,9 @@ reaches for the Prisma client itself. See `models.md`.
 
 Everything is mounted under `/api/{resource}`, plural, with the identifier as the single path
 segment (`/api/offers/:id`). Nesting is avoided; there is no versioning scheme and no need for one
-while the API has a single known client.
+while the API has a single known client. The one exception is `PUT /api/users/:id/password`
+(`auth.md`): a sub-resource that small did not earn its own router, so the rule bends rather than
+the file count growing for its own sake.
 
 ### bootstrap.ts Keeps Its Dynamic Import
 
