@@ -6,12 +6,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { OfferInput, SavedOffer } from "@/schemas/Offer.schema"
 
 import { PreviewErrorBanner } from "./PreviewErrorBanner"
+import { isUnauthorized } from "../../core/createMethod.api"
 import { createDefaultOfferTitle } from "../helpers/createDefaultOfferTitle"
 import { describeMissingComponent } from "../helpers/describeMissingComponent"
 import { useOffer } from "../hooks/useOffer"
 import { offerApi, offerMutationKeys, offerQueries } from "../offer.api"
 
 const AUTOSAVE_DEBOUNCE_MS = 800
+const AUTOSAVE_RETRIES = 2
 
 export function OfferFormProvider({ children }: { children: ReactNode }) {
   const form = useForm<OfferInput>({
@@ -41,7 +43,8 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
     mutationKey: offerMutationKeys.autoSave,
     mutationFn: (values: OfferInput) =>
       offerApi.update({ data: values, params: { id: offerId ?? "" } }),
-    retry: 2,
+    retry: (failureCount, error) =>
+      !isUnauthorized(error) && failureCount < AUTOSAVE_RETRIES,
     onSuccess: (saved: SavedOffer) => {
       queryClient.setQueryData(offerQueries.details(saved.id).queryKey, saved)
       hydratedIdRef.current = saved.id

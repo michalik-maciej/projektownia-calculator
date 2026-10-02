@@ -1,11 +1,17 @@
 import { lazy, Suspense } from "react"
 import type { QueryClient } from "@tanstack/react-query"
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
+import {
+  createRootRouteWithContext,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router"
 
 import { RouteError } from "../app/RouteError"
 import { RouteNotFound } from "../app/RouteNotFound"
+import { isUnauthorized } from "../core/createMethod.api"
 import { AppLayout } from "../layout/AppLayout"
 import { OfferFormProvider } from "../offer/components/OfferFormProvider"
+import { authQueries } from "../user/auth.api"
 
 type RouterContext = {
   queryClient: QueryClient
@@ -24,6 +30,16 @@ const TanStackRouterDevtools = import.meta.env.DEV
   : () => null
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async ({ context: { queryClient }, location }) => {
+    if (location.pathname === "/login") return
+
+    try {
+      await queryClient.ensureQueryData(authQueries.user())
+    } catch (error) {
+      if (isUnauthorized(error)) throw redirect({ to: "/login" })
+      throw error
+    }
+  },
   validateSearch: (search: Record<string, unknown>): OfferSearch => ({
     offerId: typeof search.offerId === "string" ? search.offerId : undefined,
   }),
