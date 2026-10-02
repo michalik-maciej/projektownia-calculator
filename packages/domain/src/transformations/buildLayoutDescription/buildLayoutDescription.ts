@@ -3,7 +3,7 @@ import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 
 import { Component } from "../../models/component"
-import { describeComponentQuantity } from "../describeComponentQuantity/describeComponentQuantity"
+import { describeComponent } from "../describeComponent/describeComponent"
 
 export function buildLayoutDescription(
   layout: unknown,
@@ -12,7 +12,7 @@ export function buildLayoutDescription(
   if (isLayoutWall(layout)) {
     const parts: string[] = []
 
-    parts.push(`${layout.numberOfLayouts} x ciąg regałów przyściennych`)
+    parts.push("ciąg regałów przyściennych")
 
     for (const { numberOfShelfUnits, width } of layout.shelfUnits) {
       parts.push(`${numberOfShelfUnits}x${width}`)
@@ -33,7 +33,7 @@ export function buildLayoutDescription(
   if (isLayoutGondola(layout)) {
     const parts: string[] = []
 
-    parts.push(`${layout.numberOfLayouts} x ciąg regałów dwustronnych`)
+    parts.push("ciąg regałów dwustronnych")
 
     const firstGondolaUnit = layout.gondolaUnits[0]
     if (firstGondolaUnit) {
@@ -72,9 +72,7 @@ export function buildLayoutDescription(
   }
 
   if (isLayoutItemSet(layout)) {
-    const items = layout.items.map((item) =>
-      describeComponentQuantity(item, inventory),
-    )
+    const items = layout.items.map(({ id }) => describeComponent(id, inventory))
 
     if (items.length === 0) return "zestaw elementów"
 

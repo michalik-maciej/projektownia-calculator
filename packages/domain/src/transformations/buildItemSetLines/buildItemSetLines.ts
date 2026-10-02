@@ -2,7 +2,7 @@ import { LayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 
 import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculateBomPrice"
 import { Component } from "../../models/component"
-import { describeComponentQuantity } from "../describeComponentQuantity/describeComponentQuantity"
+import { describeComponent } from "../describeComponent/describeComponent"
 
 export function buildItemSetLines(
   { items }: LayoutItemSet,
@@ -10,6 +10,7 @@ export function buildItemSetLines(
 ) {
   return items.map((item) => ({
     basePrice: calculateBomPrice({ bom: [item] }, inventory).basePrice,
-    description: describeComponentQuantity(item, inventory),
+    description: describeComponent(item.id, inventory),
+    quantity: item.quantity,
   }))
 }

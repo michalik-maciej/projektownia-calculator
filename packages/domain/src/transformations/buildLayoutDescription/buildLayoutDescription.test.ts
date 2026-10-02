@@ -30,7 +30,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "3 x ciąg regałów przyściennych / 4x80 / 1x100 / baza 47 / h-130 / półki 5x37",
+      "ciąg regałów przyściennych / 4x80 / 1x100 / baza 47 / h-130 / półki 5x37",
     )
   })
 
@@ -72,7 +72,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "1 x ciąg regałów dwustronnych / 2x80 / 1x100 / baza 47 / h-130",
+      "ciąg regałów dwustronnych / 2x80 / 1x100 / baza 47 / h-130",
     )
   })
 
@@ -87,9 +87,7 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual(
-      "zestaw elementów: plecy 10/100 x3, noga 210/8/3 x1",
-    )
+    expect(description).toEqual("zestaw elementów: plecy 10/100, noga 210/8/3")
   })
 
   it("describes an empty item set by its kind alone", () => {
@@ -145,7 +143,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "1 x ciąg regałów dwustronnych / 2x80 / baza 47 / h-130 / szczyt lewy 100/37 / szczyt prawy 66/30",
+      "ciąg regałów dwustronnych / 2x80 / baza 47 / h-130 / szczyt lewy 100/37 / szczyt prawy 66/30",
     )
   })
 })

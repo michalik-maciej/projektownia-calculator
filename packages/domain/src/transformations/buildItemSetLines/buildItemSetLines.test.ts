@@ -17,8 +17,8 @@ describe("buildItemSetLines", () => {
     )
 
     expect(lines).toEqual([
-      { basePrice: 88.78, description: "stopa 37 x2" },
-      { basePrice: 300, description: "inne 3/240/3 x1" },
+      { basePrice: 88.78, description: "stopa 37", quantity: 2 },
+      { basePrice: 300, description: "inne 3/240/3", quantity: 1 },
     ])
   })
 

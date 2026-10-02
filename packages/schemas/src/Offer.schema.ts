@@ -39,6 +39,7 @@ export const OfferOutputSchema = v.object({
           v.object({
             basePrice: v.pipe(v.number(), v.minValue(0)),
             description: v.string(),
+            quantity: v.number(),
           }),
         ),
       ),

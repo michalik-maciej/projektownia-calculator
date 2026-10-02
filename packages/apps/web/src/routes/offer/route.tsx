@@ -1,11 +1,15 @@
 import { FilePlus2, Loader2, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { useFieldArray, useFormContext, useFormState } from "react-hook-form"
+import {
+  useFieldArray,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from "react-hook-form"
 import { createFileRoute } from "@tanstack/react-router"
 
 import { OfferInput } from "@/schemas/Offer.schema"
 
-import { Badge } from "../../core/ui/badge"
 import { Button } from "../../core/ui/button"
 import { ConfirmDialog } from "../../core/ui/confirm-dialog"
 import { Input } from "../../core/ui/input"
@@ -32,6 +36,7 @@ function OfferPage() {
   } = useFormContext<OfferInput>()
   const { isDirty } = useFormState({ control })
   const { fields } = useFieldArray({ control, name: "layouts" })
+  const layouts = useWatch({ control, name: "layouts" })
 
   const { isMissing, offer, offerId } = useOffer()
   const { hasFailed, isSaving } = useAutoSaveState()
@@ -145,22 +150,36 @@ function OfferPage() {
               Konfiguratorze.
             </p>
           ) : (
-            <ul className="divide-y divide-border border-y border-border">
-              {buildOfferRows(
-                fields.map((field) => field.id),
-                output?.layouts,
-              ).map(({ basePrice, description, key }, index) => (
-                <li className="flex items-center gap-4 py-2" key={key}>
-                  <Badge variant="secondary">{index + 1}</Badge>
-                  <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
-                    {description ?? "brak wyceny"}
-                  </span>
-                  <span className="w-32 shrink-0 text-right text-sm tabular-nums">
-                    {basePrice === null ? "—" : formatPrice(basePrice)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <table className="w-full text-sm">
+              <thead className="border-b border-border text-left text-muted-foreground">
+                <tr>
+                  <th className="w-12 py-2 font-normal">Lp.</th>
+                  <th className="py-2 font-normal">Opis</th>
+                  <th className="w-20 py-2 text-right font-normal">Ilość</th>
+                  <th className="w-32 py-2 text-right font-normal">Cena</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border border-b border-border">
+                {buildOfferRows({
+                  keys: fields.map((field) => field.id),
+                  layoutOutputs: output?.layouts,
+                  layouts,
+                }).map(({ basePrice, description, key, quantity }, index) => (
+                  <tr key={key}>
+                    <td className="py-2 tabular-nums">{index + 1}.</td>
+                    <td className="py-2 text-muted-foreground">
+                      {description ?? "brak wyceny"}
+                    </td>
+                    <td className="py-2 text-right tabular-nums">
+                      {quantity ?? "—"}
+                    </td>
+                    <td className="py-2 text-right tabular-nums">
+                      {basePrice === null ? "—" : formatPrice(basePrice)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
 
           {output && (

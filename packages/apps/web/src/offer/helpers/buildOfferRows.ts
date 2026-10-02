@@ -1,26 +1,30 @@
-import { OfferOutput } from "@/schemas/Offer.schema"
+import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 export type OfferRow = {
   basePrice: number | null
   description: string | null
   key: string
+  quantity: number | null
 }
 
-export function buildOfferRows(
-  layoutKeys: string[],
-  layoutOutputs: OfferOutput["layouts"] | undefined,
-): OfferRow[] {
-  return layoutKeys.flatMap((key, index) => {
+export function buildOfferRows({
+  keys,
+  layoutOutputs,
+  layouts,
+}: {
+  keys: string[]
+  layoutOutputs: OfferOutput["layouts"] | undefined
+  layouts: OfferInput["layouts"]
+}): OfferRow[] {
+  return keys.flatMap((key, index) => {
+    const layout = layouts[index]
     const layoutOutput = layoutOutputs?.[index]
 
     if (layoutOutput?.lines) {
-      return layoutOutput.lines.map(
-        ({ basePrice, description }, lineIndex) => ({
-          basePrice,
-          description,
-          key: `${key}-${lineIndex}`,
-        }),
-      )
+      return layoutOutput.lines.map((line, lineIndex) => ({
+        ...line,
+        key: `${key}-${lineIndex}`,
+      }))
     }
 
     return [
@@ -28,6 +32,8 @@ export function buildOfferRows(
         basePrice: layoutOutput?.basePrice ?? null,
         description: layoutOutput?.description ?? null,
         key,
+        quantity:
+          layout && "numberOfLayouts" in layout ? layout.numberOfLayouts : null,
       },
     ]
   })

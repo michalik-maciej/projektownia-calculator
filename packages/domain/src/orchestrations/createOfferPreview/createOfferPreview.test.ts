@@ -40,8 +40,7 @@ describe("createOfferPreview", () => {
       layouts: [
         {
           basePrice: 553.85,
-          description:
-            "1 x ciąg regałów przyściennych / 1x100 / baza 47 / h-180",
+          description: "ciąg regałów przyściennych / 1x100 / baza 47 / h-180",
           breakdown: {
             back: [
               { id: "back-40-100", quantity: 4, label: "Plecy 40/100" },
