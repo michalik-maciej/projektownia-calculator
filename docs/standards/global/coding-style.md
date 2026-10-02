@@ -5,10 +5,10 @@
 80 character line width, 2 space indentation, no semicolons, trailing commas everywhere.
 `pnpm format` fixes, `pnpm format:check` verifies, and CI runs the check over the whole repository.
 
-Generated files are outside that rule and listed in `.prettierignore`: `pnpm-lock.yaml` and
-`routeTree.gen.ts` belong to the tools that write them. Formatting one of them does not stay fixed,
-it only guarantees that the next `pnpm install` or route generation rewrites the whole file and
-buries the real change in a few thousand lines of noise.
+Generated files are outside that rule and listed in `.prettierignore`: `pnpm-lock.yaml`,
+`routeTree.gen.ts` and the `CHANGELOG.md` that Release Please writes belong to the tools that write
+them. Formatting one of them does not stay fixed, it only guarantees that the next `pnpm install`,
+route generation or release PR rewrites the whole file and buries the real change in noise.
 
 ### Three-Tier Import Grouping
 
