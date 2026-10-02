@@ -35,22 +35,17 @@ export function buildLayoutDescription(
 
     parts.push("ciąg regałów dwustronnych")
 
-    const firstGondolaUnit = layout.gondolaUnits[0]
-    if (firstGondolaUnit) {
-      const { depth, shelfUnits } = firstGondolaUnit
+    const [{ depth, shelfUnits }] = layout.sides
 
-      for (const { numberOfShelfUnits, width } of shelfUnits) {
-        parts.push(`${numberOfShelfUnits}x${width}`)
-      }
-
-      parts.push(`baza ${depth}`)
+    for (const { numberOfShelfUnits, width } of shelfUnits) {
+      parts.push(`${numberOfShelfUnits}x${width}`)
     }
 
+    parts.push(`baza ${depth}`)
     parts.push(`h-${layout.height}`)
 
-    const firstShelf = firstGondolaUnit?.shelfUnits.find(
-      (unit) => unit.shelves.length > 0,
-    )?.shelves[0]
+    const firstShelf = shelfUnits.find((unit) => unit.shelves.length > 0)
+      ?.shelves[0]
     if (firstShelf) {
       parts.push(`półki ${firstShelf.numberOfShelves}x${firstShelf.depth}`)
     }

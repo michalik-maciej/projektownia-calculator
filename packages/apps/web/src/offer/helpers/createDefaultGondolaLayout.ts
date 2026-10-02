@@ -10,16 +10,16 @@ export function createDefaultGondolaLayout(
 
   if (!wallLayout) return null
 
+  const side = {
+    depth: wallLayout.depth,
+    hasBaseCover: true,
+    shelfUnits: wallLayout.shelfUnits,
+  }
+
   return {
     extras: [],
-    gondolaUnits: [
-      {
-        depth: wallLayout.depth,
-        shelfUnits: wallLayout.shelfUnits,
-      },
-    ],
-    hasBaseCover: true,
     height: wallLayout.height,
     numberOfLayouts: wallLayout.numberOfLayouts,
+    sides: [side, structuredClone(side)],
   }
 }

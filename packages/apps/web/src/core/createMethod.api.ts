@@ -48,7 +48,7 @@ type ApiContract<
 > = {
   method: HttpMethod
   path: TPath
-  response?: GenericSchema<TResponse>
+  response?: GenericSchema<unknown, TResponse>
   data?: TData
   query?: TQuery
 }

@@ -27,7 +27,22 @@ export const demoExampleOffer: OfferInput = {
     {
       height: 130,
       numberOfLayouts: 1,
-      gondolaUnits: [
+      sides: [
+        {
+          depth: 47,
+          shelfUnits: [
+            {
+              width: 80,
+              numberOfShelfUnits: 2,
+              shelves: [{ depth: 47, numberOfShelves: 4 }],
+            },
+            {
+              width: 100,
+              numberOfShelfUnits: 1,
+              shelves: [{ depth: 47, numberOfShelves: 4 }],
+            },
+          ],
+        },
         {
           depth: 47,
           shelfUnits: [

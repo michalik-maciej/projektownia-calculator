@@ -276,3 +276,23 @@ enforced (`docs/decisions.md` predates it; the `commit-msg` hook that would have
 proposed and declined). History before the first tag is not retrofitted into the changelog; the
 changelog starts clean at `v1.0.0` rather than trying to reconstruct 144 commits of prior history
 into sections that were never written with a changelog in mind.
+
+## 14. A gondola has two independent sides, and mismatched uprights are the user's to add
+
+**Decision.** `LayoutGondola` holds `sides`, a tuple of exactly two sides, each with its own base
+depth, shelf units, back variant and base cover. The sides may differ in their run of widths, not
+only in their contents. The shared column of uprights is counted from the side with more shelf
+units; any leg a mismatched layout needs on top of that is entered by the user as an extra ("Inne
+elementy"), and the domain does not try to work it out. Offers saved in the earlier shape, one
+symmetric entry in `gondolaUnits`, are read by the schema as two equal sides.
+
+**Why.** About nine gondolas in ten are symmetric, but the client builds asymmetric ones around
+pillars and posts, where a full-width unit on one side faces a shortened one on the other. Working
+out the exact upright count would need to know where each unit stands relative to the units
+opposite, which the data does not carry and which would turn the calculator into a geometry engine.
+Counting from the side with more units is exact for a symmetric gondola and a lower bound otherwise,
+so the correction is always an addition and never a subtraction.
+
+**Cost.** For an asymmetric gondola the leg count is only as right as the user makes it; the domain
+cannot flag a forgotten leg, so the web has to warn when the sides' layouts differ. The old shape
+stays in `LayoutGondola.schema.ts` for as long as such offers exist in the database.

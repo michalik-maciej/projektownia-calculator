@@ -1,38 +1,38 @@
-import { compact } from "lodash/fp"
+import { compact, sumBy } from "lodash/fp"
 
-import { GONDOLA_SIDES, LayoutGondola } from "@/schemas/LayoutGondola.schema"
+import { LayoutGondola } from "@/schemas/LayoutGondola.schema"
 
+import { calculateLegDemand } from "../../calculations/calculateLegDemand/calculateLegDemand"
 import { Component } from "../../models/component"
+import { calculateRunSideDemand } from "../calculateRunSideDemand/calculateRunSideDemand"
 import { calculateWallLayoutDemand } from "../calculateWallLayoutDemand/calculateWallLayoutDemand"
 
 const END_CAP_RUN_COUNT = 1
 
 export function calculateGondolaLayoutDemand(
   {
-    backVariant,
     extras = [],
-    gondolaUnits,
-    hasBaseCover,
     height,
     leftEndCap,
     numberOfLayouts,
     rightEndCap,
+    sides,
   }: LayoutGondola,
   inventory: Component[],
 ) {
+  // Shared uprights; extra legs for mismatched sides come in as extras.
+  const numberOfUnits = Math.max(
+    ...sides.map(({ shelfUnits }) => sumBy("numberOfShelfUnits", shelfUnits)),
+  )
+
   return [
-    ...gondolaUnits.flatMap(({ depth, shelfUnits }) => {
-      const context = {
-        backVariant,
-        depth,
-        hasBaseCover,
-        height,
-        numberOfLayouts: numberOfLayouts * GONDOLA_SIDES,
-        numberOfLegLayouts: numberOfLayouts,
-        shelfUnits,
-      }
-      return calculateWallLayoutDemand(context, inventory)
-    }),
+    ...sides.flatMap((side) =>
+      calculateRunSideDemand({ ...side, height, numberOfLayouts }, inventory),
+    ),
+    ...calculateLegDemand(
+      { height, numberOfLayouts, numberOfUnits },
+      inventory,
+    ),
     ...compact([leftEndCap, rightEndCap]).flatMap((endCap) =>
       calculateWallLayoutDemand(
         { ...endCap, height, numberOfLayouts: END_CAP_RUN_COUNT },

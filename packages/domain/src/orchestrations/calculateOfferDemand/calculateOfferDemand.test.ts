@@ -10,7 +10,17 @@ describe("calculateOfferDemand", () => {
         {
           height: 130,
           numberOfLayouts: 1,
-          gondolaUnits: [
+          sides: [
+            {
+              depth: 37,
+              shelfUnits: [
+                {
+                  numberOfShelfUnits: 1,
+                  shelves: [],
+                  width: 80,
+                },
+              ],
+            },
             {
               depth: 37,
               shelfUnits: [
@@ -42,12 +52,12 @@ describe("calculateOfferDemand", () => {
     const expectedResult = [
       { id: "back-40-80", quantity: 6 },
       { id: "shelf-80-37", quantity: 2 },
-      { id: "leg-130-8-3", quantity: 2 },
       { id: "foot-37", quantity: 4 },
+      { id: "leg-130-8-3", quantity: 2 },
       { id: "back-40-100", quantity: 5 },
       { id: "shelf-100-47", quantity: 1 },
-      { id: "leg-210-8-3", quantity: 2 },
       { id: "foot-47", quantity: 2 },
+      { id: "leg-210-8-3", quantity: 2 },
     ]
 
     expect(result).toHaveLength(8)
@@ -82,8 +92,8 @@ describe("calculateOfferDemand", () => {
     expect(result).toEqual([
       { id: "back-40-100", quantity: 5 },
       { id: "shelf-100-47", quantity: 1 },
-      { id: "leg-210-8-3", quantity: 2 },
       { id: "foot-47", quantity: 5 },
+      { id: "leg-210-8-3", quantity: 2 },
       { id: "misc-inne-3-240-3", quantity: 2 },
     ])
   })

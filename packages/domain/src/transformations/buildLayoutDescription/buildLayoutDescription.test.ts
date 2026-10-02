@@ -39,7 +39,7 @@ describe("buildLayoutDescription", () => {
       {
         height: 130,
         numberOfLayouts: 1,
-        gondolaUnits: [
+        sides: [
           {
             depth: 47,
             shelfUnits: [
@@ -106,7 +106,17 @@ describe("buildLayoutDescription", () => {
       {
         height: 130,
         numberOfLayouts: 1,
-        gondolaUnits: [
+        sides: [
+          {
+            depth: 47,
+            shelfUnits: [
+              {
+                numberOfShelfUnits: 2,
+                shelves: [],
+                width: 80,
+              },
+            ],
+          },
           {
             depth: 47,
             shelfUnits: [

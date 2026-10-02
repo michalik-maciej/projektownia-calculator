@@ -174,7 +174,7 @@ recovered from the code or from git history:
   areas, gondolas first. Binding input, to be verified as work progresses rather than treated as
   background.
 - `docs/gondola-prior-art.md` — how gondolas were modelled in the three earlier calculators, and
-  what `gondolaUnits` actually means (sides, not segments along the run). Recovered from
+  how that maps onto today's `sides` (two sides, not segments along the run). Recovered from
   `projektownia-kalkulator`, `next-kalkulator` and `remix-kalkulator`.
 
 ---

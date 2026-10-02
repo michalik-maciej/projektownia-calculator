@@ -40,8 +40,8 @@ describe("calculateWallLayoutDemand", () => {
       { id: "shelf-100-47", quantity: 2 },
       { id: "support-47", quantity: 4 },
       { id: "shelf-80-37", quantity: 40 },
-      { id: "leg-130-8-3", quantity: 12 },
       { id: "foot-47", quantity: 12 },
+      { id: "leg-130-8-3", quantity: 12 },
       { id: "extra-37", quantity: 4 },
     ]
 
@@ -84,8 +84,8 @@ describe("calculateWallLayoutDemand", () => {
       { id: "support-47", quantity: 4 },
       { id: "shelf-80-37", quantity: 40 },
       { id: "support-37", quantity: 80 },
-      { id: "leg-130-8-3", quantity: 12 },
       { id: "foot-47", quantity: 12 },
+      { id: "leg-130-8-3", quantity: 12 },
     ]
 
     expect(result).toEqual(expectedResult)
@@ -111,8 +111,8 @@ describe("calculateWallLayoutDemand", () => {
 
     expect(result).toEqual([
       { id: "shelf-100-47", quantity: 1 },
-      { id: "leg-130-8-3", quantity: 2 },
       { id: "foot-47", quantity: 2 },
+      { id: "leg-130-8-3", quantity: 2 },
     ])
   })
 })

@@ -4,4 +4,4 @@ import { OfferInput } from "@/schemas/Offer.schema"
 type Layout = OfferInput["layouts"][number]
 
 export const isGondolaLayout = (layout: Layout): layout is LayoutGondola =>
-  "gondolaUnits" in layout
+  "sides" in layout

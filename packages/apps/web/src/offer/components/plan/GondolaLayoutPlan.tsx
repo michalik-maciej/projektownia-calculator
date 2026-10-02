@@ -1,7 +1,8 @@
 import { Plus, Trash2 } from "lucide-react"
+import { useEffect } from "react"
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 
-import { GONDOLA_SIDES } from "@/schemas/LayoutGondola.schema"
+import { GondolaSide } from "@/schemas/LayoutGondola.schema"
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { LayoutPlanHeader } from "./LayoutPlanHeader"
@@ -17,10 +18,8 @@ import { EditorPanel, PanelTab } from "../editor/EditorPanel"
 import { ShelfUnitEditor } from "../editor/ShelfUnitEditor"
 
 type LayoutPreview = OfferOutput["layouts"][number]
-const GONDOLA_UNIT_INDEX = 0
 const END_CAP_UNIT_INDEX = 0
 const END_CAP_UNIT_COUNT = 1
-const SIDES = Array.from({ length: GONDOLA_SIDES }, (_, side) => side)
 
 const END_CAP_LABELS: Record<Exclude<LayoutPart, "middle">, string> = {
   leftEndCap: "Szczyt lewy",
@@ -57,8 +56,19 @@ export function GondolaLayoutPlan({
   const dimensions = useInventoryDimensions()
   const defaultEndCap = createDefaultEndCap(dimensions)
 
-  const middlePath =
-    `layouts.${layoutIndex}.gondolaUnits.${GONDOLA_UNIT_INDEX}` as const
+  const middlePath = `layouts.${layoutIndex}.sides.0` as const
+  const mirroredSidePath = `layouts.${layoutIndex}.sides.1` as const
+  const middleSide = useWatch({ control, name: middlePath })
+
+  useEffect(() => {
+    if (!middleSide) return
+
+    const mirroredSide = getValues(mirroredSidePath)
+
+    if (JSON.stringify(mirroredSide) !== JSON.stringify(middleSide)) {
+      setValue(mirroredSidePath, structuredClone(middleSide))
+    }
+  }, [getValues, middleSide, mirroredSidePath, setValue])
 
   const shelfUnits = useFieldArray({
     control,
@@ -102,19 +112,17 @@ export function GondolaLayoutPlan({
 
   if (!layout || !isGondolaLayout(layout)) return null
 
-  const gondolaUnit = layout.gondolaUnits[GONDOLA_UNIT_INDEX]
-
-  if (!gondolaUnit) return null
+  const gondolaDepth = layout.sides.reduce((sum, { depth }) => sum + depth, 0)
 
   const selectedEndCapPart = selectedPart === "middle" ? null : selectedPart
   const selectedEndCap = selectedEndCapPart
     ? layout[selectedEndCapPart]
     : undefined
 
-  const renderSide = (side: number) => (
+  const renderSide = (side: GondolaSide, sideIndex: number) => (
     <div className="flex w-max border border-foreground/40">
       {shelfUnits.fields.map((unitField, unitIndex) => {
-        const unit = gondolaUnit.shelfUnits[unitIndex]
+        const unit = side.shelfUnits[unitIndex]
 
         if (!unit) return null
 
@@ -128,17 +136,15 @@ export function GondolaLayoutPlan({
               className={`flex shrink-0 flex-col items-center justify-center gap-1 border border-border text-xs tabular-nums transition-colors hover:bg-accent ${
                 isSelected ? "border-primary bg-accent" : ""
               }`}
-              key={`${unitField.id}-${copyIndex}-${side}`}
+              key={`${unitField.id}-${copyIndex}-${sideIndex}`}
               onClick={() => onSelectUnit(unitIndex, "middle")}
               style={{
-                height: gondolaUnit.depth * SCALE_PX_PER_CM,
+                height: side.depth * SCALE_PX_PER_CM,
                 width: unit.width * SCALE_PX_PER_CM,
               }}
               type="button"
             >
-              <span>
-                {[unit.width, gondolaUnit.depth, layout.height].join("/")}
-              </span>
+              <span>{[unit.width, side.depth, layout.height].join("/")}</span>
               <span className="text-muted-foreground">
                 <ShelvesSummary
                   highlightedIndex={isSelected ? selectedShelfIndex : null}
@@ -164,7 +170,7 @@ export function GondolaLayoutPlan({
           disabled={!defaultEndCap}
           onClick={() => handleAddEndCap(part)}
           style={{
-            height: gondolaUnit.depth * GONDOLA_SIDES * SCALE_PX_PER_CM,
+            height: gondolaDepth * SCALE_PX_PER_CM,
           }}
           type="button"
         >
@@ -215,8 +221,8 @@ export function GondolaLayoutPlan({
           <div className="flex items-center gap-[3px]">
             {renderEndCapSlot("leftEndCap")}
             <div className="flex flex-col gap-[3px]">
-              {SIDES.map((side) => (
-                <div key={side}>{renderSide(side)}</div>
+              {layout.sides.map((side, sideIndex) => (
+                <div key={sideIndex}>{renderSide(side, sideIndex)}</div>
               ))}
             </div>
             {renderEndCapSlot("rightEndCap")}
@@ -247,7 +253,7 @@ export function GondolaLayoutPlan({
                   })}
                   onSelectShelf={onSelectShelf}
                   onSelectUnit={onSelectUnit}
-                  optionsPath={`layouts.${layoutIndex}`}
+                  optionsPath={middlePath}
                   selectedShelfIndex={selectedShelfIndex}
                   unitCount={shelfUnits.fields.length}
                   unitIndex={selectedUnitIndex}
