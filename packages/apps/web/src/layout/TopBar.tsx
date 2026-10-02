@@ -40,28 +40,43 @@ function ThemeToggle() {
   )
 }
 
+const activeTabClassName =
+  "aria-[current=page]:outline-2 aria-[current=page]:outline-offset-2 aria-[current=page]:outline-primary"
+
 export function TopBar() {
   return (
     <header className="flex items-center justify-between gap-4 border-b px-4 py-3">
       <nav className="flex justify-between w-full" aria-label="Primary">
         <div className="flex gap-4">
           <Button variant="outline" asChild>
-            <Link search={(previous) => previous} to="/offer">
+            <Link
+              className={activeTabClassName}
+              search={(previous) => previous}
+              to="/offer"
+            >
               Oferta
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link search={(previous) => previous} to="/config">
+            <Link
+              className={activeTabClassName}
+              search={(previous) => previous}
+              to="/config"
+            >
               Konfigurator
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link search={(previous) => previous} to="/order">
+            <Link
+              className={activeTabClassName}
+              search={(previous) => previous}
+              to="/order"
+            >
               Rozpiska
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link search={true} to="/inventory">
+            <Link className={activeTabClassName} search={true} to="/inventory">
               Katalog części
             </Link>
           </Button>
