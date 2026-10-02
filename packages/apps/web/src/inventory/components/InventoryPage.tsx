@@ -11,6 +11,7 @@ import {
 import { Button } from "../../core/ui/button"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { CATEGORY_LABELS } from "../components/labels.inventory"
+import { sortInventoryItemsBySize } from "../helpers/sortInventoryItemsBySize"
 import { inventoryQueries } from "../inventory.api"
 
 export function InventoryPage() {
@@ -18,7 +19,9 @@ export function InventoryPage() {
   const { data, isPending, error } = useQuery({
     ...inventoryQueries.list(),
     select: (components) =>
-      components.reduce<Record<string, typeof components>>((acc, component) => {
+      sortInventoryItemsBySize(components).reduce<
+        Record<string, typeof components>
+      >((acc, component) => {
         acc[component.category] ??= []
         acc[component.category]?.push(component)
         return acc
