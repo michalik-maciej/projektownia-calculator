@@ -31,7 +31,7 @@ export function createDefaultWallLayout({
     backVariant: DEFAULT_BACK_VARIANT,
     depth,
     extras: [],
-    hasBaseCover: false,
+    hasBaseCover: true,
     height,
     numberOfLayouts: 1,
     shelfUnits: [

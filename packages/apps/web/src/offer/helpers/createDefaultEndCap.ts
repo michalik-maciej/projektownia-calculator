@@ -14,7 +14,7 @@ export function createDefaultEndCap(
   return {
     backVariant: DEFAULT_BACK_VARIANT,
     depth: wallLayout.depth,
-    hasBaseCover: false,
+    hasBaseCover: true,
     shelfUnits: wallLayout.shelfUnits,
   }
 }

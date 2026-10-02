@@ -18,6 +18,7 @@ export function createDefaultGondolaLayout(
         shelfUnits: wallLayout.shelfUnits,
       },
     ],
+    hasBaseCover: true,
     height: wallLayout.height,
     numberOfLayouts: wallLayout.numberOfLayouts,
   }
