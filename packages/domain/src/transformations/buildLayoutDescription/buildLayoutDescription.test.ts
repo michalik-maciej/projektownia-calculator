@@ -56,8 +56,13 @@ describe("buildLayoutDescription", () => {
             ],
           },
           {
-            depth: 37,
+            depth: 47,
             shelfUnits: [
+              {
+                numberOfShelfUnits: 2,
+                shelves: [],
+                width: 80,
+              },
               {
                 numberOfShelfUnits: 1,
                 shelves: [],
@@ -73,6 +78,76 @@ describe("buildLayoutDescription", () => {
 
     expect(description).toEqual(
       "ciąg regałów dwustronnych / 2x80 / 1x100 / baza 47 / h-130",
+    )
+  })
+
+  it("describes each side of a gondola whose sides differ", () => {
+    const description = buildLayoutDescription(
+      {
+        height: 130,
+        numberOfLayouts: 1,
+        sides: [
+          {
+            depth: 47,
+            shelfUnits: [
+              {
+                numberOfShelfUnits: 2,
+                shelves: [{ depth: 47, numberOfShelves: 4 }],
+                width: 125,
+              },
+            ],
+          },
+          {
+            depth: 37,
+            shelfUnits: [
+              {
+                numberOfShelfUnits: 1,
+                shelves: [{ depth: 37, numberOfShelves: 3 }],
+                width: 125,
+              },
+              {
+                numberOfShelfUnits: 1,
+                shelves: [],
+                width: 80,
+              },
+            ],
+          },
+        ],
+      },
+      componentCatalogMock,
+    )
+
+    expect(description).toEqual(
+      "ciąg regałów dwustronnych / strona 1: 2x125 / baza 47 / półki 4x47 / strona 2: 1x125 / 1x80 / baza 37 / półki 3x37 / h-130",
+    )
+  })
+
+  it("keeps the short description when the sides differ only in options", () => {
+    const side = {
+      depth: 47,
+      shelfUnits: [
+        {
+          numberOfShelfUnits: 2,
+          shelves: [],
+          width: 80,
+        },
+      ],
+    }
+
+    const description = buildLayoutDescription(
+      {
+        height: 130,
+        numberOfLayouts: 1,
+        sides: [
+          { ...side, backVariant: 2, hasBaseCover: true },
+          { ...side, backVariant: 0 },
+        ],
+      },
+      componentCatalogMock,
+    )
+
+    expect(description).toEqual(
+      "ciąg regałów dwustronnych / 2x80 / baza 47 / h-130",
     )
   })
 

@@ -178,9 +178,10 @@ const collectionVariants = {
 }
 ```
 
-Identyczne słownictwo jak dziś w `buildLayoutDescription`. Obie wersje czytają **tylko stronę
-zerową**, więc opis zakłada symetrię. Przy rozłączonych stronach opis był błędny wtedy i jest
-błędny dziś.
+Identyczne słownictwo jak dziś w `buildLayoutDescription`. Obie wersje czytały **tylko stronę
+zerową**, więc opis zakładał symetrię i przy rozłączonych stronach był błędny. Dziś opis gondoli
+zostaje krótki, gdy obie strony opisują się tak samo, a w przeciwnym razie wymienia każdą stronę
+osobno (`strona 1: … / strona 2: …`).
 
 ## Walidacja głębokości półek
 
