@@ -2,6 +2,7 @@ import { CopyPlusIcon } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 
+import { InventoryItemPriceField } from "./InventoryItemPriceField"
 import {
   Accordion,
   AccordionContent,
@@ -61,15 +62,20 @@ export function InventoryPage() {
             </AccordionTrigger>
             <AccordionContent>
               {items.map((item) => (
-                <Link
+                <div
                   key={item.id}
-                  to="/inventory/$componentId"
-                  params={{ componentId: item.id }}
-                  search={true}
-                  className="block py-1"
+                  className="flex items-center justify-between gap-4 py-1"
                 >
-                  {item.label}
-                </Link>
+                  <Link
+                    to="/inventory/$componentId"
+                    params={{ componentId: item.id }}
+                    search={true}
+                    className="truncate hover:underline"
+                  >
+                    {item.label}
+                  </Link>
+                  <InventoryItemPriceField item={item} />
+                </div>
               ))}
             </AccordionContent>
           </AccordionItem>
