@@ -39,9 +39,21 @@ test("the catalogue is read only for the demo account", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Dodaj" })).toHaveCount(0)
 })
 
+test("an unknown address sends a signed-out visitor to the login page", async ({
+  page,
+}) => {
+  await page.goto("/nie-ma-takiej-strony")
+
+  await expect(page).toHaveURL(/\/login$/)
+})
+
 test("an unknown address gets a page instead of a blank screen", async ({
   page,
 }) => {
+  await page.goto("/")
+  await page.getByRole("button", { name: "Demo" }).click()
+  await expect(page).toHaveURL(/\/offer\?offerId=/)
+
   await page.goto("/nie-ma-takiej-strony")
 
   await expect(
