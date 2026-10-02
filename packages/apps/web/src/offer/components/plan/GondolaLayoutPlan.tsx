@@ -1,5 +1,5 @@
-import { Plus, Trash2 } from "lucide-react"
-import { useEffect } from "react"
+import { Link, Plus, Trash2, Unlink } from "lucide-react"
+import { useEffect, useState } from "react"
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 
 import { GondolaSide } from "@/schemas/LayoutGondola.schema"
@@ -9,10 +9,12 @@ import { LayoutPlanHeader } from "./LayoutPlanHeader"
 import { SCALE_PX_PER_CM } from "./planScale"
 import { ShelvesSummary } from "./ShelvesSummary"
 import { Button } from "../../../core/ui/button"
+import { ConfirmDialog } from "../../../core/ui/confirm-dialog"
+import { areGondolaSidesEqual } from "../../helpers/areGondolaSidesEqual"
 import { createDefaultEndCap } from "../../helpers/createDefaultEndCap"
 import { isGondolaLayout } from "../../helpers/isGondolaLayout"
 import { useInventoryDimensions } from "../../hooks/useInventoryDimensions"
-import { LayoutPart } from "../../offer.types"
+import { EndCapPart, LayoutPart } from "../../offer.types"
 import { BreakdownList } from "../BreakdownList"
 import { EditorPanel, PanelTab } from "../editor/EditorPanel"
 import { ShelfUnitEditor } from "../editor/ShelfUnitEditor"
@@ -21,7 +23,9 @@ type LayoutPreview = OfferOutput["layouts"][number]
 const END_CAP_UNIT_INDEX = 0
 const END_CAP_UNIT_COUNT = 1
 
-const END_CAP_LABELS: Record<Exclude<LayoutPart, "middle">, string> = {
+type SidePart = Extract<LayoutPart, "middle" | "secondSide">
+
+const END_CAP_LABELS: Record<EndCapPart, string> = {
   leftEndCap: "Szczyt lewy",
   rightEndCap: "Szczyt prawy",
 }
@@ -56,45 +60,81 @@ export function GondolaLayoutPlan({
   const dimensions = useInventoryDimensions()
   const defaultEndCap = createDefaultEndCap(dimensions)
 
-  const middlePath = `layouts.${layoutIndex}.sides.0` as const
-  const mirroredSidePath = `layouts.${layoutIndex}.sides.1` as const
-  const middleSide = useWatch({ control, name: middlePath })
+  const firstSidePath = `layouts.${layoutIndex}.sides.0` as const
+  const secondSidePath = `layouts.${layoutIndex}.sides.1` as const
+  const [areSidesLinked, setAreSidesLinked] = useState(() =>
+    areGondolaSidesEqual(getValues(`layouts.${layoutIndex}.sides`)),
+  )
+  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false)
+  const firstSide = useWatch({ control, name: firstSidePath })
+
+  const firstSideUnits = useFieldArray({
+    control,
+    name: `${firstSidePath}.shelfUnits`,
+  })
+  const secondSideUnits = useFieldArray({
+    control,
+    name: `${secondSidePath}.shelfUnits`,
+  })
+  const { replace: replaceSecondSideUnits } = secondSideUnits
 
   useEffect(() => {
-    if (!middleSide) return
+    if (!areSidesLinked || !firstSide) return
 
-    const mirroredSide = getValues(mirroredSidePath)
+    const secondSide = getValues(secondSidePath)
 
-    if (JSON.stringify(mirroredSide) !== JSON.stringify(middleSide)) {
-      setValue(mirroredSidePath, structuredClone(middleSide))
-    }
-  }, [getValues, middleSide, mirroredSidePath, setValue])
+    if (JSON.stringify(secondSide) === JSON.stringify(firstSide)) return
 
-  const shelfUnits = useFieldArray({
-    control,
-    name: `${middlePath}.shelfUnits`,
-  })
+    const mirroredSide = structuredClone(firstSide)
 
-  const canRemoveUnit = shelfUnits.fields.length > 1
-  const selectedMiddleUnit =
-    selectedPart === "middle" && selectedUnitIndex !== null
-      ? shelfUnits.fields[selectedUnitIndex]
+    setValue(secondSidePath, mirroredSide, { shouldDirty: true })
+    replaceSecondSideUnits(mirroredSide.shelfUnits)
+  }, [
+    areSidesLinked,
+    firstSide,
+    getValues,
+    replaceSecondSideUnits,
+    secondSidePath,
+    setValue,
+  ])
+
+  const isSecondSideSelected = selectedPart === "secondSide"
+  const editedSideLabel = isSecondSideSelected
+    ? "Edytujesz stronę 2."
+    : "Edytujesz stronę 1."
+  const editedSidePart: SidePart = isSecondSideSelected
+    ? "secondSide"
+    : "middle"
+  const editedSidePath = isSecondSideSelected ? secondSidePath : firstSidePath
+  const editedUnits = isSecondSideSelected ? secondSideUnits : firstSideUnits
+  const canRemoveUnit = editedUnits.fields.length > 1
+  const selectedSideUnit =
+    (selectedPart === "middle" || isSecondSideSelected) &&
+    selectedUnitIndex !== null
+      ? editedUnits.fields[selectedUnitIndex]
       : null
 
   const handleDuplicateUnit = (unitIndex: number) =>
-    shelfUnits.insert(
+    editedUnits.insert(
       unitIndex + 1,
-      structuredClone(getValues(`${middlePath}.shelfUnits.${unitIndex}`)),
+      structuredClone(getValues(`${editedSidePath}.shelfUnits.${unitIndex}`)),
     )
 
   const handleRemoveUnit = (unitIndex: number) => {
-    const wasLast = unitIndex === shelfUnits.fields.length - 1
+    const wasLast = unitIndex === editedUnits.fields.length - 1
 
-    shelfUnits.remove(unitIndex)
-    onSelectUnit(wasLast ? unitIndex - 1 : unitIndex)
+    editedUnits.remove(unitIndex)
+    onSelectUnit(wasLast ? unitIndex - 1 : unitIndex, editedSidePart)
   }
 
-  const handleAddEndCap = (part: Exclude<LayoutPart, "middle">) => {
+  const handleLinkSides = () => {
+    setAreSidesLinked(true)
+    setIsLinkDialogOpen(false)
+
+    if (isSecondSideSelected) onSelectUnit(0, "middle")
+  }
+
+  const handleAddEndCap = (part: EndCapPart) => {
     if (!defaultEndCap) return
 
     setValue(`layouts.${layoutIndex}.${part}`, defaultEndCap, {
@@ -103,7 +143,7 @@ export function GondolaLayoutPlan({
     onSelectUnit(END_CAP_UNIT_INDEX, part)
   }
 
-  const handleRemoveEndCap = (part: Exclude<LayoutPart, "middle">) => {
+  const handleRemoveEndCap = (part: EndCapPart) => {
     setValue(`layouts.${layoutIndex}.${part}`, undefined, {
       shouldDirty: true,
     })
@@ -114,20 +154,36 @@ export function GondolaLayoutPlan({
 
   const gondolaDepth = layout.sides.reduce((sum, { depth }) => sum + depth, 0)
 
-  const selectedEndCapPart = selectedPart === "middle" ? null : selectedPart
+  const selectedEndCapPart =
+    selectedPart === "leftEndCap" || selectedPart === "rightEndCap"
+      ? selectedPart
+      : null
   const selectedEndCap = selectedEndCapPart
     ? layout[selectedEndCapPart]
     : undefined
 
-  const renderSide = (side: GondolaSide, sideIndex: number) => (
+  const sides = [
+    { fields: firstSideUnits.fields, part: "middle", side: layout.sides[0] },
+    {
+      fields: secondSideUnits.fields,
+      part: areSidesLinked ? "middle" : "secondSide",
+      side: layout.sides[1],
+    },
+  ] satisfies {
+    fields: typeof firstSideUnits.fields
+    part: SidePart
+    side: GondolaSide
+  }[]
+
+  const renderSide = ({ fields, part, side }: (typeof sides)[number]) => (
     <div className="flex w-max border border-foreground/40">
-      {shelfUnits.fields.map((unitField, unitIndex) => {
+      {fields.map((unitField, unitIndex) => {
         const unit = side.shelfUnits[unitIndex]
 
         if (!unit) return null
 
         const isSelected =
-          selectedPart === "middle" && selectedUnitIndex === unitIndex
+          selectedPart === part && selectedUnitIndex === unitIndex
 
         return Array.from(
           { length: Math.max(unit.numberOfShelfUnits, 0) },
@@ -136,8 +192,8 @@ export function GondolaLayoutPlan({
               className={`flex shrink-0 flex-col items-center justify-center gap-1 border border-border text-xs tabular-nums transition-colors hover:bg-accent ${
                 isSelected ? "border-primary bg-accent" : ""
               }`}
-              key={`${unitField.id}-${copyIndex}-${sideIndex}`}
-              onClick={() => onSelectUnit(unitIndex, "middle")}
+              key={`${unitField.id}-${copyIndex}`}
+              onClick={() => onSelectUnit(unitIndex, part)}
               style={{
                 height: side.depth * SCALE_PX_PER_CM,
                 width: unit.width * SCALE_PX_PER_CM,
@@ -158,7 +214,7 @@ export function GondolaLayoutPlan({
     </div>
   )
 
-  const renderEndCapSlot = (part: Exclude<LayoutPart, "middle">) => {
+  const renderEndCapSlot = (part: EndCapPart) => {
     const endCap = layout[part]
     const unit = endCap?.shelfUnits[END_CAP_UNIT_INDEX]
 
@@ -221,8 +277,8 @@ export function GondolaLayoutPlan({
           <div className="flex items-center gap-[3px]">
             {renderEndCapSlot("leftEndCap")}
             <div className="flex flex-col gap-[3px]">
-              {layout.sides.map((side, sideIndex) => (
-                <div key={sideIndex}>{renderSide(side, sideIndex)}</div>
+              {sides.map((side, sideIndex) => (
+                <div key={sideIndex}>{renderSide(side)}</div>
               ))}
             </div>
             {renderEndCapSlot("rightEndCap")}
@@ -231,33 +287,62 @@ export function GondolaLayoutPlan({
         </div>
       </div>
 
-      {(selectedMiddleUnit || selectedEndCap) && (
+      {(selectedSideUnit || selectedEndCap) && (
         <EditorPanel
           onSelectTab={onSelectTab}
           tab={panelTab}
           title={`Ciąg ${layoutIndex + 1}`}
         >
           {panelTab === "edit" &&
-            selectedMiddleUnit &&
+            selectedSideUnit &&
             selectedUnitIndex !== null && (
               <>
-                <p className="mb-4 text-sm text-muted-foreground">
-                  Zmiany dotyczą obu stron gondoli.
-                </p>
+                <div className="mb-4 flex items-center justify-between gap-2">
+                  <p className="text-sm text-muted-foreground">
+                    {areSidesLinked
+                      ? "Zmiany dotyczą obu stron gondoli."
+                      : editedSideLabel}
+                  </p>
+                  {areSidesLinked ? (
+                    <Button
+                      className="shrink-0"
+                      onClick={() => setAreSidesLinked(false)}
+                      size="sm"
+                      type="button"
+                      variant="ghost"
+                    >
+                      <Unlink className="h-3 w-3" />
+                      Rozłącz gondolę
+                    </Button>
+                  ) : (
+                    <Button
+                      className="shrink-0"
+                      onClick={() => setIsLinkDialogOpen(true)}
+                      size="sm"
+                      type="button"
+                      variant="ghost"
+                    >
+                      <Link className="h-3 w-3" />
+                      Połącz strony
+                    </Button>
+                  )}
+                </div>
                 <ShelfUnitEditor
-                  key={selectedMiddleUnit.id}
+                  key={selectedSideUnit.id}
                   layoutIndex={layoutIndex}
                   onDuplicateUnit={() => handleDuplicateUnit(selectedUnitIndex)}
                   {...(canRemoveUnit && {
                     onRemoveUnit: () => handleRemoveUnit(selectedUnitIndex),
                   })}
                   onSelectShelf={onSelectShelf}
-                  onSelectUnit={onSelectUnit}
-                  optionsPath={middlePath}
+                  onSelectUnit={(unitIndex) =>
+                    onSelectUnit(unitIndex, editedSidePart)
+                  }
+                  optionsPath={editedSidePath}
                   selectedShelfIndex={selectedShelfIndex}
-                  unitCount={shelfUnits.fields.length}
+                  unitCount={editedUnits.fields.length}
                   unitIndex={selectedUnitIndex}
-                  unitsPath={middlePath}
+                  unitsPath={editedSidePath}
                 />
               </>
             )}
@@ -299,6 +384,15 @@ export function GondolaLayoutPlan({
           )}
         </EditorPanel>
       )}
+
+      <ConfirmDialog
+        confirmLabel="Połącz strony"
+        description="Strona 2 zostanie zastąpiona kopią strony 1, a dalsze zmiany będą dotyczyć obu stron."
+        onConfirm={handleLinkSides}
+        onOpenChange={setIsLinkDialogOpen}
+        open={isLinkDialogOpen}
+        title="Połączyć strony gondoli?"
+      />
     </article>
   )
 }
