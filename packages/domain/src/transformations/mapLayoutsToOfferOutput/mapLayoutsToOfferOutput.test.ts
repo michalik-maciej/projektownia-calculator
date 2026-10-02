@@ -40,4 +40,35 @@ describe("mapLayoutsToOfferOutput", () => {
       ]),
     )
   })
+
+  it("prices an item set by its items alone", () => {
+    const output = mapLayoutsToOfferOutput(
+      [
+        {
+          items: [
+            { id: "foot-37", quantity: 2 },
+            { id: "misc-inne-3-240-3", quantity: 1 },
+          ],
+        },
+      ],
+      componentCatalogMock,
+    )
+
+    expect(output).toEqual([
+      {
+        basePrice: 388.78,
+        breakdown: {
+          foot: [{ id: "foot-37", label: "Stopa 37", quantity: 2 }],
+          misc: [
+            { id: "misc-inne-3-240-3", label: "Inne 3/240/3", quantity: 1 },
+          ],
+        },
+        description: "zestaw elementów / stopa 37 x2, inne 3/240/3 x1",
+        lines: [
+          { basePrice: 88.78, description: "stopa 37 x2" },
+          { basePrice: 300, description: "inne 3/240/3 x1" },
+        ],
+      },
+    ])
+  })
 })

@@ -12,6 +12,7 @@ import { Input } from "../../core/ui/input"
 import { Label } from "../../core/ui/label"
 import { MissingOfferNotice } from "../../offer/components/MissingOfferNotice"
 import { OfferList } from "../../offer/components/OfferList"
+import { buildOfferRows } from "../../offer/helpers/buildOfferRows"
 import { describeSaveState } from "../../offer/helpers/describeSaveState"
 import { formatPrice } from "../../offer/helpers/formatPrice"
 import { useAutoSaveState } from "../../offer/hooks/useAutoSaveState"
@@ -145,21 +146,20 @@ function OfferPage() {
             </p>
           ) : (
             <ul className="divide-y divide-border border-y border-border">
-              {fields.map((field, index) => {
-                const layoutOutput = output?.layouts[index]
-
-                return (
-                  <li className="flex items-center gap-4 py-2" key={field.id}>
-                    <Badge variant="secondary">{index + 1}</Badge>
-                    <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
-                      {layoutOutput?.description ?? "brak wyceny"}
-                    </span>
-                    <span className="w-32 shrink-0 text-right text-sm tabular-nums">
-                      {layoutOutput ? formatPrice(layoutOutput.basePrice) : "—"}
-                    </span>
-                  </li>
-                )
-              })}
+              {buildOfferRows(
+                fields.map((field) => field.id),
+                output?.layouts,
+              ).map(({ basePrice, description, key }, index) => (
+                <li className="flex items-center gap-4 py-2" key={key}>
+                  <Badge variant="secondary">{index + 1}</Badge>
+                  <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+                    {description ?? "brak wyceny"}
+                  </span>
+                  <span className="w-32 shrink-0 text-right text-sm tabular-nums">
+                    {basePrice === null ? "—" : formatPrice(basePrice)}
+                  </span>
+                </li>
+              ))}
             </ul>
           )}
 

@@ -6,6 +6,7 @@ import { LayoutPlanHeader } from "./LayoutPlanHeader"
 import { SCALE_PX_PER_CM } from "./planScale"
 import { ShelvesSummary } from "./ShelvesSummary"
 import { isGondolaLayout } from "../../helpers/isGondolaLayout"
+import { isItemSetLayout } from "../../helpers/isItemSetLayout"
 import { BreakdownList } from "../BreakdownList"
 import { EditorPanel, PanelTab } from "../editor/EditorPanel"
 import { ShelfUnitEditor } from "../editor/ShelfUnitEditor"
@@ -62,7 +63,9 @@ export function WallLayoutPlan({
     onSelectUnit(wasLast ? unitIndex - 1 : unitIndex)
   }
 
-  if (!layout || isGondolaLayout(layout)) return null
+  if (!layout || isGondolaLayout(layout) || isItemSetLayout(layout)) {
+    return null
+  }
 
   return (
     <article className="flex flex-col gap-3">

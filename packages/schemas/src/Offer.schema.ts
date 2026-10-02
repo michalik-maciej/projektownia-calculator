@@ -2,12 +2,15 @@ import * as v from "valibot"
 
 import { ComponentCategorySchema } from "./inventory/Component.schema"
 import { LayoutGondolaValue } from "./LayoutGondola.schema"
+import { LayoutItemSetValue } from "./LayoutItemSet.schema"
 import { LayoutWallValue } from "./LayoutWall.schema"
 import { MissingComponentSchema } from "./OfferError.schema"
 
 export const OfferInputSchema = v.object({
   discountPercentage: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
-  layouts: v.array(v.union([LayoutGondolaValue, LayoutWallValue])),
+  layouts: v.array(
+    v.union([LayoutGondolaValue, LayoutWallValue, LayoutItemSetValue]),
+  ),
   title: v.string(),
 })
 
@@ -31,6 +34,14 @@ export const OfferOutputSchema = v.object({
       breakdown: BreakdownSchema,
       description: v.string(),
       basePrice: v.pipe(v.number(), v.minValue(0)),
+      lines: v.optional(
+        v.array(
+          v.object({
+            basePrice: v.pipe(v.number(), v.minValue(0)),
+            description: v.string(),
+          }),
+        ),
+      ),
     }),
   ),
   pricing: v.object({

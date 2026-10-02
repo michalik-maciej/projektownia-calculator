@@ -9,11 +9,13 @@ import { Input } from "../../../core/ui/input"
 import { Label } from "../../../core/ui/label"
 
 export function LayoutPlanHeader({
+  hasLayoutCount = true,
   layoutIndex,
   onDuplicate,
   onRemove,
   preview,
 }: {
+  hasLayoutCount?: boolean
   layoutIndex: number
   onDuplicate: () => void
   onRemove: () => void
@@ -30,15 +32,21 @@ export function LayoutPlanHeader({
         </p>
       </div>
       <div className="flex items-center gap-3">
-        <Label className="text-sm text-muted-foreground">Liczba ciągów</Label>
-        <Input
-          {...register(`layouts.${layoutIndex}.numberOfLayouts`, {
-            valueAsNumber: true,
-          })}
-          className="h-8 w-16"
-          min={1}
-          type="number"
-        />
+        {hasLayoutCount && (
+          <>
+            <Label className="text-sm text-muted-foreground">
+              Liczba ciągów
+            </Label>
+            <Input
+              {...register(`layouts.${layoutIndex}.numberOfLayouts`, {
+                valueAsNumber: true,
+              })}
+              className="h-8 w-16"
+              min={1}
+              type="number"
+            />
+          </>
+        )}
         <Button
           aria-label="Powiel ciąg"
           onClick={onDuplicate}

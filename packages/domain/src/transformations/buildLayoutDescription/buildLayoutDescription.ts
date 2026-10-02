@@ -1,7 +1,14 @@
 import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
+import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 
-export function buildLayoutDescription(layout: unknown) {
+import { Component } from "../../models/component"
+import { describeComponentQuantity } from "../describeComponentQuantity/describeComponentQuantity"
+
+export function buildLayoutDescription(
+  layout: unknown,
+  inventory: Component[],
+) {
   if (isLayoutWall(layout)) {
     const parts: string[] = []
 
@@ -62,6 +69,16 @@ export function buildLayoutDescription(layout: unknown) {
     }
 
     return parts.join(" / ")
+  }
+
+  if (isLayoutItemSet(layout)) {
+    const items = layout.items.map((item) =>
+      describeComponentQuantity(item, inventory),
+    )
+
+    if (items.length === 0) return "zestaw elementów"
+
+    return `zestaw elementów: ${items.join(", ")}`
   }
 
   return "opis niedostępny"

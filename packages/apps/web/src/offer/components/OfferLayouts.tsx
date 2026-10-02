@@ -6,11 +6,13 @@ import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { EditorPanel, PanelTab } from "./editor/EditorPanel"
 import { GondolaLayoutPlan } from "./plan/GondolaLayoutPlan"
+import { ItemSetPlan } from "./plan/ItemSetPlan"
 import { WallLayoutPlan } from "./plan/WallLayoutPlan"
 import { Button } from "../../core/ui/button"
 import { createDefaultGondolaLayout } from "../helpers/createDefaultGondolaLayout"
 import { createDefaultWallLayout } from "../helpers/createDefaultWallLayout"
 import { isGondolaLayout } from "../helpers/isGondolaLayout"
+import { isItemSetLayout } from "../helpers/isItemSetLayout"
 import { useInventoryDimensions } from "../hooks/useInventoryDimensions"
 import { LayoutPart } from "../offer.types"
 
@@ -68,6 +70,22 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
           selectedUnitIndex: isSelectedLayout ? selectedUnit.unitIndex : null,
         }
 
+        if (layout && isItemSetLayout(layout)) {
+          return (
+            <ItemSetPlan
+              isSelected={isSelectedLayout}
+              key={field.id}
+              layoutIndex={index}
+              onDuplicate={planProps.onDuplicate}
+              onRemove={planProps.onRemove}
+              onSelect={() => selectUnit(index, 0)}
+              onSelectTab={setPanelTab}
+              panelTab={panelTab}
+              preview={planProps.preview}
+            />
+          )
+        }
+
         return layout && isGondolaLayout(layout) ? (
           <GondolaLayoutPlan
             key={field.id}
@@ -105,6 +123,14 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
           >
             <Plus className="h-4 w-4" />
             Dodaj gondolę
+          </Button>
+          <Button
+            onClick={() => append({ items: [] })}
+            type="button"
+            variant="outline"
+          >
+            <Plus className="h-4 w-4" />
+            Dodaj zestaw elementów
           </Button>
         </div>
         {!defaultWallLayout && (

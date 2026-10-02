@@ -1,6 +1,7 @@
 import { compact } from "lodash/fp"
 
 import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
+import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 import { OfferInput } from "@/schemas/Offer.schema"
 
@@ -19,6 +20,8 @@ export const calculateOfferDemand = (
           return calculateWallLayoutDemand(layout, inventory)
         case isLayoutGondola(layout):
           return calculateGondolaLayoutDemand(layout, inventory)
+        case isLayoutItemSet(layout):
+          return layout.items
       }
     }),
   )

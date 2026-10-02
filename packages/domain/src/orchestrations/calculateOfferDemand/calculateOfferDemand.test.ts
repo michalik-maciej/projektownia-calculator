@@ -53,4 +53,38 @@ describe("calculateOfferDemand", () => {
     expect(result).toHaveLength(8)
     expect(result).toEqual(expectedResult)
   })
+
+  it("adds the items of an item set to the demand of the other layouts", () => {
+    const result = calculateOfferDemand(
+      [
+        {
+          depth: 47,
+          height: 210,
+          numberOfLayouts: 1,
+          shelfUnits: [
+            {
+              width: 100,
+              numberOfShelfUnits: 1,
+              shelves: [],
+            },
+          ],
+        },
+        {
+          items: [
+            { id: "foot-47", quantity: 3 },
+            { id: "misc-inne-3-240-3", quantity: 2 },
+          ],
+        },
+      ],
+      componentCatalogMock,
+    )
+
+    expect(result).toEqual([
+      { id: "back-40-100", quantity: 5 },
+      { id: "shelf-100-47", quantity: 1 },
+      { id: "leg-210-8-3", quantity: 2 },
+      { id: "foot-47", quantity: 5 },
+      { id: "misc-inne-3-240-3", quantity: 2 },
+    ])
+  })
 })

@@ -1,4 +1,4 @@
-import { ExtrasFields } from "./ExtrasFields"
+import { ComponentQuantityFields } from "./ComponentQuantityFields"
 import { RunOptionsFields } from "./RunOptionsFields"
 import { SectionLabel } from "./SectionLabel"
 import { RunOptionsPath } from "../../offer.types"
@@ -16,7 +16,10 @@ export function OptionsFields({
 
       <RunOptionsFields optionsPath={optionsPath} />
 
-      <ExtrasFields layoutIndex={layoutIndex} />
+      <ComponentQuantityFields
+        label="Inne elementy"
+        name={`layouts.${layoutIndex}.extras`}
+      />
     </div>
   )
 }
