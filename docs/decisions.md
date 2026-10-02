@@ -294,5 +294,6 @@ Counting from the side with more units is exact for a symmetric gondola and a lo
 so the correction is always an addition and never a subtraction.
 
 **Cost.** For an asymmetric gondola the leg count is only as right as the user makes it; the domain
-cannot flag a forgotten leg, so the web has to warn when the sides' layouts differ. The old shape
-stays in `LayoutGondola.schema.ts` for as long as such offers exist in the database.
+cannot flag a forgotten leg. The web only warns, under the gondola's plan, when the sides' unit
+layouts differ (`haveDifferentUnitLayouts`). The old shape stays in `LayoutGondola.schema.ts`
+for as long as such offers exist in the database.

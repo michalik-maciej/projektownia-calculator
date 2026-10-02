@@ -180,8 +180,9 @@ const collectionVariants = {
 
 Identyczne słownictwo jak dziś w `buildLayoutDescription`. Obie wersje czytały **tylko stronę
 zerową**, więc opis zakładał symetrię i przy rozłączonych stronach był błędny. Dziś opis gondoli
-zostaje krótki, gdy obie strony opisują się tak samo, a w przeciwnym razie wymienia każdą stronę
-osobno (`strona 1: … / strona 2: …`).
+nie rozróżnia stron: sumuje regały obu stron według szerokości (`2x80` i `3x80` dają `5x80`),
+różne bazy i półki wymienia po ukośniku (`baza 47/37`), a szczyty podaje wymiarami, dwa jednakowe
+jako `2x szczyt 100/37`.
 
 ## Walidacja głębokości półek
 

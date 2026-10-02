@@ -77,11 +77,11 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "ciąg regałów dwustronnych / 2x80 / 1x100 / baza 47 / h-130",
+      "ciąg regałów dwustronnych / 4x80 / 2x100 / baza 47 / h-130",
     )
   })
 
-  it("describes each side of a gondola whose sides differ", () => {
+  it("sums the units of both sides and lists the bases and shelves that differ", () => {
     const description = buildLayoutDescription(
       {
         height: 130,
@@ -118,11 +118,11 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "ciąg regałów dwustronnych / strona 1: 2x125 / baza 47 / półki 4x47 / strona 2: 1x125 / 1x80 / baza 37 / półki 3x37 / h-130",
+      "ciąg regałów dwustronnych / 3x125 / 1x80 / baza 47/37 / h-130 / półki 4x47/3x37",
     )
   })
 
-  it("keeps the short description when the sides differ only in options", () => {
+  it("names a base shared by both sides once", () => {
     const side = {
       depth: 47,
       shelfUnits: [
@@ -147,7 +147,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "ciąg regałów dwustronnych / 2x80 / baza 47 / h-130",
+      "ciąg regałów dwustronnych / 4x80 / baza 47 / h-130",
     )
   })
 
@@ -176,7 +176,7 @@ describe("buildLayoutDescription", () => {
       "opis niedostępny",
     )
   })
-  it("names the end caps of a gondola layout", () => {
+  it("lists the end caps of a gondola by their dimensions", () => {
     const description = buildLayoutDescription(
       {
         height: 130,
@@ -228,7 +228,33 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "ciąg regałów dwustronnych / 2x80 / baza 47 / h-130 / szczyt lewy 100/37 / szczyt prawy 66/30",
+      "ciąg regałów dwustronnych / 4x80 / baza 47 / h-130 / szczyt 100/37 / szczyt 66/30",
+    )
+  })
+
+  it("counts two identical end caps together", () => {
+    const side = {
+      depth: 47,
+      shelfUnits: [{ numberOfShelfUnits: 2, shelves: [], width: 80 }],
+    }
+    const endCap = {
+      depth: 37,
+      shelfUnits: [{ numberOfShelfUnits: 1, shelves: [], width: 100 }],
+    }
+
+    const description = buildLayoutDescription(
+      {
+        height: 130,
+        numberOfLayouts: 1,
+        sides: [side, side],
+        leftEndCap: endCap,
+        rightEndCap: endCap,
+      },
+      componentCatalogMock,
+    )
+
+    expect(description).toEqual(
+      "ciąg regałów dwustronnych / 4x80 / baza 47 / h-130 / 2x szczyt 100/37",
     )
   })
 })

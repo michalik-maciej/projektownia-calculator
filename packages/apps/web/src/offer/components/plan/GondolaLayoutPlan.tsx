@@ -1,4 +1,4 @@
-import { Link, Plus, Trash2, Unlink } from "lucide-react"
+import { Link, Plus, Trash2, TriangleAlert, Unlink } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 
@@ -12,6 +12,7 @@ import { Button } from "../../../core/ui/button"
 import { ConfirmDialog } from "../../../core/ui/confirm-dialog"
 import { areGondolaSidesEqual } from "../../helpers/areGondolaSidesEqual"
 import { createDefaultEndCap } from "../../helpers/createDefaultEndCap"
+import { haveDifferentUnitLayouts } from "../../helpers/haveDifferentUnitLayouts"
 import { isGondolaLayout } from "../../helpers/isGondolaLayout"
 import { useInventoryDimensions } from "../../hooks/useInventoryDimensions"
 import { EndCapPart, LayoutPart } from "../../offer.types"
@@ -286,6 +287,17 @@ export function GondolaLayoutPlan({
           <p className="mt-1.5 text-xs text-muted-foreground">Strona 2</p>
         </div>
       </div>
+
+      {haveDifferentUnitLayouts(layout.sides) && (
+        <p
+          className="flex gap-2 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-muted-foreground"
+          role="status"
+        >
+          <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+          Strony mają różny układ regałów. Sprawdź liczbę nóg i dostosuj je w
+          sekcji "Opcje &gt; Inne elementy".
+        </p>
+      )}
 
       {(selectedSideUnit || selectedEndCap) && (
         <EditorPanel

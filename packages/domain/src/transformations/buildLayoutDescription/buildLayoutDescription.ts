@@ -1,54 +1,64 @@
+import { compact, uniq } from "lodash/fp"
+
 import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
 import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 
 import { Component } from "../../models/component"
+import { countShelfUnitsByWidth } from "../countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { describeComponent } from "../describeComponent/describeComponent"
-import { describeRunSide } from "../describeRunSide/describeRunSide"
+import { describeFirstShelf } from "../describeFirstShelf/describeFirstShelf"
 
 export function buildLayoutDescription(
   layout: unknown,
   inventory: Component[],
 ) {
   if (isLayoutWall(layout)) {
-    return ["ciąg regałów przyściennych", ...describeRunSide(layout)].join(
-      " / ",
-    )
+    const { depth, height, shelfUnits } = layout
+    const firstShelf = describeFirstShelf(shelfUnits)
+
+    return compact([
+      "ciąg regałów przyściennych",
+      ...shelfUnits.map(
+        ({ numberOfShelfUnits, width }) => `${numberOfShelfUnits}x${width}`,
+      ),
+      `baza ${depth}`,
+      `h-${height}`,
+      firstShelf && `półki ${firstShelf}`,
+    ]).join(" / ")
   }
 
   if (isLayoutGondola(layout)) {
-    const { height } = layout
-    const [firstSide, secondSide] = layout.sides
-    const firstSideParts = describeRunSide(firstSide)
-    const secondSideParts = describeRunSide(secondSide)
-    const isSymmetric = firstSideParts.join() === secondSideParts.join()
+    const { height, leftEndCap, rightEndCap, sides } = layout
+    const depths = uniq(sides.map(({ depth }) => depth))
+    const shelves = uniq(
+      compact(sides.map(({ shelfUnits }) => describeFirstShelf(shelfUnits))),
+    )
+    const endCaps = compact(
+      [leftEndCap, rightEndCap].map((endCap) => {
+        const unit = endCap?.shelfUnits[0]
 
-    const parts = isSymmetric
-      ? [
-          "ciąg regałów dwustronnych",
-          ...describeRunSide({ ...firstSide, height }),
-        ]
-      : [
-          "ciąg regałów dwustronnych",
-          `strona 1: ${firstSideParts.join(" / ")}`,
-          `strona 2: ${secondSideParts.join(" / ")}`,
-          `h-${height}`,
-        ]
+        return endCap && unit && `szczyt ${unit.width}/${endCap.depth}`
+      }),
+    )
+    const [firstEndCap, secondEndCap] = endCaps
+    const unitsByWidth = countShelfUnitsByWidth(
+      sides.flatMap(({ shelfUnits }) => shelfUnits),
+      1,
+    )
 
-    const endCaps = [
-      ["lewy", layout.leftEndCap],
-      ["prawy", layout.rightEndCap],
-    ] as const
-
-    for (const [side, endCap] of endCaps) {
-      const unit = endCap?.shelfUnits[0]
-
-      if (endCap && unit) {
-        parts.push(`szczyt ${side} ${unit.width}/${endCap.depth}`)
-      }
-    }
-
-    return parts.join(" / ")
+    return compact([
+      "ciąg regałów dwustronnych",
+      ...unitsByWidth.map(
+        ({ numberOfShelfUnits, width }) => `${numberOfShelfUnits}x${width}`,
+      ),
+      `baza ${depths.join("/")}`,
+      `h-${height}`,
+      shelves.length > 0 && `półki ${shelves.join("/")}`,
+      ...(firstEndCap && firstEndCap === secondEndCap
+        ? [`2x ${firstEndCap}`]
+        : endCaps),
+    ]).join(" / ")
   }
 
   if (isLayoutItemSet(layout)) {

@@ -123,4 +123,18 @@ describe("GondolaLayoutPlan", () => {
     expect(unitsOnPlan(100)).toHaveLength(0)
     expect(unitsOnPlan(80)).toHaveLength(2)
   })
+
+  it("warns about the legs when the sides have different unit layouts", () => {
+    render(<Harness sides={[createSide(80), createSide(100)]} />)
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      `Strony mają różny układ regałów. Sprawdź liczbę nóg i dostosuj je w sekcji "Opcje > Inne elementy".`,
+    )
+  })
+
+  it("shows no leg warning when both sides share a unit layout", () => {
+    render(<Harness sides={[createSide(80), createSide(80)]} />)
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument()
+  })
 })
