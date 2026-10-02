@@ -8,11 +8,8 @@ import { CountStepper } from "./CountStepper"
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
-  SelectValue,
 } from "../../../core/ui/select"
 import { inventoryQueries } from "../../../inventory/inventory.api"
 import { CATEGORY_LABELS } from "../../helpers/categoryLabels"
@@ -36,37 +33,41 @@ export function ComponentQuantityFields({
   const addedIds = new Set(entryValues.map((entry) => entry.id))
   const availableItems = inventoryItems.filter(({ id }) => !addedIds.has(id))
 
-  const groups = COMPONENT_CATEGORIES.flatMap((category) => {
-    const items = availableItems.filter((item) => item.category === category)
-    return items.length === 0 ? [] : [{ category, items }]
-  })
+  const categories = COMPONENT_CATEGORIES.filter((category) =>
+    inventoryItems.some((item) => item.category === category),
+  ).map((category) => ({
+    category,
+    items: availableItems.filter((item) => item.category === category),
+  }))
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-1.5">
-        <span className="w-28 shrink-0 text-sm text-muted-foreground">
+      <div className="flex items-start gap-1.5">
+        <span className="w-28 shrink-0 py-1 text-sm text-muted-foreground">
           {label}
         </span>
-        <Select
-          key={entryValues.length}
-          onValueChange={(id) => entries.append({ id, quantity: 1 })}
-        >
-          <SelectTrigger className="h-8 flex-1" disabled={groups.length === 0}>
-            <SelectValue placeholder="Dodaj element" />
-          </SelectTrigger>
-          <SelectContent>
-            {groups.map(({ category, items }) => (
-              <SelectGroup key={category}>
-                <SelectLabel>{CATEGORY_LABELS[category]}</SelectLabel>
+        <div className="flex flex-1 flex-wrap gap-1.5">
+          {categories.map(({ category, items }) => (
+            <Select
+              key={`${category}-${entryValues.length}`}
+              onValueChange={(id) => entries.append({ id, quantity: 1 })}
+            >
+              <SelectTrigger
+                className="h-7 w-auto gap-1 px-2 text-xs"
+                disabled={items.length === 0}
+              >
+                {CATEGORY_LABELS[category]}
+              </SelectTrigger>
+              <SelectContent>
                 {items.map(({ id, label }) => (
                   <SelectItem key={id} value={id}>
                     {label}
                   </SelectItem>
                 ))}
-              </SelectGroup>
-            ))}
-          </SelectContent>
-        </Select>
+              </SelectContent>
+            </Select>
+          ))}
+        </div>
       </div>
 
       {entries.fields.length > 0 && (
