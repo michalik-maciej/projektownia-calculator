@@ -20,27 +20,27 @@
     "validate": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm build"
   },
   "devDependencies": {
-    "@eslint/js": "^9.18.0",
+    "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.63.0",
-    "@types/lodash": "^4.17.13",
-    "@vitest/coverage-v8": "4.0.16",
+    "@types/lodash": "^4.17.25",
+    "@vitest/coverage-v8": "4.1.11",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "jsdom": "^30.1.1",
-    "prettier": "^3.7.4",
-    "turbo": "^2.6.3",
-    "typescript": "5.9.2",
-    "typescript-eslint": "^8.19.1",
-    "vite-tsconfig-paths": "^6.0.3"
+    "prettier": "^3.9.9",
+    "turbo": "^2.11.7",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.71.0",
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=24"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
-    "valibot": "^1.2.0",
-    "vitest": "^4.0.16"
+    "lodash": "^4.18.1",
+    "valibot": "^1.5.0",
+    "vitest": "^4.1.11"
   }
 }
