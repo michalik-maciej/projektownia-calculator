@@ -10,18 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The application calculates component requirements (bill of materials) for shelf configurations (wall layouts and gondola displays) and generates pricing offers with discounts.
 
-## Monorepo Structure
-
-```
-packages/
-├── apps/
-│   ├── api/          # Express backend (Node.js)
-│   └── web/          # React frontend (Vite)
-├── domain/           # Core business logic & domain models
-└── schemas/          # Valibot schemas for runtime validation
-```
-
-### Package Dependencies
+## Package Dependencies
 
 - **web** and **api** both consume **domain** and **schemas**
 - **domain** consumes **schemas**
@@ -45,128 +34,14 @@ file into a static import: it will break at runtime, and only in the built API, 
 Consequence: adding a shared package means touching `tsconfig.base.json`, the relevant
 `references` and `bootstrap.ts`, not just running `pnpm add`.
 
-## Tech Stack
+## Commands
 
-| Component        | Technology                                       |
-| ---------------- | ------------------------------------------------ |
-| Frontend         | React 19 + Vite + TypeScript                     |
-| Backend          | Express + TypeScript + Prisma ORM                |
-| Database         | PostgreSQL (Neon)                                |
-| Validation       | Valibot (runtime + static types)                 |
-| Styling          | Tailwind CSS v4                                  |
-| Routing          | TanStack Router v1                               |
-| State Management | TanStack Query (React Query)                     |
-| Auth             | JWT (stateless, cookies)                         |
-| Monorepo         | pnpm v9.0.0 + Turborepo v2.6.3                   |
-| Build/Type Check | TypeScript v5.9.2 (composite project references) |
-| Linting          | ESLint v9 + TypeScript ESLint                    |
-| Formatting       | Prettier (80 char line width, 2-space tabs)      |
-| Testing          | Vitest (Node.js environment)                     |
-| Deployment       | Fly.io (API, Docker), Vercel (Frontend)          |
-
-## Development Commands
-
-**All commands run from the workspace root.** Use `pnpm` exclusively (npm/yarn not supported).
-
-### Core Commands
-
-```bash
-# Install dependencies (run after git pull or package.json changes)
-pnpm install
-
-# Development servers (runs api + web in parallel)
-pnpm dev              # All packages in watch mode
-pnpm dev:api          # Only backend (port 3000)
-pnpm dev:web          # Only frontend (port 5173)
-pnpm dev:local        # Both local services (api + web)
-
-# Build
-pnpm build            # Build all packages respecting dependency order
-
-# Code quality
-pnpm lint             # ESLint all packages
-pnpm typecheck        # TypeScript type checking
-pnpm format           # Format with Prettier + fix ESLint
-pnpm format:check     # Check formatting without modifying
-pnpm validate         # Full validation: typecheck + lint + format:check + build
-
-# Testing
-pnpm test             # Run all tests in watch mode
-pnpm test:watch       # Alias for pnpm test
-pnpm test:coverage    # Generate coverage report (includes domain/ only)
-pnpm test:e2e         # Playwright smoke test (needs a database and installed browsers)
-```
-
-### Per-Package Commands
-
-Use `pnpm --filter <package-name>` to run commands on a single package:
-
-```bash
-# Examples:
-pnpm --filter @projektownia-calculator/api run dev
-pnpm --filter @projektownia-calculator/web run build
-pnpm --filter @projektownia-calculator/schemas run lint
-pnpm --filter @projektownia-calculator/domain run test
-```
-
-### TypeScript Project References
-
-The monorepo uses composite TypeScript projects. Incremental builds are cached:
-
-```bash
-# Clean and rebuild TypeScript
-pnpm --filter @projektownia-calculator/api run build
-# Internally runs: tsc -b --clean && tsc -b
-```
+Run everything from the workspace root with `pnpm` (npm/yarn not supported). The scripts live in the
+root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 
 ## Architecture & Domain Logic
 
-### High-Level Flow
-
-1. **Frontend (web)**: User configures shelf layouts (wall or gondola type) with dimensions
-2. **Validation**: Input validated against schemas in `packages/schemas/`
-3. **Backend Calculation (domain)**: Core orchestration logic in `packages/domain/`
-4. **Output**: Component requirements (BOM), pricing, and layout descriptions
-5. **Persistence**: Offers saved to PostgreSQL via Prisma
-
-### Core Packages
-
-#### `packages/schemas/` (Valibot Schemas)
-
-Runtime validation schemas shared between frontend and backend. Each schema exports:
-
-- Valibot schema object (`v.object()`, `v.array()`, etc.)
-- TypeScript type via `v.InferOutput<typeof Schema>`
-
-Key schemas:
-
-- `Offer.schema.ts`: Input/output structure for offers
-- `auth/`: Login, JWT payload, authenticated user
-- `inventory/`: Component CRUD operations
-- `LayoutWall.schema.ts`, `LayoutGondola.schema.ts`: Layout type definitions
-
-**Principle**: Schemas are the single source of truth for data structure contracts between frontend and backend.
-
-#### `packages/domain/` (Business Logic)
-
-Pure TypeScript functions organized by abstraction layer:
-
-```
-src/
-├── models/              # Domain types (Component, ShelfUnit, etc.)
-├── fixtures/            # Test data (componentCatalog, validOfferInput)
-├── calculations/        # Low-level computations
-│   └── calculate{X}Demand/  # Individual component demand
-├── transformations/     # Medium-level data transformations
-│   ├── breakdownDemandByCategory/
-│   ├── buildLayoutDescription/
-│   └── mapLayoutsToOfferOutput/
-└── orchestrations/      # High-level business workflows
-    ├── createOfferPreview/      # Main entry point: input → OfferOutput
-    ├── calculateOfferDemand/    # BOM aggregation
-    ├── calculateWallLayoutDemand/
-    └── calculateGondolaLayoutDemand/
-```
+### Domain layers (`packages/domain/`)
 
 **Key Abstraction**:
 
@@ -177,22 +52,7 @@ src/
 
 **Entry Point**: `createOfferPreview()` in orchestrations. This is called by the backend to generate preview offers.
 
-#### `packages/apps/api/` (Express Backend)
-
-```
-src/
-├── app.ts              # Express setup (middleware, routes)
-├── server.ts           # HTTP server startup
-├── bootstrap.ts        # Entry point (node dist/bootstrap.js)
-├── routes/
-│   ├── health.routes.ts
-│   ├── auth.routes.ts
-│   ├── inventory.routes.ts
-│   ├── offers.routes.ts
-│   └── users.routes.ts
-├── controllers/        # Route handlers
-└── db/                 # Prisma client, migrations
-```
+### API (`packages/apps/api/`)
 
 **Database** (Prisma):
 
@@ -221,73 +81,9 @@ src/
 - `GET /api/health`: Health check, returns `{ status, version, commit }` (version from the root
   `package.json`, commit baked into the Docker image at build time via `COMMIT_SHA`)
 
-#### `packages/apps/web/` (React + Vite Frontend)
-
-```
-src/
-├── index.tsx           # React root
-├── routeTree.gen.ts    # Auto-generated TanStack Router routes
-├── routes/             # Route definitions
-├── app/                # App layout & components
-├── core/               # Utilities, API client, hooks
-├── user/               # Auth flows (login, logout)
-├── inventory/          # Component management UI
-├── layout/             # Layout builder (wall/gondola)
-├── offer/              # Offer preview & history
-└── index.css           # Tailwind + custom styles
-```
-
-**Key Libraries**:
-
-- **TanStack Router**: Type-safe file-based routing with auto-generated `routeTree.gen.ts`
-- **TanStack Query**: Server state management, caching, refetching
-- **React Hook Form**: Form state and validation
-- **Radix UI**: Headless UI components styled with Tailwind
-
-**Data Flow**: User input → Valibot validation → API call → Domain orchestration → UI update
-
-### How Domain Logic Works (Example)
-
-When calculating an offer:
-
-1. **Input**: User provides layout configurations (wall or gondola with dimensions), components from inventory
-2. **`createOfferPreview()`** orchestration:
-   - Calls `calculateOfferDemand()` → aggregates component requirements across all layouts
-   - Calls `breakdownDemandByCategory()` → groups demand by component category
-   - Calls `mapLayoutsToOfferOutput()` → formats layout descriptions
-   - Calls `calculateBomPrice()` → sums component costs, applies discount
-3. **Output**: `OfferOutput` object with breakdown, layouts, pricing ready to send to frontend
-
-Each calculation function is isolated, testable, and reusable.
-
 ## Build & Deployment
 
-### Local Build
-
-```bash
-pnpm build              # Builds all: domain → schemas → api → web
-```
-
-**Output**:
-
-- `packages/domain/dist/`: CommonJS modules
-- `packages/schemas/dist/`: CommonJS modules
-- `packages/apps/api/dist/`: Node.js binary (Node.js entry: `dist/bootstrap.js`)
-- `packages/apps/web/dist/`: Static files for Vercel
-
 ### Backend Deployment (Fly.io)
-
-`fly.toml` deploys `packages/apps/api` via Docker:
-
-```bash
-# Docker builds from Dockerfile (multi-stage):
-# 1. deps: Install workspace dependencies
-# 2. build: Run pnpm turbo build --filter=@projektownia-calculator/api
-# 3. runner: Minimal production image (Node.js + prisma deps only)
-
-# On deploy: Release command runs migrations
-# pnpm --filter @projektownia-calculator/api run migrate:deploy
-```
 
 The deploy is not manual. The `deploy-api` job in `.github/workflows/ci.yml` runs
 `flyctl deploy --remote-only` on every push to `main` once the `lint`, `build` and `test` jobs are
@@ -301,74 +97,7 @@ Configure Vercel to:
 - Output directory: `packages/apps/web/dist`
 - Install command: `pnpm install --frozen-lockfile`
 
-## TypeScript Configuration
-
-### Composite Projects
-
-Root `tsconfig.json` references all packages:
-
-```json
-{
-  "files": [],
-  "references": [
-    { "path": "./packages/domain" },
-    { "path": "./packages/schemas" },
-    { "path": "./packages/apps/api" },
-    { "path": "./packages/apps/web" }
-  ]
-}
-```
-
-### Base Config (`tsconfig.base.json`)
-
-Extended by all packages. Key settings:
-
-- **Target**: ES2022
-- **Module**: ESNext (bundler resolution)
-- **Strict**: true (strict null checks, explicit any, etc.)
-- **Path aliases**:
-  - `@/domain/*` → `packages/domain/src/*`
-  - `@/schemas/*` → `packages/schemas/src/*`
-
-Use these aliases for imports across packages:
-
-```typescript
-import { createOfferPreview } from "@/domain/orchestrations/createOfferPreview"
-import { OfferInput } from "@/schemas/Offer.schema"
-```
-
-### Per-Package Overrides
-
-- **web**: `jsx: "react-jsx"`, `noEmit: true` (Vite handles bundling)
-- **api**: `module: "CommonJS"`, `outDir: "dist"` (Node.js deployment)
-- **domain** & **schemas**: CommonJS for Node.js consumption
-
-## Frontend Conventions
-
-### Language
-
-All user-facing text in the frontend (labels, placeholders, button text, error messages, legends, headings, empty states) must be written in **Polish**. This applies to every `.tsx` file under `packages/apps/web/src/`.
-
 ## Code Quality Standards
-
-### ESLint Rules
-
-Enforced across all packages:
-
-- **Import sorting**: 3-tier groups (3rd-party → internal aliases → relative)
-  ```typescript
-  import express from "express" // 3rd-party
-  import { createOfferPreview } from "@/domain" // @/ aliases
-  import { helper } from "./utils" // Relative
-  ```
-- **Unused variables**: Error unless prefixed with `_`
-- **No nested ternaries**: Error (`no-nested-ternary`); three or more branches go into a named
-  function with early returns
-- **No relative imports outside package**: Error (use aliases instead)
-  ```typescript
-  // ❌ Bad: import { Component } from "../../src/models"
-  // ✅ Good: import { Component } from "@/domain/models"
-  ```
 
 ### Comments
 
@@ -384,97 +113,9 @@ not bound by the two-line limit and may take the room it needs, including `@para
 an example. It still has to earn its place: document the contract, the assumptions and the surprises
 of a public surface, not the mechanics of the body underneath it.
 
-### Prettier Configuration
-
-- Line width: 80 characters
-- Tab width: 2 spaces
-- Trailing commas: Always
-- Semicolons: None
-
-```bash
-pnpm format              # Auto-fix all files
-pnpm format:check        # Verify formatting
-```
-
-### TypeScript Strict Mode
-
-All packages compile with strict mode enabled. Checks enforced:
-
-- Explicit types required (no implicit `any`)
-- Null/undefined checks
-- Property existence validation
-- `noUncheckedIndexedAccess`: Requires index type guards
-
-## Testing
-
-### Vitest Configuration
-
-Defined in `vitest.config.ts` (workspace root) as two `test.projects`:
-
-- **`node`**: domain and API tests, Node.js environment, no JSDOM. Files:
-  `packages/**/**/*.test.ts` (excluding `packages/apps/web`), `tests/**/*.test.ts`
-- **`web`**: component and helper tests, JSDOM environment, React Testing Library. Files:
-  `packages/apps/web/**/*.test.{ts,tsx}`, set up by `packages/apps/web/src/vitest.setup.ts`
-- **Coverage**: Collected from `packages/domain/**/*.ts` only, unaffected by the `web` project
-
-### Running Tests
-
-```bash
-pnpm test               # Watch mode
-pnpm test:watch         # Explicit watch
-pnpm test:coverage      # Generate coverage report (html output)
-```
-
-### Test Location & Naming
-
-Place tests next to source:
-
-```
-src/calculations/calculateBomPrice/
-├── calculateBomPrice.ts
-└── calculateBomPrice.test.ts
-```
-
-Use `.test.ts` suffix (`.test.tsx` for a component under `packages/apps/web`), picked up by the
-glob pattern of the matching `test.projects` entry in `vitest.config.ts`.
-
-## API Clients & Integration
-
-### Backend → Domain
-
-```typescript
-// In api controller:
-import { createOfferPreview } from "@/domain/orchestrations/createOfferPreview"
-
-const offerOutput = createOfferPreview(parsedInput, componentInventory)
-```
-
-### Frontend → Backend
-
-Use TanStack Query hooks:
-
-```typescript
-const { data, isLoading } = useQuery({
-  queryKey: ["offers"],
-  queryFn: () => fetch("/api/offers").then((r) => r.json()),
-})
-```
-
-Form submissions to API endpoints use React Hook Form + Valibot validation.
-
-### Frontend → Domain
-
-Domain logic is backend-only. Frontend cannot import from `@projektownia-calculator/domain` (would break browser bundle). Use API endpoints to trigger calculations.
-
 ## Turborepo Task Orchestration
 
-Key Turbo settings in `turbo.json`:
-
-- **`build`**: `dependsOn: ["^build"]` (dependencies build first)
-- **`lint`**, **`typecheck`**: `dependsOn: ["^lint"]`, `dependsOn: ["^typecheck"]`
-- **`dev`**: `cache: false, persistent: true` (no caching, runs indefinitely)
-
-**`^build` is not enough here, and the per-package entries are not decoration.** Because no package
+**`^build` in `turbo.json` is not enough here, and the per-package entries are not decoration.** Because no package
 lists another in its `package.json` (see the package wiring section), Turbo sees four unrelated
 packages and would run their builds in parallel. They are not unrelated: `tsc -b` in `api` and in
 `web` both write `packages/schemas/dist` and `packages/domain/dist` through project references, so
@@ -493,33 +134,6 @@ When adding tasks, consider:
 - Set `cache: false` for persistent processes (dev servers)
 - Use `^taskName` dependency for tasks needing upstream completion
 - Add an explicit `{package}#{task}` edge whenever a task touches output owned by another package
-
-## Common Workflows
-
-### Adding a New Calculation
-
-1. Create `packages/domain/src/calculations/calculate{X}/{name}.ts`
-2. Export pure function with single responsibility
-3. Add adjacent `.test.ts` with test cases
-4. Export from domain's entry point if needed by orchestrations
-5. Call from appropriate orchestration layer
-
-### Adding a New API Endpoint
-
-1. Create schema in `packages/schemas/src/{feature}/` if needed
-2. Add Prisma model migration (if data persistence required)
-3. Add route handler in `packages/apps/api/src/routes/{feature}.routes.ts`
-4. Call domain logic from controller
-5. Return validated output (validate against Valibot schema before sending)
-
-### Updating Domain Models
-
-Models live in `packages/domain/src/models/`. Changes:
-
-1. Update TypeScript type
-2. Update dependent tests
-3. Update downstream transformations/orchestrations
-4. Update corresponding Valibot schemas in `packages/schemas/`
 
 ## Environment Variables
 
@@ -654,6 +268,6 @@ step is never Claude's to take on its own.
 
 ## Project Documentation & Standards
 
-Before starting a task, read @docs/INDEX.md and then open the specific standard files it
+Before starting a task, read `docs/INDEX.md` and then open the specific standard files it
 points to that are relevant to the work at hand. The conventions in this file and in
 `docs/decisions.md` take precedence wherever the two disagree.

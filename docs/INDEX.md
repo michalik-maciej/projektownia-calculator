@@ -32,7 +32,7 @@ The technology actually in use, with versions: TypeScript 5.9.2 under `strict` a
 
 There is deliberately no `project/architecture.md` and no `project/roadmap.md` in this directory. Architecture is already documented authoritatively by the repository's own files, and a second copy would only drift out of step with them:
 
-- `CLAUDE.md` (repository root): monorepo structure, package wiring and the three alias mechanisms that must agree, tech stack, commands, the domain layering (models, calculations, transformations, orchestrations), API surface, code quality rules, and the git/SDLC workflow
+- `CLAUDE.md` (repository root): package wiring and the three alias mechanisms that must agree, the domain layering (models, calculations, transformations, orchestrations), API surface and data model, deployment, the commenting rule, the Turborepo build race, environment variables, gotchas, and the git/SDLC workflow. Directory layout, commands and tooling configuration are deliberately left to the code itself (`package.json`, `tsconfig*.json`, `vitest.config.ts`, the lint and format configs), and the tech stack to `project/tech-stack.md`. The rule that UI text is in Polish lives in `packages/apps/web/CLAUDE.md`
 - `docs/decisions.md`: the decision log explaining why the architecture is what it is. Read it before changing package wiring, auth or how offers are persisted.
 
 Treat those two files as the architecture documentation for this project. This is a standing choice, not a gap waiting to be filled.
