@@ -7,11 +7,14 @@ import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { LayoutPlanHeader } from "./LayoutPlanHeader"
 import { SCALE_PX_PER_CM } from "./planScale"
+import { planUnitClassName } from "./planUnitClassName"
 import { ShelvesSummary } from "./ShelvesSummary"
 import { Button } from "../../../core/ui/button"
 import { ConfirmDialog } from "../../../core/ui/confirm-dialog"
 import { areGondolaSidesEqual } from "../../helpers/areGondolaSidesEqual"
 import { createDefaultEndCap } from "../../helpers/createDefaultEndCap"
+import { formatLayoutCode } from "../../helpers/formatLayoutCode"
+import { getLayoutName } from "../../helpers/getLayoutName"
 import { haveDifferentUnitLayouts } from "../../helpers/haveDifferentUnitLayouts"
 import { isGondolaLayout } from "../../helpers/isGondolaLayout"
 import { useInventoryDimensions } from "../../hooks/useInventoryDimensions"
@@ -177,7 +180,7 @@ export function GondolaLayoutPlan({
   }[]
 
   const renderSide = ({ fields, part, side }: (typeof sides)[number]) => (
-    <div className="flex w-max border border-foreground/40">
+    <div className="flex w-max">
       {fields.map((unitField, unitIndex) => {
         const unit = side.shelfUnits[unitIndex]
 
@@ -190,9 +193,7 @@ export function GondolaLayoutPlan({
           { length: Math.max(unit.numberOfShelfUnits, 0) },
           (_, copyIndex) => (
             <button
-              className={`flex shrink-0 flex-col items-center justify-center gap-1 border border-border text-xs tabular-nums transition-colors hover:bg-accent ${
-                isSelected ? "border-primary bg-accent" : ""
-              }`}
+              className={planUnitClassName(isSelected)}
               key={`${unitField.id}-${copyIndex}`}
               onClick={() => onSelectUnit(unitIndex, part)}
               style={{
@@ -239,11 +240,9 @@ export function GondolaLayoutPlan({
     const isSelected = selectedPart === part
 
     return (
-      <div className="border border-foreground/40">
+      <div className="flex">
         <button
-          className={`flex shrink-0 flex-col items-center justify-center gap-1 border border-border text-xs tabular-nums transition-colors hover:bg-accent ${
-            isSelected ? "border-primary bg-accent" : ""
-          }`}
+          className={planUnitClassName(isSelected)}
           onClick={() => onSelectUnit(END_CAP_UNIT_INDEX, part)}
           style={{
             height: unit.width * SCALE_PX_PER_CM,
@@ -266,6 +265,7 @@ export function GondolaLayoutPlan({
   return (
     <article className="flex flex-col gap-3">
       <LayoutPlanHeader
+        isSelected={selectedUnitIndex !== null}
         layoutIndex={layoutIndex}
         onDuplicate={onDuplicate}
         onRemove={onRemove}
@@ -273,8 +273,8 @@ export function GondolaLayoutPlan({
       />
 
       <div className="overflow-x-auto pb-2">
-        <div className="w-max">
-          <p className="mb-1.5 text-xs text-muted-foreground">Strona 1</p>
+        <div className="flex w-max flex-col gap-2.5">
+          <p className="font-mono text-xs text-muted-foreground">Strona 1</p>
           <div className="flex items-center gap-[3px]">
             {renderEndCapSlot("leftEndCap")}
             <div className="flex flex-col gap-[3px]">
@@ -284,7 +284,7 @@ export function GondolaLayoutPlan({
             </div>
             {renderEndCapSlot("rightEndCap")}
           </div>
-          <p className="mt-1.5 text-xs text-muted-foreground">Strona 2</p>
+          <p className="font-mono text-xs text-muted-foreground">Strona 2</p>
         </div>
       </div>
 
@@ -302,8 +302,9 @@ export function GondolaLayoutPlan({
       {(selectedSideUnit || selectedEndCap) && (
         <EditorPanel
           onSelectTab={onSelectTab}
+          eyebrow={formatLayoutCode(layoutIndex, layout)}
           tab={panelTab}
-          title={`Ciąg ${layoutIndex + 1}`}
+          title={getLayoutName(layout)}
         >
           {panelTab === "edit" &&
             selectedSideUnit &&

@@ -7,7 +7,7 @@ import { Button } from "../../../core/ui/button"
 import { NumberPath } from "../../offer.types"
 
 const ValueDisplay = ({ value }: { value: number | null | undefined }) => (
-  <span className="flex h-8 w-16 shrink-0 items-center justify-center rounded-md border border-input text-sm tabular-nums">
+  <span className="flex h-8 w-12 shrink-0 items-center justify-center font-display text-[15px] font-bold tabular-nums">
     {value != null ? value : "—"}
   </span>
 )

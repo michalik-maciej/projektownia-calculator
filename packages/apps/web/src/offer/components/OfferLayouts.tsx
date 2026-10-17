@@ -48,7 +48,7 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
   }
 
   return (
-    <section className="flex flex-col gap-8 px-8 pb-16 mr-90">
+    <section className="mr-96 flex flex-col gap-10 bg-plan-grid px-8 pt-6 pb-16">
       {fields.map((field, index) => {
         const layout = getValues(`layouts.${index}`)
         const isSelectedLayout = selectedUnit?.layoutIndex === index

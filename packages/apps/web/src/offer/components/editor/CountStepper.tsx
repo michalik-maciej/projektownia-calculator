@@ -51,7 +51,7 @@ export function CountStepper({
               >
                 <Minus className="h-3 w-3" />
               </Button>
-              <span className="flex h-8 w-16 shrink-0 items-center justify-center rounded-md border border-input text-sm tabular-nums">
+              <span className="flex h-8 w-12 shrink-0 items-center justify-center font-display text-[15px] font-bold tabular-nums">
                 {value}
               </span>
               <Button

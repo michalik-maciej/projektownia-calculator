@@ -5,6 +5,8 @@ import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { LayoutPlanHeader } from "./LayoutPlanHeader"
 import { inventoryQueries } from "../../../inventory/inventory.api"
+import { formatLayoutCode } from "../../helpers/formatLayoutCode"
+import { getLayoutName } from "../../helpers/getLayoutName"
 import { isItemSetLayout } from "../../helpers/isItemSetLayout"
 import { BreakdownList } from "../BreakdownList"
 import { ComponentQuantityFields } from "../editor/ComponentQuantityFields"
@@ -39,6 +41,7 @@ export function ItemSetPlan({
     <article className="flex flex-col gap-3">
       <LayoutPlanHeader
         hasLayoutCount={false}
+        isSelected={isSelected}
         layoutIndex={layoutIndex}
         onDuplicate={onDuplicate}
         onRemove={onRemove}
@@ -46,8 +49,10 @@ export function ItemSetPlan({
       />
 
       <button
-        className={`flex w-full max-w-md flex-col gap-1 border border-foreground/40 p-3 text-left text-sm transition-colors hover:bg-accent ${
-          isSelected ? "border-primary bg-accent" : ""
+        className={`flex w-full max-w-md flex-col gap-1 border p-3 text-left text-sm transition-colors hover:bg-highlight-soft/50 ${
+          isSelected
+            ? "border-2 border-foreground bg-highlight-soft"
+            : "border-foreground bg-card/90"
         }`}
         onClick={onSelect}
         type="button"
@@ -71,8 +76,9 @@ export function ItemSetPlan({
       {isSelected && (
         <EditorPanel
           onSelectTab={onSelectTab}
+          eyebrow={formatLayoutCode(layoutIndex, layout)}
           tab={panelTab}
-          title={`Zestaw ${layoutIndex + 1}`}
+          title={getLayoutName(layout)}
         >
           {panelTab === "edit" && (
             <ComponentQuantityFields

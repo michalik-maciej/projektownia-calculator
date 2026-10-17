@@ -4,7 +4,10 @@ import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { LayoutPlanHeader } from "./LayoutPlanHeader"
 import { SCALE_PX_PER_CM } from "./planScale"
+import { planUnitClassName } from "./planUnitClassName"
 import { ShelvesSummary } from "./ShelvesSummary"
+import { formatLayoutCode } from "../../helpers/formatLayoutCode"
+import { getLayoutName } from "../../helpers/getLayoutName"
 import { isGondolaLayout } from "../../helpers/isGondolaLayout"
 import { isItemSetLayout } from "../../helpers/isItemSetLayout"
 import { BreakdownList } from "../BreakdownList"
@@ -70,6 +73,7 @@ export function WallLayoutPlan({
   return (
     <article className="flex flex-col gap-3">
       <LayoutPlanHeader
+        isSelected={selectedUnitIndex !== null}
         layoutIndex={layoutIndex}
         onDuplicate={onDuplicate}
         onRemove={onRemove}
@@ -77,7 +81,7 @@ export function WallLayoutPlan({
       />
 
       <div className="overflow-x-auto pb-2">
-        <div className="flex w-max border border-foreground/40">
+        <div className="flex w-max">
           {shelfUnits.fields.map((unitField, unitIndex) => {
             const unit = layout.shelfUnits[unitIndex]
 
@@ -87,11 +91,7 @@ export function WallLayoutPlan({
               { length: Math.max(unit.numberOfShelfUnits, 0) },
               (_, copyIndex) => (
                 <button
-                  className={`flex shrink-0 flex-col items-center justify-center gap-1 border border-border text-xs tabular-nums transition-colors hover:bg-accent ${
-                    selectedUnitIndex === unitIndex
-                      ? "border-primary bg-accent"
-                      : ""
-                  }`}
+                  className={planUnitClassName(selectedUnitIndex === unitIndex)}
                   key={`${unitField.id}-${copyIndex}`}
                   onClick={() => onSelectUnit(unitIndex)}
                   style={{
@@ -123,8 +123,9 @@ export function WallLayoutPlan({
       {selectedUnitIndex !== null && selectedUnit && (
         <EditorPanel
           onSelectTab={onSelectTab}
+          eyebrow={`${formatLayoutCode(layoutIndex, layout)} / regał ${selectedUnitIndex + 1}`}
           tab={panelTab}
-          title={`Ciąg ${layoutIndex + 1}`}
+          title={getLayoutName(layout)}
         >
           {panelTab === "edit" && (
             <ShelfUnitEditor

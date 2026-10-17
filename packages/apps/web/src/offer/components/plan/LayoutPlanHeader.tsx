@@ -3,7 +3,6 @@ import { useFormContext, useWatch } from "react-hook-form"
 
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
-import { Badge } from "../../../core/ui/badge"
 import { Button } from "../../../core/ui/button"
 import { Input } from "../../../core/ui/input"
 import { Label } from "../../../core/ui/label"
@@ -12,12 +11,14 @@ import { getLayoutName } from "../../helpers/getLayoutName"
 
 export function LayoutPlanHeader({
   hasLayoutCount = true,
+  isSelected,
   layoutIndex,
   onDuplicate,
   onRemove,
   preview,
 }: {
   hasLayoutCount?: boolean
+  isSelected: boolean
   layoutIndex: number
   onDuplicate: () => void
   onRemove: () => void
@@ -31,11 +32,17 @@ export function LayoutPlanHeader({
   return (
     <header className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <Badge variant="secondary">
+        <span
+          className={`inline-flex h-6.5 items-center rounded-sm px-2 font-display text-[15px] font-bold tracking-wide ${
+            isSelected ? "bg-highlight" : "bg-border"
+          }`}
+        >
           {formatLayoutCode(layoutIndex, layout)}
-        </Badge>
-        <span className="text-sm font-semibold">{getLayoutName(layout)}</span>
-        <p className="text-sm text-muted-foreground">
+        </span>
+        <span className="font-display text-lg font-bold uppercase tracking-wide">
+          {getLayoutName(layout)}
+        </span>
+        <p className="font-mono text-xs text-muted-foreground">
           {preview?.description ?? "liczenie…"}
         </p>
       </div>
@@ -49,7 +56,7 @@ export function LayoutPlanHeader({
               {...register(`layouts.${layoutIndex}.numberOfLayouts`, {
                 valueAsNumber: true,
               })}
-              className="h-8 w-16"
+              className="h-9 w-14 text-center font-display text-base font-bold md:text-base"
               min={1}
               type="number"
             />

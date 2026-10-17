@@ -16,12 +16,8 @@ export function ShelvesSummary({
   return shelves.map(({ depth, numberOfShelves }, shelfIndex) => (
     <Fragment key={shelfIndex}>
       {shelfIndex > 0 && " + "}
-      <span
-        className={
-          shelfIndex === highlightedIndex ? "font-semibold text-green-500" : ""
-        }
-      >
-        {numberOfShelves}x{depth}
+      <span className={shelfIndex === highlightedIndex ? "font-semibold" : ""}>
+        {numberOfShelves}×{depth}
       </span>
     </Fragment>
   ))

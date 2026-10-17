@@ -11,7 +11,7 @@ export function OptionsFields({
   optionsPath: RunOptionsPath
 }) {
   return (
-    <div className="flex flex-col gap-2 border bg-muted p-4 rounded-lg">
+    <div className="flex flex-col gap-2 rounded-lg border bg-background p-4">
       <SectionLabel>Opcje</SectionLabel>
 
       <RunOptionsFields optionsPath={optionsPath} />

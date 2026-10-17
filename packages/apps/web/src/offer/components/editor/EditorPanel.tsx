@@ -1,7 +1,5 @@
 import type { PropsWithChildren } from "react"
 
-import { Button } from "../../../core/ui/button"
-
 export type PanelTab = "breakdown" | "edit"
 
 const PANEL_TABS = ["edit", "breakdown"] as const
@@ -13,33 +11,41 @@ const TAB_LABELS: Record<PanelTab, string> = {
 
 export function EditorPanel({
   children,
+  eyebrow,
   onSelectTab,
   tab,
   title,
 }: PropsWithChildren<{
+  eyebrow?: string
   onSelectTab?: (tab: PanelTab) => void
   tab?: PanelTab
   title: string
 }>) {
   return (
-    <aside className="fixed top-16 right-0 bottom-0 z-40 flex w-sm flex-col border-l bg-background py-4 pl-4">
+    <aside className="fixed top-15 right-0 bottom-0 z-40 flex w-sm flex-col border-l bg-card py-6 pl-6">
       <div className="mb-4 flex items-center justify-between gap-2 pr-6">
-        <h2 className="text-lg font-semibold leading-none tracking-tight">
-          {title}
-        </h2>
+        <div className="flex flex-col gap-0.5">
+          {eyebrow && (
+            <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+              {eyebrow}
+            </span>
+          )}
+          <h2 className="font-display text-[17px] font-bold uppercase tracking-wide">
+            {title}
+          </h2>
+        </div>
         {onSelectTab && tab && (
           <div className="flex items-center gap-1 rounded-lg bg-muted p-0.5">
             {PANEL_TABS.map((panelTab) => (
-              <Button
+              <button
                 aria-pressed={panelTab === tab}
+                className="h-7.5 cursor-pointer rounded-md px-3 text-[13px] font-semibold text-muted-foreground transition-colors hover:text-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground"
                 key={panelTab}
                 onClick={() => onSelectTab(panelTab)}
-                size="sm"
                 type="button"
-                variant={panelTab === tab ? "outline" : "ghost"}
               >
                 {TAB_LABELS[panelTab]}
-              </Button>
+              </button>
             ))}
           </div>
         )}
