@@ -1,11 +1,6 @@
 import { FilePlus2, Loader2, Trash2 } from "lucide-react"
 import { useState } from "react"
-import {
-  useFieldArray,
-  useFormContext,
-  useFormState,
-  useWatch,
-} from "react-hook-form"
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import { createFileRoute } from "@tanstack/react-router"
 
 import { OfferInput } from "@/schemas/Offer.schema"
@@ -17,9 +12,7 @@ import { Label } from "../../core/ui/label"
 import { MissingOfferNotice } from "../../offer/components/MissingOfferNotice"
 import { OfferList } from "../../offer/components/OfferList"
 import { buildOfferRows } from "../../offer/helpers/buildOfferRows"
-import { describeSaveState } from "../../offer/helpers/describeSaveState"
 import { formatPrice } from "../../offer/helpers/formatPrice"
-import { useAutoSaveState } from "../../offer/hooks/useAutoSaveState"
 import { useCreateOffer } from "../../offer/hooks/useCreateOffer"
 import { useDeleteOffer } from "../../offer/hooks/useDeleteOffer"
 import { useOffer } from "../../offer/hooks/useOffer"
@@ -34,12 +27,10 @@ function OfferPage() {
     formState: { errors },
     register,
   } = useFormContext<OfferInput>()
-  const { isDirty } = useFormState({ control })
   const { fields } = useFieldArray({ control, name: "layouts" })
   const layouts = useWatch({ control, name: "layouts" })
 
   const { isMissing, offer, offerId } = useOffer()
-  const { hasFailed, isSaving } = useAutoSaveState()
   const createOffer = useCreateOffer()
   const deleteOffer = useDeleteOffer()
   const [confirming, setConfirming] = useState<"delete" | "new" | null>(null)
@@ -89,15 +80,6 @@ function OfferPage() {
           )}
         </div>
         <div className="flex items-center gap-2">
-          {hasOpenOffer && (
-            <span
-              className={`mr-2 text-xs ${
-                hasFailed ? "text-destructive" : "text-muted-foreground"
-              }`}
-            >
-              {describeSaveState({ hasFailed, isDirty, isSaving })}
-            </span>
-          )}
           <Button
             disabled={createOffer.isPending}
             onClick={() =>

@@ -2,6 +2,7 @@ import { LogOut } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 
 import { Button } from "../core/ui/button"
+import { OfferSaveStatus } from "../offer/components/OfferSaveStatus"
 import { UserManagementButton } from "../user/components/UserManagementButton"
 import { useLogoutUser } from "../user/hooks/useLogoutUser"
 
@@ -9,9 +10,9 @@ function UserButton() {
   const { mutate: logout } = useLogoutUser()
   return (
     <Button
+      aria-label="Wyloguj"
       size="icon"
       variant="outline"
-      className="rounded-xl"
       onClick={() => logout()}
     >
       <LogOut className="h-5 w-5" />
@@ -19,48 +20,50 @@ function UserButton() {
   )
 }
 
-const activeTabClassName =
-  "aria-[current=page]:outline-2 aria-[current=page]:outline-offset-2 aria-[current=page]:outline-primary"
+const tabClassName =
+  "inline-flex h-9 items-center rounded-lg px-3.5 font-display text-[15px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:bg-highlight aria-[current=page]:text-foreground"
 
 export function TopBar() {
   return (
-    <header className="flex items-center justify-between gap-4 border-b px-4 py-3">
-      <nav className="flex justify-between w-full" aria-label="Primary">
-        <div className="flex gap-4">
-          <Button variant="outline" asChild>
+    <header className="flex h-15 items-center border-b bg-card px-6">
+      <nav
+        className="flex w-full items-center justify-between gap-4"
+        aria-label="Primary"
+      >
+        <div className="flex items-center gap-8">
+          <span className="flex items-center gap-2.5 font-display text-xl font-bold uppercase tracking-wide">
+            <span className="size-3.5 bg-highlight" />
+            Projektownia
+          </span>
+          <div className="flex gap-1">
             <Link
-              className={activeTabClassName}
+              className={tabClassName}
               search={(previous) => previous}
               to="/offer"
             >
               Oferta
             </Link>
-          </Button>
-          <Button variant="outline" asChild>
             <Link
-              className={activeTabClassName}
+              className={tabClassName}
               search={(previous) => previous}
               to="/config"
             >
               Konfigurator
             </Link>
-          </Button>
-          <Button variant="outline" asChild>
             <Link
-              className={activeTabClassName}
+              className={tabClassName}
               search={(previous) => previous}
               to="/order"
             >
               Rozpiska
             </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link className={activeTabClassName} search={true} to="/inventory">
+            <Link className={tabClassName} search={true} to="/inventory">
               Katalog części
             </Link>
-          </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <OfferSaveStatus />
           <UserManagementButton />
           <UserButton />
         </div>

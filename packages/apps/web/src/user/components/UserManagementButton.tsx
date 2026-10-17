@@ -16,7 +16,6 @@ export function UserManagementButton() {
       <Button
         size="icon"
         variant="outline"
-        className="rounded-xl"
         onClick={() => setOpen(true)}
         aria-label="Zarządzaj użytkownikami"
       >
