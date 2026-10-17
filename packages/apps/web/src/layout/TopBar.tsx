@@ -32,7 +32,7 @@ export function TopBar() {
       >
         <div className="flex items-center gap-8">
           <span className="flex items-center gap-2.5 font-display text-xl font-bold uppercase tracking-wide">
-            <span className="size-3.5 bg-highlight" />
+            <img alt="" className="h-9" src="/logo.svg" />
             Projektownia
           </span>
           <div className="flex gap-1">
