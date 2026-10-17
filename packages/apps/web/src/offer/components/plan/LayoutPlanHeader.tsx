@@ -1,5 +1,5 @@
 import { Copy, Trash2 } from "lucide-react"
-import { useFormContext } from "react-hook-form"
+import { useFormContext, useWatch } from "react-hook-form"
 
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
@@ -7,6 +7,8 @@ import { Badge } from "../../../core/ui/badge"
 import { Button } from "../../../core/ui/button"
 import { Input } from "../../../core/ui/input"
 import { Label } from "../../../core/ui/label"
+import { formatLayoutCode } from "../../helpers/formatLayoutCode"
+import { getLayoutName } from "../../helpers/getLayoutName"
 
 export function LayoutPlanHeader({
   hasLayoutCount = true,
@@ -21,12 +23,18 @@ export function LayoutPlanHeader({
   onRemove: () => void
   preview: OfferOutput["layouts"][number] | undefined
 }) {
-  const { register } = useFormContext<OfferInput>()
+  const { control, register } = useFormContext<OfferInput>()
+  const layout = useWatch({ control, name: `layouts.${layoutIndex}` })
+
+  if (!layout) return null
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <Badge variant="secondary">{layoutIndex + 1}</Badge>
+        <Badge variant="secondary">
+          {formatLayoutCode(layoutIndex, layout)}
+        </Badge>
+        <span className="text-sm font-semibold">{getLayoutName(layout)}</span>
         <p className="text-sm text-muted-foreground">
           {preview?.description ?? "liczenie…"}
         </p>

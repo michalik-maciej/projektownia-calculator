@@ -5,9 +5,17 @@ import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 
 import { Component } from "../../models/component"
+import { ShelfUnit } from "../../models/shelfUnit"
 import { countShelfUnitsByWidth } from "../countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { describeComponent } from "../describeComponent/describeComponent"
 import { describeFirstShelf } from "../describeFirstShelf/describeFirstShelf"
+
+const SEPARATOR = " · "
+
+const describeUnitWidths = (shelfUnits: ShelfUnit[]) =>
+  shelfUnits
+    .map(({ numberOfShelfUnits, width }) => `${numberOfShelfUnits}×${width}`)
+    .join(" + ")
 
 export function buildLayoutDescription(
   layout: unknown,
@@ -18,14 +26,11 @@ export function buildLayoutDescription(
     const firstShelf = describeFirstShelf(shelfUnits)
 
     return compact([
-      "ciąg regałów przyściennych",
-      ...shelfUnits.map(
-        ({ numberOfShelfUnits, width }) => `${numberOfShelfUnits}x${width}`,
-      ),
-      `baza ${depth}`,
-      `h-${height}`,
+      `H${height}`,
+      `B${depth}`,
+      describeUnitWidths(shelfUnits),
       firstShelf && `półki ${firstShelf}`,
-    ]).join(" / ")
+    ]).join(SEPARATOR)
   }
 
   if (isLayoutGondola(layout)) {
@@ -48,25 +53,22 @@ export function buildLayoutDescription(
     )
 
     return compact([
-      "ciąg regałów dwustronnych",
-      ...unitsByWidth.map(
-        ({ numberOfShelfUnits, width }) => `${numberOfShelfUnits}x${width}`,
-      ),
-      `baza ${depths.join("/")}`,
-      `h-${height}`,
+      `H${height}`,
+      `B${depths.join("/")}`,
+      describeUnitWidths(unitsByWidth),
       shelves.length > 0 && `półki ${shelves.join("/")}`,
       ...(firstEndCap && firstEndCap === secondEndCap
-        ? [`2x ${firstEndCap}`]
+        ? [`2× ${firstEndCap}`]
         : endCaps),
-    ]).join(" / ")
+    ]).join(SEPARATOR)
   }
 
   if (isLayoutItemSet(layout)) {
     const items = layout.items.map(({ id }) => describeComponent(id, inventory))
 
-    if (items.length === 0) return "zestaw elementów"
+    if (items.length === 0) return "pusty"
 
-    return `zestaw elementów: ${items.join(", ")}`
+    return items.join(", ")
   }
 
   return "opis niedostępny"

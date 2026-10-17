@@ -16,7 +16,7 @@ describe("describeFirstShelf", () => {
           width: 100,
         },
       ]),
-    ).toEqual("5x37")
+    ).toEqual("5×37")
   })
 
   it("returns nothing for units without shelves", () => {

@@ -17,12 +17,12 @@ describe("buildOfferRows", () => {
         {
           basePrice: 500,
           breakdown: {},
-          description: "ciąg regałów przyściennych",
+          description: "H210 · B47",
         },
         {
           basePrice: 388.78,
           breakdown: {},
-          description: "zestaw elementów: stopa 37, inne 3/240/3",
+          description: "stopa 37, inne 3/240/3",
           lines: [
             { basePrice: 88.78, description: "stopa 37", quantity: 2 },
             { basePrice: 300, description: "inne 3/240/3", quantity: 1 },
@@ -43,15 +43,26 @@ describe("buildOfferRows", () => {
     expect(rows).toEqual([
       {
         basePrice: 500,
-        description: "ciąg regałów przyściennych",
+        code: "P-01",
+        description: "H210 · B47",
         key: "wall",
+        name: "Ciąg przyścienny",
         quantity: 3,
       },
-      { basePrice: 88.78, description: "stopa 37", key: "set-0", quantity: 2 },
+      {
+        basePrice: 88.78,
+        code: "Z-02",
+        description: "stopa 37",
+        key: "set-0",
+        name: "Zestaw elementów",
+        quantity: 2,
+      },
       {
         basePrice: 300,
+        code: "Z-02",
         description: "inne 3/240/3",
         key: "set-1",
+        name: "Zestaw elementów",
         quantity: 1,
       },
     ])
@@ -65,7 +76,14 @@ describe("buildOfferRows", () => {
         layouts: [wallLayout],
       }),
     ).toEqual([
-      { basePrice: null, description: null, key: "wall", quantity: 3 },
+      {
+        basePrice: null,
+        code: "P-01",
+        description: null,
+        key: "wall",
+        name: "Ciąg przyścienny",
+        quantity: 3,
+      },
     ])
   })
 })

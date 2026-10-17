@@ -19,7 +19,9 @@ test("a visitor can open the demo, configure a run and see it priced", async ({
   await page.getByRole("link", { name: "Konfigurator" }).click()
   await page.getByRole("button", { name: "Dodaj ciąg przyścienny" }).click()
 
-  await expect(page.getByText(/ciąg regałów przyściennych/)).toBeVisible()
+  await expect(
+    page.getByText("Ciąg przyścienny", { exact: true }),
+  ).toBeVisible()
 
   await page.getByRole("link", { name: "Oferta", exact: true }).click()
 

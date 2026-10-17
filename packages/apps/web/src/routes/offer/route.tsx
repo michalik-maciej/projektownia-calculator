@@ -135,7 +135,7 @@ function OfferPage() {
             <table className="w-full text-sm">
               <thead className="border-b border-border text-left text-muted-foreground">
                 <tr>
-                  <th className="w-12 py-2 font-normal">Lp.</th>
+                  <th className="w-16 py-2 font-normal">Lp.</th>
                   <th className="py-2 font-normal">Opis</th>
                   <th className="w-20 py-2 text-right font-normal">Ilość</th>
                   <th className="w-32 py-2 text-right font-normal">Cena</th>
@@ -146,20 +146,25 @@ function OfferPage() {
                   keys: fields.map((field) => field.id),
                   layoutOutputs: output?.layouts,
                   layouts,
-                }).map(({ basePrice, description, key, quantity }, index) => (
-                  <tr key={key}>
-                    <td className="py-2 tabular-nums">{index + 1}.</td>
-                    <td className="py-2 text-muted-foreground">
-                      {description ?? "brak wyceny"}
-                    </td>
-                    <td className="py-2 text-right tabular-nums">
-                      {quantity ?? "—"}
-                    </td>
-                    <td className="py-2 text-right tabular-nums">
-                      {basePrice === null ? "—" : formatPrice(basePrice)}
-                    </td>
-                  </tr>
-                ))}
+                }).map(
+                  ({ basePrice, code, description, key, name, quantity }) => (
+                    <tr key={key}>
+                      <td className="py-2 tabular-nums">{code}</td>
+                      <td className="py-2">
+                        <span className="font-semibold">{name}</span>{" "}
+                        <span className="text-muted-foreground">
+                          {description ?? "brak wyceny"}
+                        </span>
+                      </td>
+                      <td className="py-2 text-right tabular-nums">
+                        {quantity ?? "—"}
+                      </td>
+                      <td className="py-2 text-right tabular-nums">
+                        {basePrice === null ? "—" : formatPrice(basePrice)}
+                      </td>
+                    </tr>
+                  ),
+                )}
               </tbody>
             </table>
           )}

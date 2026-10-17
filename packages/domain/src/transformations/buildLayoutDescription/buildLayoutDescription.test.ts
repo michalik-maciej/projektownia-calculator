@@ -29,9 +29,7 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual(
-      "ciąg regałów przyściennych / 4x80 / 1x100 / baza 47 / h-130 / półki 5x37",
-    )
+    expect(description).toEqual("H130 · B47 · 4×80 + 1×100 · półki 5×37")
   })
 
   it("builds description of gondola layout", () => {
@@ -76,9 +74,7 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual(
-      "ciąg regałów dwustronnych / 4x80 / 2x100 / baza 47 / h-130",
-    )
+    expect(description).toEqual("H130 · B47 · 4×80 + 2×100")
   })
 
   it("sums the units of both sides and lists the bases and shelves that differ", () => {
@@ -118,7 +114,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "ciąg regałów dwustronnych / 3x125 / 1x80 / baza 47/37 / h-130 / półki 4x47/3x37",
+      "H130 · B47/37 · 3×125 + 1×80 · półki 4×47/3×37",
     )
   })
 
@@ -146,9 +142,7 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual(
-      "ciąg regałów dwustronnych / 4x80 / baza 47 / h-130",
-    )
+    expect(description).toEqual("H130 · B47 · 4×80")
   })
 
   it("builds description of item set", () => {
@@ -162,12 +156,12 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual("zestaw elementów: plecy 10/100, noga 210/8/3")
+    expect(description).toEqual("plecy 10/100, noga 210/8/3")
   })
 
-  it("describes an empty item set by its kind alone", () => {
+  it("describes an empty item set as empty", () => {
     expect(buildLayoutDescription({ items: [] }, componentCatalogMock)).toEqual(
-      "zestaw elementów",
+      "pusty",
     )
   })
 
@@ -228,7 +222,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "ciąg regałów dwustronnych / 4x80 / baza 47 / h-130 / szczyt 100/37 / szczyt 66/30",
+      "H130 · B47 · 4×80 · szczyt 100/37 · szczyt 66/30",
     )
   })
 
@@ -253,8 +247,6 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual(
-      "ciąg regałów dwustronnych / 4x80 / baza 47 / h-130 / 2x szczyt 100/37",
-    )
+    expect(description).toEqual("H130 · B47 · 4×80 · 2× szczyt 100/37")
   })
 })

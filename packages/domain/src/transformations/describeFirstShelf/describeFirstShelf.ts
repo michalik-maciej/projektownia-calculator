@@ -4,5 +4,5 @@ export function describeFirstShelf(shelfUnits: ShelfUnit[]) {
   const firstShelf = shelfUnits.find(({ shelves = [] }) => shelves.length > 0)
     ?.shelves?.[0]
 
-  return firstShelf && `${firstShelf.numberOfShelves}x${firstShelf.depth}`
+  return firstShelf && `${firstShelf.numberOfShelves}×${firstShelf.depth}`
 }
