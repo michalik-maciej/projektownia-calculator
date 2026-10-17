@@ -1,14 +1,13 @@
-import { Plus } from "lucide-react"
 import { useState } from "react"
 import { useFieldArray, useFormContext } from "react-hook-form"
 
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { EditorPanel, PanelTab } from "./editor/EditorPanel"
+import { AddLayoutSlot } from "./plan/AddLayoutSlot"
 import { GondolaLayoutPlan } from "./plan/GondolaLayoutPlan"
 import { ItemSetPlan } from "./plan/ItemSetPlan"
 import { WallLayoutPlan } from "./plan/WallLayoutPlan"
-import { Button } from "../../core/ui/button"
 import { createDefaultGondolaLayout } from "../helpers/createDefaultGondolaLayout"
 import { createDefaultWallLayout } from "../helpers/createDefaultWallLayout"
 import { isGondolaLayout } from "../helpers/isGondolaLayout"
@@ -104,41 +103,13 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
         )
       })}
 
-      <div className="flex flex-col items-start gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            disabled={!defaultWallLayout}
-            onClick={() => defaultWallLayout && append(defaultWallLayout)}
-            type="button"
-            variant="outline"
-          >
-            <Plus className="h-4 w-4" />
-            Dodaj ciąg przyścienny
-          </Button>
-          <Button
-            disabled={!defaultGondolaLayout}
-            onClick={() => defaultGondolaLayout && append(defaultGondolaLayout)}
-            type="button"
-            variant="outline"
-          >
-            <Plus className="h-4 w-4" />
-            Dodaj gondolę
-          </Button>
-          <Button
-            onClick={() => append({ items: [] })}
-            type="button"
-            variant="outline"
-          >
-            <Plus className="h-4 w-4" />
-            Dodaj zestaw elementów
-          </Button>
-        </div>
-        {!defaultWallLayout && (
-          <p className="text-xs text-muted-foreground">
-            Uzupełnij magazyn komponentów, żeby móc dodać ciąg.
-          </p>
-        )}
-      </div>
+      <AddLayoutSlot
+        onAddGondola={
+          defaultGondolaLayout && (() => append(defaultGondolaLayout))
+        }
+        onAddItemSet={() => append({ items: [] })}
+        onAddWall={defaultWallLayout && (() => append(defaultWallLayout))}
+      />
 
       {!selectedUnit && (
         <EditorPanel title="Edycja">
