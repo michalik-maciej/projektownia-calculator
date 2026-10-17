@@ -7,7 +7,7 @@ export function AppLayout({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen flex flex-col">
       <TopBar />
-      <main className="flex-1 p-4">{children}</main>
+      <main className="flex-1 p-4 pt-19">{children}</main>
       <Footer />
     </div>
   )
