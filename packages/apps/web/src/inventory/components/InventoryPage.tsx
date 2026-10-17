@@ -39,8 +39,7 @@ export function InventoryPage() {
 
   return (
     <section className="m-8 w-md">
-      <div className="flex items-center justify-between mb-6">
-        <h1>Katalog części</h1>
+      <div className="flex items-center justify-end mb-6">
         {isDemo ? (
           <p className="text-xs text-muted-foreground">
             Wersja demo: katalog tylko do odczytu

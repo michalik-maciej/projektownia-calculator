@@ -9,6 +9,13 @@ import { Button } from "../../core/ui/button"
 import { ConfirmDialog } from "../../core/ui/confirm-dialog"
 import { Input } from "../../core/ui/input"
 import { Label } from "../../core/ui/label"
+import {
+  textEyebrow,
+  textFigure,
+  textName,
+  textSection,
+} from "../../core/ui/typography"
+import { LayoutCode } from "../../offer/components/LayoutCode"
 import { MissingOfferNotice } from "../../offer/components/MissingOfferNotice"
 import { OfferList } from "../../offer/components/OfferList"
 import { buildOfferRows } from "../../offer/helpers/buildOfferRows"
@@ -42,12 +49,12 @@ function OfferPage() {
     <section className="flex max-w-5xl flex-col gap-6 p-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-wrap items-end gap-4">
-          <h1 className="text-xl font-semibold">Oferta</h1>
           {hasOpenOffer && (
             <>
               <div className="flex w-80 flex-col gap-1.5">
-                <Label>Opis oferty</Label>
+                <Label className={textEyebrow}>Opis oferty</Label>
                 <Input
+                  className={`${textFigure} md:text-[15px]`}
                   {...register("title", {
                     required: "Opis jest wymagany",
                     validate: (value) =>
@@ -57,8 +64,9 @@ function OfferPage() {
                 />
               </div>
               <div className="flex w-24 flex-col gap-1.5">
-                <Label>Rabat (%)</Label>
+                <Label className={textEyebrow}>Rabat (%)</Label>
                 <Input
+                  className={`${textFigure} text-center md:text-[15px]`}
                   {...register("discountPercentage", {
                     setValueAs: (value) =>
                       value === "" || value === null || value === undefined
@@ -132,16 +140,18 @@ function OfferPage() {
               Konfiguratorze.
             </p>
           ) : (
-            <table className="w-full text-sm">
-              <thead className="border-b border-border text-left text-muted-foreground">
+            <table className="w-full border bg-card text-sm">
+              <thead
+                className={`border-b-[1.5px] border-foreground text-left text-muted-foreground ${textSection}`}
+              >
                 <tr>
-                  <th className="w-16 py-2 font-normal">Lp.</th>
-                  <th className="py-2 font-normal">Opis</th>
-                  <th className="w-20 py-2 text-right font-normal">Ilość</th>
-                  <th className="w-32 py-2 text-right font-normal">Cena</th>
+                  <th className="w-20 px-3 py-2">Lp.</th>
+                  <th className="px-3 py-2">Opis</th>
+                  <th className="w-20 px-3 py-2 text-right">Ilość</th>
+                  <th className="w-40 px-3 py-2 text-right">Cena</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border border-b border-border">
+              <tbody className="divide-y divide-border">
                 {buildOfferRows({
                   keys: fields.map((field) => field.id),
                   layoutOutputs: output?.layouts,
@@ -149,17 +159,21 @@ function OfferPage() {
                 }).map(
                   ({ basePrice, code, description, key, name, quantity }) => (
                     <tr key={key}>
-                      <td className="py-2 tabular-nums">{code}</td>
-                      <td className="py-2">
-                        <span className="font-semibold">{name}</span>{" "}
-                        <span className="text-muted-foreground">
-                          {description ?? "brak wyceny"}
-                        </span>
+                      <td className="px-3 py-2">
+                        {code && <LayoutCode code={code} />}
                       </td>
-                      <td className="py-2 text-right tabular-nums">
+                      <td className="px-3 py-2">
+                        <div className="flex flex-col gap-0.5">
+                          <span className={textName}>{name}</span>
+                          <span className="font-mono text-xs text-muted-foreground">
+                            {description ?? "brak wyceny"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className={`px-3 py-2 text-right ${textFigure}`}>
                         {quantity ?? "—"}
                       </td>
-                      <td className="py-2 text-right tabular-nums">
+                      <td className={`px-3 py-2 text-right ${textFigure}`}>
                         {basePrice === null ? "—" : formatPrice(basePrice)}
                       </td>
                     </tr>
@@ -170,16 +184,19 @@ function OfferPage() {
           )}
 
           {output && (
-            <dl className="flex flex-col gap-1 text-sm">
-              <div className="flex items-center justify-end gap-4">
-                <dt className="text-muted-foreground">Wartość</dt>
-                <dd className="w-32 text-right tabular-nums">
+            <dl className="ml-auto flex w-90 flex-col gap-1.5">
+              <div className="flex items-baseline justify-between">
+                <dt className={textEyebrow}>Wartość</dt>
+                <dd className={textFigure}>
                   {formatPrice(output.pricing.basePrice)}
                 </dd>
               </div>
-              <div className="flex items-center justify-end gap-4 font-semibold">
-                <dt>Po rabacie {output.pricing.discountPercentage}%</dt>
-                <dd className="w-32 text-right tabular-nums">
+              <div className="mt-1 flex items-baseline justify-between border-t-[1.5px] border-foreground pt-2">
+                <dt className={`flex items-center gap-2 ${textSection}`}>
+                  <span aria-hidden="true" className="size-2.5 bg-highlight" />
+                  Po rabacie {output.pricing.discountPercentage}%
+                </dt>
+                <dd className="font-display text-lg font-semibold tabular-nums">
                   {formatPrice(output.pricing.discountPrice)}
                 </dd>
               </div>

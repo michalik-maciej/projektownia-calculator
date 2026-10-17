@@ -4,6 +4,7 @@ import { Controller, useFormContext } from "react-hook-form"
 import { OfferInput } from "@/schemas/Offer.schema"
 
 import { Button } from "../../../core/ui/button"
+import { textFigure } from "../../../core/ui/typography"
 import { NumberPath } from "../../offer.types"
 
 /**
@@ -51,7 +52,9 @@ export function CountStepper({
               >
                 <Minus className="h-3 w-3" />
               </Button>
-              <span className="flex h-8 w-12 shrink-0 items-center justify-center font-display text-[15px] font-bold tabular-nums">
+              <span
+                className={`flex h-8 w-12 shrink-0 items-center justify-center ${textFigure}`}
+              >
                 {value}
               </span>
               <Button

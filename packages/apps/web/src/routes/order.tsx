@@ -12,8 +12,6 @@ function OrderPage() {
 
   return (
     <section className="flex max-w-2xl flex-col gap-4 p-8">
-      <h1 className="text-xl font-semibold">Rozpiska</h1>
-
       {offer?.output ? (
         <>
           <p className="text-sm text-muted-foreground">{offer.title}</p>

@@ -17,10 +17,8 @@ function ConfigPage() {
 
   return (
     <section>
-      <h1 className="px-8 pt-8 pb-4 text-xl font-semibold">Konfigurator</h1>
-
       {isMissing && (
-        <div className="px-8">
+        <div className="px-8 pt-6">
           <MissingOfferNotice />
         </div>
       )}
@@ -30,7 +28,7 @@ function ConfigPage() {
       )}
 
       {!offerId && (
-        <div className="flex flex-col items-start gap-3 px-8">
+        <div className="flex flex-col items-start gap-3 px-8 pt-6">
           <p className="text-sm text-muted-foreground">
             Nie masz otwartej oferty. Utwórz nową albo wczytaj zapisaną w
             zakładce Oferta.

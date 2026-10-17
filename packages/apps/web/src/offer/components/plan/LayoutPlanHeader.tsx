@@ -6,8 +6,10 @@ import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 import { Button } from "../../../core/ui/button"
 import { Input } from "../../../core/ui/input"
 import { Label } from "../../../core/ui/label"
+import { textFigure, textName } from "../../../core/ui/typography"
 import { formatLayoutCode } from "../../helpers/formatLayoutCode"
 import { getLayoutName } from "../../helpers/getLayoutName"
+import { LayoutCode } from "../LayoutCode"
 
 export function LayoutPlanHeader({
   hasLayoutCount = true,
@@ -32,16 +34,11 @@ export function LayoutPlanHeader({
   return (
     <header className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <span
-          className={`inline-flex h-6.5 items-center rounded-sm px-2 font-display text-[15px] font-bold tracking-wide ${
-            isSelected ? "bg-highlight" : "bg-border"
-          }`}
-        >
-          {formatLayoutCode(layoutIndex, layout)}
-        </span>
-        <span className="font-display text-lg font-bold uppercase tracking-wide">
-          {getLayoutName(layout)}
-        </span>
+        <LayoutCode
+          code={formatLayoutCode(layoutIndex, layout)}
+          isHighlighted={isSelected}
+        />
+        <span className={textName}>{getLayoutName(layout)}</span>
         <p className="font-mono text-xs text-muted-foreground">
           {preview?.description ?? "liczenie…"}
         </p>
@@ -56,7 +53,7 @@ export function LayoutPlanHeader({
               {...register(`layouts.${layoutIndex}.numberOfLayouts`, {
                 valueAsNumber: true,
               })}
-              className="h-9 w-14 text-center font-display text-base font-bold md:text-base"
+              className={`h-8 w-14 text-center ${textFigure} md:text-[15px]`}
               min={1}
               type="number"
             />

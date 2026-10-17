@@ -1,5 +1,7 @@
 import type { PropsWithChildren } from "react"
 
+import { textEyebrow, textName } from "../../../core/ui/typography"
+
 export type PanelTab = "breakdown" | "edit"
 
 const PANEL_TABS = ["edit", "breakdown"] as const
@@ -25,14 +27,8 @@ export function EditorPanel({
     <aside className="fixed top-15 right-0 bottom-0 z-40 flex w-sm flex-col border-l bg-card py-6 pl-6">
       <div className="mb-4 flex items-center justify-between gap-2 pr-6">
         <div className="flex flex-col gap-0.5">
-          {eyebrow && (
-            <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-              {eyebrow}
-            </span>
-          )}
-          <h2 className="font-display text-[17px] font-bold uppercase tracking-wide">
-            {title}
-          </h2>
+          {eyebrow && <span className={textEyebrow}>{eyebrow}</span>}
+          <h2 className={textName}>{title}</h2>
         </div>
         {onSelectTab && tab && (
           <div className="flex items-center gap-1 rounded-lg bg-muted p-0.5">
