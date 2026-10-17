@@ -10,6 +10,7 @@ import {
 } from "../../core/ui/dialog"
 import { Input } from "../../core/ui/input"
 import { Label } from "../../core/ui/label"
+import { textEyebrow } from "../../core/ui/typography"
 import { useDemoLogin } from "../hooks/useDemoLogin"
 import { useLoginUser } from "../hooks/useLoginUser"
 
@@ -27,20 +28,22 @@ export const LoginForm = () => {
   return (
     <Dialog open>
       <DialogContent
-        className="sm:max-w-sm flex flex-col justify-center items-center rounded-md border p-8 shadow-indigo-900 shadow-md before:pointer-events-none before:content-[''] before:absolute before:-left-4 before:top-6 before:bottom-6 before:w-0.75 before:rounded-full before:bg-indigo-700"
+        className="flex flex-col gap-6 border-t-[6px] border-t-highlight p-8 shadow-lg sm:max-w-sm"
         showCloseButton={false}
       >
-        <DialogHeader>
-          <DialogTitle className="p-2 text-foreground/80">
-            Zaloguj się, aby kalkulować
+        <DialogHeader className="gap-1">
+          <DialogTitle className="flex items-center gap-2.5 font-display text-2xl font-bold uppercase tracking-wide">
+            <span aria-hidden="true" className="size-4 bg-highlight" />
+            Projektownia
           </DialogTitle>
+          <p className={textEyebrow}>Zaloguj się, aby kalkulować</p>
         </DialogHeader>
         <form
-          className="flex flex-col w-54"
+          className="flex flex-col gap-3.5"
           onSubmit={form.handleSubmit((values) => login(values))}
         >
-          <div className="mt-2 flex flex-col gap-2">
-            <Label className="text-foreground/60 text-xs" htmlFor="email">
+          <div className="flex flex-col gap-1.5">
+            <Label className={textEyebrow} htmlFor="email">
               Email
             </Label>
             <Input
@@ -59,8 +62,8 @@ export const LoginForm = () => {
               </span>
             )}
           </div>
-          <div className="mt-2 flex flex-col gap-2">
-            <Label className="text-foreground/60 text-xs" htmlFor="password">
+          <div className="flex flex-col gap-1.5">
+            <Label className={textEyebrow} htmlFor="password">
               Hasło
             </Label>
             <Input
@@ -80,17 +83,17 @@ export const LoginForm = () => {
               </span>
             )}
           </div>
-          <Button className="self-end mt-8" disabled={isPending} type="submit">
+          <Button className="mt-2 w-full" disabled={isPending} type="submit">
             Zaloguj
             {isPending ? <Loader2 className="animate-spin" /> : <UserPen />}
           </Button>
         </form>
-        <div className="mt-6 flex w-54 flex-col gap-2 border-t border-border pt-4">
+        <div className="flex flex-col gap-2 border-t pt-5">
           <Button
+            className="w-full bg-highlight text-foreground hover:bg-highlight/90"
             disabled={isDemoPending}
             onClick={() => openDemo()}
             type="button"
-            variant="secondary"
           >
             {isDemoPending ? (
               <Loader2 className="animate-spin" />
@@ -99,7 +102,7 @@ export const LoginForm = () => {
             )}
             Demo
           </Button>
-          <p className="text-xs text-foreground/60">
+          <p className="font-mono text-xs text-muted-foreground">
             Wejście bez konta. Ograniczona funkcjonalność.
           </p>
         </div>
