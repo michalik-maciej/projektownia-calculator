@@ -14,6 +14,7 @@ import { Button } from "../../core/ui/button"
 import { Input } from "../../core/ui/input"
 import { Label } from "../../core/ui/label"
 import { RadioGroup, RadioGroupItem } from "../../core/ui/radio-group"
+import { textEyebrow } from "../../core/ui/typography"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { useCreateInventoryItem } from "../hooks/useCreateInventoryItem"
 import { useDeleteInventoryItem } from "../hooks/useDeleteInventoryItem"
@@ -81,11 +82,11 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-6 p-4">
+      <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5">
         <div className="flex gap-4">
           {/* Label */}
           <div className="flex flex-col grow space-y-1 gap-2">
-            <Label>Nazwa</Label>
+            <Label className={textEyebrow}>Nazwa</Label>
             <Input
               {...register("label", {
                 required: "Nazwa jest wymagana",
@@ -103,7 +104,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
           </div>
           {/* Price */}
           <div className="flex flex-col w-36 space-y-1 gap-2">
-            <Label>Cena</Label>
+            <Label className={textEyebrow}>Cena</Label>
             <Input
               type="number"
               step="0.01"
@@ -129,7 +130,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
 
         {/* Category */}
         <div className="space-y-1">
-          <Label className="p-y-1">Kategoria</Label>
+          <Label className={textEyebrow}>Kategoria</Label>
 
           <Controller
             name="category"
@@ -187,10 +188,12 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
         {/* Actions */}
         <div className="flex justify-between gap-4 pt-4">
           <Button
+            aria-label="Usuń element"
+            className="text-destructive hover:text-destructive"
             type="button"
             size="icon"
             disabled={deleteMutation.isPending}
-            variant="destructive"
+            variant="ghost"
             onClick={handleDelete}
             hidden={!componentId || isDemo}
           >

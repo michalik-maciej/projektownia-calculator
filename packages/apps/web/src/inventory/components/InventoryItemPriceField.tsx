@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react"
 import { useState } from "react"
 
 import { Input } from "../../core/ui/input"
+import { textFigure } from "../../core/ui/typography"
 import { formatPrice } from "../../offer/helpers/formatPrice"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { parseInventoryPriceInput } from "../helpers/parseInventoryPriceInput"
@@ -27,7 +28,7 @@ export function InventoryItemPriceField({ item }: Props) {
 
   if (isDemo) {
     return (
-      <span className="text-sm text-muted-foreground tabular-nums">
+      <span className={`text-muted-foreground ${textFigure}`}>
         {formatPrice(item.price)}
       </span>
     )
@@ -54,7 +55,7 @@ export function InventoryItemPriceField({ item }: Props) {
       <div className="flex items-center gap-1">
         <Input
           aria-label="Cena"
-          className="h-7 w-24 text-right tabular-nums"
+          className={`h-7 w-24 text-right ${textFigure} md:text-[15px]`}
           min={0}
           onBlur={commit}
           onChange={(event) => setValue(event.target.value)}

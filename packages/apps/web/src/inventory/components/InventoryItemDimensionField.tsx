@@ -6,6 +6,8 @@ import { CATEGORY_REQUIREMENTS } from "@/schemas/inventory/Component.schema"
 import { type InventoryItemFormValues } from "./InventoryItem"
 import { Input } from "../../core/ui/input"
 import { Label } from "../../core/ui/label"
+import { textEyebrow } from "../../core/ui/typography"
+import { cn } from "../../core/ui/utils"
 import { getDimensionOptions } from "../../inventory/helpers/getDimensionOptions"
 import { inventoryQueries } from "../inventory.api"
 
@@ -33,7 +35,12 @@ export const InventoryItemDimensionField = ({ dimension, label }: Props) => {
 
   return (
     <div className="flex flex-col space-y-1 gap-2">
-      <Label className={isRequired ? "font-semibold" : "text-muted-foreground"}>
+      <Label
+        className={cn(
+          textEyebrow,
+          isRequired && "font-semibold text-foreground",
+        )}
+      >
         {label}
       </Label>
       <Controller
@@ -63,6 +70,7 @@ export const InventoryItemDimensionField = ({ dimension, label }: Props) => {
                 const raw = e.target.value
                 field.onChange(raw === "" ? null : Number(raw))
               }}
+              className="font-mono"
               placeholder="—"
               ref={field.ref}
               type="number"

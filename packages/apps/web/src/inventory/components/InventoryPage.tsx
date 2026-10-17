@@ -1,6 +1,6 @@
 import { CopyPlusIcon } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
-import { Link } from "@tanstack/react-router"
+import { Link, useParams } from "@tanstack/react-router"
 
 import { InventoryItemPriceField } from "./InventoryItemPriceField"
 import {
@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "../../core/ui/accordion"
 import { Button } from "../../core/ui/button"
+import { textSection } from "../../core/ui/typography"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { CATEGORY_LABELS } from "../components/labels.inventory"
 import { sortInventoryItemsBySize } from "../helpers/sortInventoryItemsBySize"
@@ -17,6 +18,7 @@ import { inventoryQueries } from "../inventory.api"
 
 export function InventoryPage() {
   const isDemo = useIsDemo()
+  const { componentId } = useParams({ strict: false })
   const { data, isPending, error } = useQuery({
     ...inventoryQueries.list(),
     select: (components) =>
@@ -45,7 +47,7 @@ export function InventoryPage() {
             Wersja demo: katalog tylko do odczytu
           </p>
         ) : (
-          <Button variant="secondary" size="sm" asChild>
+          <Button size="sm" asChild>
             <Link search={true} to="/inventory/new">
               <CopyPlusIcon />
               Dodaj
@@ -53,17 +55,30 @@ export function InventoryPage() {
           </Button>
         )}
       </div>
-      <Accordion type="single" collapsible className="max-w-lg">
+      <Accordion type="single" collapsible className="border bg-card">
         {Object.entries(data).map(([category, items]) => (
-          <AccordionItem key={category} value={category}>
-            <AccordionTrigger>
+          <AccordionItem
+            className="data-[state=open]:bg-highlight/10"
+            key={category}
+            value={category}
+          >
+            <AccordionTrigger
+              className={`items-center justify-start rounded-none px-4 py-3 hover:no-underline **:data-[slot=accordion-trigger-icon]:ml-0 ${textSection}`}
+            >
               {CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS]}
+              <span className="mr-3 ml-auto font-mono text-xs font-normal text-muted-foreground">
+                {items.length}
+              </span>
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="pb-0 [&_a]:no-underline">
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between gap-4 py-1"
+                  className={`flex items-center justify-between gap-4 border-t py-1.5 pr-4 pl-7 ${
+                    item.id === componentId
+                      ? "bg-highlight/20 font-semibold"
+                      : ""
+                  }`}
                 >
                   <Link
                     to="/inventory/$componentId"

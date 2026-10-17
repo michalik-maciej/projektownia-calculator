@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../core/ui/dialog"
+import { textEyebrow, textName } from "../../core/ui/typography"
 import { inventoryQueries } from "../inventory.api"
 
 export function InventoryItemDialog({
@@ -27,13 +28,14 @@ export function InventoryItemDialog({
   return (
     <Dialog open onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-lg"
+        className="p-6 sm:max-w-lg"
         onInteractOutside={(e) => e.preventDefault()}
       >
-        <DialogHeader>
-          <DialogTitle className="p-2 text-foreground/60">
-            Edycja elementu
-          </DialogTitle>
+        <DialogHeader className="gap-0.5">
+          <span className={textEyebrow}>
+            {componentId ? "Edycja elementu" : "Nowy element"}
+          </span>
+          <DialogTitle className={textName}>{data?.label ?? ""}</DialogTitle>
         </DialogHeader>
         <InventoryItem
           defaultValues={data ?? undefined}

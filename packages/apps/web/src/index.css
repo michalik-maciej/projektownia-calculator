@@ -33,6 +33,7 @@
   --color-highlight: var(--highlight);
   --color-highlight-soft: var(--highlight-soft);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -70,6 +71,7 @@
   --plan-grid: #e7e4dd;
 
   --destructive: #b42318;
+  --destructive-foreground: #ffffff;
 }
 
 @utility bg-plan-grid {
