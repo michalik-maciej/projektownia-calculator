@@ -28,7 +28,7 @@ export function EditorPanel({
           {title}
         </h2>
         {onSelectTab && tab && (
-          <div className="flex items-center bg-neutral-200/50 dark:bg-neutral-800/50 gap-1 rounded-md">
+          <div className="flex items-center gap-1 rounded-lg bg-muted p-0.5">
             {PANEL_TABS.map((panelTab) => (
               <Button
                 aria-pressed={panelTab === tab}
