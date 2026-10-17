@@ -3,6 +3,7 @@ import { Fragment } from "react"
 import { COMPONENT_CATEGORIES } from "@/schemas/inventory/Component.schema"
 import { OfferOutput } from "@/schemas/Offer.schema"
 
+import { textFigure, textSection } from "../../core/ui/typography"
 import { CATEGORY_LABELS } from "../helpers/categoryLabels"
 
 export function BreakdownList({
@@ -28,25 +29,32 @@ export function BreakdownList({
   }
 
   return (
-    <ul className="divide-y divide-border border-y border-border text-sm leading-tight">
-      {groups.map(({ category, items }) => (
-        <Fragment key={category}>
-          <li className="bg-muted/40 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {CATEGORY_LABELS[category]}
-          </li>
-          {items.map(({ id, label, quantity }) => (
-            <li
-              className="flex items-center justify-between gap-3 px-2 py-1"
-              key={id}
-            >
-              <span className="truncate">{label}</span>
-              <span className="shrink-0 tabular-nums text-muted-foreground">
-                {quantity}
-              </span>
-            </li>
-          ))}
-        </Fragment>
-      ))}
-    </ul>
+    <table className="w-full border bg-card text-sm">
+      <thead
+        className={`border-b-[1.5px] border-foreground text-left text-muted-foreground ${textSection}`}
+      >
+        <tr>
+          <th className="px-3 py-2">Element</th>
+          <th className="w-20 px-3 py-2 text-right">Ilość</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-border">
+        {groups.map(({ category, items }) => (
+          <Fragment key={category}>
+            <tr className="bg-muted">
+              <th className={`px-3 py-1 text-left ${textSection}`} colSpan={2}>
+                {CATEGORY_LABELS[category]}
+              </th>
+            </tr>
+            {items.map(({ id, label, quantity }) => (
+              <tr key={id}>
+                <td className="truncate px-3 py-1.5">{label}</td>
+                <td className={`px-3 text-right ${textFigure}`}>{quantity}</td>
+              </tr>
+            ))}
+          </Fragment>
+        ))}
+      </tbody>
+    </table>
   )
 }
