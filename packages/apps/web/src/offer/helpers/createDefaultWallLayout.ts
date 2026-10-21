@@ -3,9 +3,18 @@ import { DEFAULT_SHELF_COUNT_BY_HEIGHT } from "@/schemas/ShelfDefaults"
 
 import { InventoryDimensions } from "../hooks/useInventoryDimensions"
 
+const PREFERRED_HEIGHT = 210
+const PREFERRED_DEPTH = 47
+
+function preferOrFirst(options: number[], preferred: number) {
+  return options.includes(preferred) ? preferred : options[0]
+}
+
 /**
- * Builds a starting wall run from whatever the inventory offers: the smallest
- * height, base depth and unit width, and a shelf count taken from the height.
+ * Builds a starting wall run: 210 cm high and 47 cm deep when the inventory
+ * has them (the most common starting configuration), otherwise the smallest
+ * height and base depth; the smallest unit width; a shelf count taken from
+ * the height.
  *
  * @returns `null` when the inventory cannot furnish a run at all, which is the
  * signal to keep the "add run" action disabled instead of creating a layout
@@ -17,8 +26,8 @@ export function createDefaultWallLayout({
   shelfUnitWidths,
   shelfDepths,
 }: InventoryDimensions): LayoutWall | null {
-  const height = layoutHeights[0]
-  const depth = layoutDepths[0]
+  const height = preferOrFirst(layoutHeights, PREFERRED_HEIGHT)
+  const depth = preferOrFirst(layoutDepths, PREFERRED_DEPTH)
   const width = shelfUnitWidths[0]
 
   if (height == null || depth == null || width == null) return null
