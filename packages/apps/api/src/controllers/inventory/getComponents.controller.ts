@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 
-import { InventorySource } from "../offer/calculateOffer.controller"
+import { InventorySource } from "../../db/inventory.repository"
 
 export function getComponentsController({
   getInventory,

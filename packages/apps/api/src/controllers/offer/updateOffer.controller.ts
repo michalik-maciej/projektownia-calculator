@@ -1,13 +1,12 @@
 import { Request, Response } from "express"
 import * as v from "valibot"
-import { Prisma } from "@prisma/client"
 
 import { IdParamSchema } from "@/schemas/IdParam.schema"
 import { OfferInputSchema } from "@/schemas/Offer.schema"
 
-import { InventorySource } from "./calculateOffer.controller"
 import { priceOffer } from "./priceOffer"
 import { toOfferScope } from "./toOfferScope"
+import { InventorySource } from "../../db/inventory.repository"
 import { OfferStore } from "../../db/offer.repository"
 
 export function updateOfferController({
@@ -46,16 +45,16 @@ export function updateOfferController({
 
     try {
       const inventory = await getInventory()
-      const { missingComponent, output } = priceOffer(parsed.output, inventory)
       const updated = await updateOffer({
         id: params.output.id,
         title: parsed.output.title,
         discountPercentage: parsed.output.discountPercentage,
         input: parsed.output,
-        output: output ?? Prisma.DbNull,
       })
 
-      return res.status(200).json({ ...updated, missingComponent })
+      return res
+        .status(200)
+        .json({ ...updated, ...priceOffer(parsed.output, inventory) })
     } catch (error) {
       console.error("Offer update failed:", error)
       return res.status(500).json({ error: "Offer update failed" })

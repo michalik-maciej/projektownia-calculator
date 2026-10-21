@@ -19,7 +19,6 @@ export function createOffersRouter(
   guarded.post("/", offer.create)
   guarded.put("/:id", offer.update)
   guarded.delete("/:id", offer.remove)
-  guarded.post("/preview", offer.preview)
 
   return router
 }

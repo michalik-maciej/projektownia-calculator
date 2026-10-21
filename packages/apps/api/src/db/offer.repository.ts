@@ -11,7 +11,6 @@ export type CreateOfferInput = {
   title: string
   discountPercentage?: number
   input: Prisma.InputJsonValue
-  output?: Prisma.InputJsonValue | Prisma.NullTypes.DbNull
   userId: string
 }
 

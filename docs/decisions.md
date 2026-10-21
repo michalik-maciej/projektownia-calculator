@@ -85,7 +85,7 @@ leaving `tsx` dev mode working.
 
 **Decision.** Tests live next to the code they cover, in `packages/domain`, in `packages/apps/api`
 and, for a small set of components, in `packages/apps/web`. One integration test exercises the offer
-endpoint end to end (`packages/apps/api/src/tests/calculateOffer.test.ts`), and one Playwright test
+endpoint end to end (`packages/apps/api/src/tests/createOffer.test.ts`), and one Playwright test
 drives a real browser through the public demo entrance (`e2e/offer.spec.ts`). `vitest.config.ts`
 runs two `test.projects`: `node`, the original environment, for domain and API tests, and `web`, a
 JSDOM environment with React Testing Library, for the web package. Coverage is still collected from
@@ -126,10 +126,10 @@ is acceptable; it would not be for a multi-tenant product.
 
 ## 7. An offer is priced at today's catalogue prices
 
-**Decision.** Opening an offer (`GET /api/offers/:id`) recomputes its output from the stored `input`
-against the current inventory. The web app invalidates the open offer after every catalogue change,
-so its prices follow the catalogue while it is open. The `output` column is still written on every
-save, but nothing reads it back.
+**Decision.** The `Offer` model stores only the `input`. Every offer endpoint that returns an offer
+(create, read, update) prices it against the current inventory before answering. The web app
+invalidates the open offer after every catalogue change, so its prices follow the catalogue while it
+is open. The stored `output` column was dropped by migration `20261021120000_drop_offer_output`.
 
 **Why.** The end client asked for it: an offer is a working document, and a price change in the
 catalogue has to reach it without re-entering the configuration. This reverses the earlier rule that

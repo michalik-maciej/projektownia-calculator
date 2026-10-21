@@ -4,8 +4,7 @@ import type { Express } from "express"
 import express from "express"
 import helmet from "helmet"
 
-import { InventorySource } from "./controllers/offer/calculateOffer.controller"
-import { getAllComponents } from "./db/inventory.repository"
+import { getAllComponents, InventorySource } from "./db/inventory.repository"
 import { OfferStore, offerStore } from "./db/offer.repository"
 import { UserStore, userStore } from "./db/user.repository"
 import { createAuthRouter } from "./routes/auth.routes"
@@ -47,7 +46,7 @@ export function createApp({
   app.use(cors({ credentials: true, origin: process.env.WEBAPP_DOMAIN }))
 
   app.use("/api/health", healthRoutes)
-  app.use("/api/auth", createAuthRouter({ getInventory, offers, users }))
+  app.use("/api/auth", createAuthRouter({ offers, users }))
   app.use("/api/inventory", createInventoryRouter({ getInventory }))
   app.use("/api/offers", createOffersRouter({ getInventory, offers }))
   app.use("/api/users", createUsersRouter({ users }))

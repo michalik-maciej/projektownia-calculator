@@ -10,12 +10,8 @@ import {
 
 type TestOfferStore = OfferStore & { all: () => Offer[] }
 
-function toStoredJson(
-  value: Prisma.InputJsonValue | Prisma.NullTypes.DbNull | undefined,
-): Prisma.JsonValue {
-  return value === undefined || value === Prisma.DbNull
-    ? null
-    : (value as Prisma.JsonValue)
+function toStoredJson(value: Prisma.InputJsonValue): Prisma.JsonValue {
+  return value as Prisma.JsonValue
 }
 
 function isVisibleTo(offer: Offer, scope: OfferScope): boolean {
@@ -34,7 +30,6 @@ export function createInMemoryOfferStore(): TestOfferStore {
         discountPercentage: data.discountPercentage ?? null,
         id: randomUUID(),
         input: toStoredJson(data.input),
-        output: toStoredJson(data.output),
         title: data.title,
         userId: data.userId,
       }
@@ -78,10 +73,6 @@ export function createInMemoryOfferStore(): TestOfferStore {
           data.discountPercentage ?? existing.discountPercentage,
         input:
           data.input === undefined ? existing.input : toStoredJson(data.input),
-        output:
-          data.output === undefined
-            ? existing.output
-            : toStoredJson(data.output),
         title: data.title ?? existing.title,
       }
 

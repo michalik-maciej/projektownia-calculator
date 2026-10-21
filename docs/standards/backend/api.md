@@ -14,8 +14,8 @@ Helpers living in the same folder drop the suffix: `requireAuth.ts`, `priceOffer
 ### One Feature Factory Assembles the Handlers
 
 `controllers/offer/offerControllers.ts` builds every offer handler from a single dependency object
-and returns them under the names the routes use (`list`, `details`, `create`, `update`, `remove`,
-`preview`). The router asks for the set and binds it; it never assembles a controller itself. The
+and returns them under the names the routes use (`list`, `details`, `create`, `update`, `remove`).
+The router asks for the set and binds it; it never assembles a controller itself. The
 dependency type is exported next to that factory, as `OfferControllerDependencies`.
 
 ```ts

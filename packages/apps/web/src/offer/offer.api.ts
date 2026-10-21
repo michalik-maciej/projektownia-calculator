@@ -2,8 +2,6 @@ import * as v from "valibot"
 
 import {
   OfferInput,
-  OfferOutput,
-  OfferOutputSchema,
   OfferSummarySchema,
   SavedOfferSchema,
 } from "@/schemas/Offer.schema"
@@ -50,12 +48,6 @@ export const offerApi = {
     path: `${apiUrl}/offers/:id`,
     response: v.null(),
   }),
-  preview: createApiMethod({
-    method: "POST",
-    path: `${apiUrl}/offers/preview`,
-    response: OfferOutputSchema,
-    data: apiType<OfferInput>(),
-  }),
 }
 
 export const offerMutationKeys = {
@@ -72,11 +64,5 @@ export const offerQueries = {
     queryFn: () => offerApi.details({ params: { id } }),
     retry: (failureCount: number, error: Error) =>
       !isNotFound(error) && !isUnauthorized(error) && failureCount < 3,
-  }),
-  preview: (draft: OfferInput | null) => ({
-    queryKey: ["offer", "preview", draft] as const,
-    queryFn: () => offerApi.preview({ data: draft! }),
-    enabled: !!draft?.layouts.length,
-    placeholderData: (previous: OfferOutput | undefined) => previous,
   }),
 }

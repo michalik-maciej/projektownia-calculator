@@ -4,9 +4,9 @@ import * as v from "valibot"
 import { IdParamSchema } from "@/schemas/IdParam.schema"
 import { OfferInputSchema } from "@/schemas/Offer.schema"
 
-import { InventorySource } from "./calculateOffer.controller"
 import { priceOffer } from "./priceOffer"
 import { toOfferScope } from "./toOfferScope"
+import { InventorySource } from "../../db/inventory.repository"
 import { OfferStore } from "../../db/offer.repository"
 
 export function getOfferController({
@@ -35,9 +35,7 @@ export function getOfferController({
 
       const input = v.parse(OfferInputSchema, offer.input)
       const inventory = await getInventory()
-      const { missingComponent, output } = priceOffer(input, inventory)
-
-      return res.status(200).json({ ...offer, missingComponent, output })
+      return res.status(200).json({ ...offer, ...priceOffer(input, inventory) })
     } catch (error) {
       console.error("Reading the offer failed:", error)
       return res.status(500).json({ error: "Reading the offer failed" })

@@ -3,9 +3,9 @@ import * as v from "valibot"
 
 import { OfferInputSchema } from "@/schemas/Offer.schema"
 
-import { InventorySource } from "./calculateOffer.controller"
 import { priceOffer } from "./priceOffer"
 import { toOfferScope } from "./toOfferScope"
+import { InventorySource } from "../../db/inventory.repository"
 import { OfferStore } from "../../db/offer.repository"
 
 export function createOfferController({
@@ -30,16 +30,16 @@ export function createOfferController({
 
     try {
       const inventory = await getInventory()
-      const { missingComponent, output } = priceOffer(parsed.output, inventory)
       const offer = await createOffer({
         title: parsed.output.title,
         discountPercentage: parsed.output.discountPercentage,
         input: parsed.output,
-        output: output ?? undefined,
         userId: scope.userId,
       })
 
-      return res.status(201).json({ ...offer, missingComponent })
+      return res
+        .status(201)
+        .json({ ...offer, ...priceOffer(parsed.output, inventory) })
     } catch (error) {
       console.error("Offer creation failed:", error)
       return res.status(500).json({ error: "Offer creation failed" })

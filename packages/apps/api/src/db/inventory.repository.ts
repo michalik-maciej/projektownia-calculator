@@ -2,6 +2,8 @@ import { Component } from "@/domain/models/component"
 
 import { prisma } from "./prisma"
 
+export type InventorySource = () => Promise<Component[]>
+
 export async function getAllComponents(): Promise<Component[]> {
   return prisma.component.findMany()
 }

@@ -17,9 +17,8 @@ Input types for writes are declared beside the functions that take them (`Create
 
 ### An Offer Is Priced at Today's Prices
 
-The `Offer` model persists both `input` and `output` as JSON, but reading an offer recomputes its
-output from `input` against the current inventory (decision 7). The stored `output` is written on
-save and not read back.
+The `Offer` model persists only `input` as JSON. Pricing is computed from it against the current
+inventory whenever an offer is returned, never stored (decision 7).
 
 ### An Offer Belongs to the User Who Created It
 

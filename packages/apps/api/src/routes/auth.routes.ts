@@ -9,16 +9,13 @@ import { loginController } from "../controllers/auth/login.controller"
 import { logoutController } from "../controllers/auth/logout.controller"
 import { registerController } from "../controllers/auth/register.controller"
 import { requireAdmin } from "../controllers/auth/requireAdmin"
-import { InventorySource } from "../controllers/offer/calculateOffer.controller"
 import { OfferStore } from "../db/offer.repository"
 import { UserStore } from "../db/user.repository"
 
 export function createAuthRouter({
-  getInventory,
   offers,
   users,
 }: {
-  getInventory: InventorySource
   offers: Pick<OfferStore, "createOffer">
   users: UserStore
 }): ExpressRouter {
@@ -29,10 +26,7 @@ export function createAuthRouter({
     res.json({ user: get("user", req) })
   })
   router.post("/login", createLoginRateLimit(), loginController)
-  router.post(
-    "/demo",
-    demoLoginController({ ...users, ...offers, getInventory }),
-  )
+  router.post("/demo", demoLoginController({ ...users, ...offers }))
   guarded.post("/logout", logoutController)
   guarded.post("/register", requireAdmin, registerController(users))
 

@@ -7,7 +7,7 @@ import { deleteComponentController } from "../controllers/inventory/deleteCompon
 import { getComponentsController } from "../controllers/inventory/getComponents.controller"
 import { requireInventoryWriter } from "../controllers/inventory/requireInventoryWriter"
 import { updateComponentController } from "../controllers/inventory/updateComponent.controller"
-import { InventorySource } from "../controllers/offer/calculateOffer.controller"
+import { InventorySource } from "../db/inventory.repository"
 
 export function createInventoryRouter({
   getInventory,

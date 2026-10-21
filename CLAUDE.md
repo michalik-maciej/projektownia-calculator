@@ -58,7 +58,7 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 
 - `User`: Email, hashed password, role (ADMIN/USER/DEMO)
 - `Component`: Catalog inventory (category, dimensions, price)
-- `Offer`: Offer records (input JSON, output JSON, discount), owned by the `User` that created
+- `Offer`: Offer records (input JSON, discount; pricing computed on every read, not stored), owned by the `User` that created
   them (`userId`, required)
 
 **API Endpoints**:

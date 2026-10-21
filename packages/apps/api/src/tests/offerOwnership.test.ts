@@ -93,7 +93,6 @@ describe("offer routes scoped to the offer owner", () => {
     const ownOffer = await offers.createOffer({
       title: "Owner offer",
       input: validOfferInput,
-      output: createOfferPreview(validOfferInput, componentCatalogMock),
       userId: ownerId,
     })
     const repricedCatalog = componentCatalogMock.map((component) => ({

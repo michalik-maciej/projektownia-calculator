@@ -16,7 +16,6 @@ const guardedRoutes = [
   { method: "post", path: "/api/offers" },
   { method: "put", path: `/api/offers/${offerId}` },
   { method: "delete", path: `/api/offers/${offerId}` },
-  { method: "post", path: "/api/offers/preview" },
 ] as const
 
 describe("offer routes without authentication", () => {

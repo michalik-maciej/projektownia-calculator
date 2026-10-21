@@ -46,7 +46,7 @@ Technology choices for Projektownia Calculator, a pnpm + Turborepo monorepo with
 
 - **Type**: relational
 - **ORM**: Prisma, migrations applied as a Fly.io release command
-- **Models**: `User`, `Component`, `Offer` (the offer persists both its input and its output as JSON)
+- **Models**: `User`, `Component`, `Offer` (the offer persists only its input as JSON, pricing is computed on read)
 
 ## Build Tools & Package Management
 

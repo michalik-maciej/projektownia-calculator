@@ -46,7 +46,7 @@ describe("demo account", () => {
     expect(users.all()).toHaveLength(2)
   })
 
-  it("seeds a priced example offer for a fresh demo account", async () => {
+  it("seeds an example offer for a fresh demo account", async () => {
     const { app, offers } = setup()
 
     const res = await request(app).post("/api/auth/demo")
@@ -54,7 +54,6 @@ describe("demo account", () => {
 
     expect(seeded).toHaveLength(1)
     expect(seeded[0]?.userId).toBe(res.body.user.id)
-    expect(seeded[0]?.output).not.toBeNull()
     expect(res.body.exampleOfferId).toBe(seeded[0]?.id)
   })
 
