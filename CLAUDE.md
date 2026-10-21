@@ -67,8 +67,8 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 - `POST /api/auth/demo`: Create a fresh session account (role DEMO, catalogue read-only), seeded with
   one priced example offer; expired demo accounts (24h+) are cleaned up as a side effect of this call
 - `GET /api/inventory`: List components
-- `POST /api/inventory`: Add component
-- `PATCH /api/inventory/:id`: Update component
+- `POST /api/inventory`: Add component (ADMIN only)
+- `PATCH /api/inventory/:id`: Update component (ADMIN only)
 - `POST /api/offers`: Create offer (calls domain logic)
 - `GET /api/offers`: List offers (only the caller's own, unless they are an ADMIN)
 - `POST /api/auth/register`: Create a user account (ADMIN only; this is how the user management

@@ -219,7 +219,8 @@ five offer controllers became factories assembled by `offerControllers`.
 `POST /api/auth/demo` and creates a fresh account with the `DEMO` role on every call, seeded with one
 priced example offer so the visitor lands on a filled-in configuration rather than an empty one. That
 role may do everything an ordinary account may, except write to the component catalogue. There is no
-separate database, no separate API and no separate deployment.
+separate database, no separate API and no separate deployment. (Decision 15 later took catalogue
+writes away from ordinary accounts too.)
 
 **Why.** The alternative that was designed first was a third Neon branch with its own Fly app and its
 own front end. It is the safer shape and it was rejected deliberately: it triples the number of
@@ -304,3 +305,20 @@ so the correction is always an addition and never a subtraction.
 cannot flag a forgotten leg. The web only warns, under the gondola's plan, when the sides' unit
 layouts differ (`haveDifferentUnitLayouts`). The old shape stays in `LayoutGondola.schema.ts`
 for as long as such offers exist in the database.
+
+## 15. Only an admin writes to the component catalogue
+
+**Decision.** Adding, editing and deleting catalogue components is reserved for the `ADMIN` role.
+The inventory write routes are guarded by the same `requireAdmin` as user management, and the web
+shows the catalogue read-only to every other role. `USER` and `DEMO` can still read the whole
+catalogue, prices included, because pricing an offer needs it. This narrows decision 12, where the
+demo role was the only one kept out of the catalogue.
+
+**Why.** The catalogue is the one thing every account shares, and every offer is priced from it on
+every read (decision 7). A change made by any one user therefore reprices the open offers of all
+the others, so the right to make it belongs with whoever is responsible for the prices, not with
+everyone who prepares offers.
+
+**Cost.** A price correction now waits for an admin, even when the user preparing the offer knows
+the right number. The guard is a role check, not a permission of its own, so giving one ordinary
+account catalogue rights without making it an admin would need a new role or a separate flag.

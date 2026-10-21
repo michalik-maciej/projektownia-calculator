@@ -14,12 +14,12 @@ import {
 import { Button } from "../../core/ui/button"
 import { textSection } from "../../core/ui/typography"
 import { CATEGORY_LABELS } from "../../offer/helpers/categoryLabels"
-import { useIsDemo } from "../../user/hooks/useIsDemo"
+import { useIsAdmin } from "../../user/hooks/useIsAdmin"
 import { sortInventoryItemsBySize } from "../helpers/sortInventoryItemsBySize"
 import { inventoryQueries } from "../inventory.api"
 
 export function InventoryPage() {
-  const isDemo = useIsDemo()
+  const isAdmin = useIsAdmin()
   const { componentId } = useParams({ strict: false })
   const { data, isPending, error } = useQuery({
     ...inventoryQueries.list(),
@@ -44,9 +44,9 @@ export function InventoryPage() {
   return (
     <section className="m-8 w-md">
       <div className="flex items-center justify-end mb-6">
-        {isDemo ? (
+        {!isAdmin ? (
           <p className="text-xs text-muted-foreground">
-            Wersja demo: katalog tylko do odczytu
+            Katalog tylko do odczytu
           </p>
         ) : (
           <Button size="sm" asChild>

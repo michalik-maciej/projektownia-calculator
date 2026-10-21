@@ -4,7 +4,7 @@ import { useState } from "react"
 import { PriceInput } from "./PriceInput"
 import { textFigure } from "../../core/ui/typography"
 import { formatPrice } from "../../offer/helpers/formatPrice"
-import { useIsDemo } from "../../user/hooks/useIsDemo"
+import { useIsAdmin } from "../../user/hooks/useIsAdmin"
 import { parseInventoryPriceInput } from "../helpers/parseInventoryPriceInput"
 import { useUpdateInventoryItem } from "../hooks/useUpdateInventoryItem"
 import type { InventoryItem } from "../inventory.api"
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export function InventoryItemPriceField({ item }: Props) {
-  const isDemo = useIsDemo()
+  const isAdmin = useIsAdmin()
   const updateMutation = useUpdateInventoryItem()
   const [syncedPrice, setSyncedPrice] = useState(item.price)
   const [value, setValue] = useState(item.price.toFixed(2))
@@ -26,7 +26,7 @@ export function InventoryItemPriceField({ item }: Props) {
     setError(null)
   }
 
-  if (isDemo) {
+  if (!isAdmin) {
     return (
       <span className={`text-muted-foreground ${textFigure}`}>
         {formatPrice(item.price)}

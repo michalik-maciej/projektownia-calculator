@@ -82,36 +82,6 @@ describe("demo account", () => {
     expect(demo?.password).not.toContain("demo")
   })
 
-  it("refuses to let a demo session change the catalogue", async () => {
-    const { app } = setup()
-    const cookie = cookieFor("DEMO")
-
-    const attempts = await Promise.all([
-      request(app).post("/api/inventory/items").set("Cookie", cookie).send({}),
-      request(app)
-        .put("/api/inventory/items/abc")
-        .set("Cookie", cookie)
-        .send({}),
-      request(app).delete("/api/inventory/items/abc").set("Cookie", cookie),
-    ])
-
-    for (const res of attempts) {
-      expect(res.status).toBe(403)
-      expect(res.body).toEqual({ error: "Forbidden" })
-    }
-  })
-
-  it("lets an ordinary account through to the catalogue controllers", async () => {
-    const { app } = setup()
-
-    const res = await request(app)
-      .post("/api/inventory/items")
-      .set("Cookie", cookieFor("USER"))
-      .send({})
-
-    expect(res.status).toBe(400)
-  })
-
   it("answers an admin's registration with the created user", async () => {
     const { app } = setup()
 

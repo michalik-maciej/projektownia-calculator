@@ -16,7 +16,7 @@ import { Label } from "../../core/ui/label"
 import { RadioGroup, RadioGroupItem } from "../../core/ui/radio-group"
 import { textEyebrow } from "../../core/ui/typography"
 import { CATEGORY_LABELS } from "../../offer/helpers/categoryLabels"
-import { useIsDemo } from "../../user/hooks/useIsDemo"
+import { useIsAdmin } from "../../user/hooks/useIsAdmin"
 import { passwordManagerIgnore } from "../helpers/passwordManagerIgnore"
 import { useCreateInventoryItem } from "../hooks/useCreateInventoryItem"
 import { useDeleteInventoryItem } from "../hooks/useDeleteInventoryItem"
@@ -39,7 +39,7 @@ type Props = {
 export function InventoryItem({ defaultValues, onClose }: Props) {
   const { componentId } = useParams({ strict: false })
   const createMutation = useCreateInventoryItem()
-  const isDemo = useIsDemo()
+  const isAdmin = useIsAdmin()
   const updateMutation = useUpdateInventoryItem()
   const deleteMutation = useDeleteInventoryItem()
 
@@ -207,7 +207,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
             disabled={deleteMutation.isPending}
             variant="ghost"
             onClick={handleDelete}
-            hidden={!componentId || isDemo}
+            hidden={!componentId || !isAdmin}
           >
             {deleteMutation.isPending ? (
               <Loader2 className="animate-spin" />
@@ -220,7 +220,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
               variant="secondary"
               type="submit"
               disabled={formState.isSubmitting}
-              hidden={isDemo}
+              hidden={!isAdmin}
             >
               {formState.isSubmitting ? (
                 <Loader2 className="animate-spin" />

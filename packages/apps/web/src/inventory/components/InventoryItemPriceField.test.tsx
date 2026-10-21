@@ -13,7 +13,7 @@ describe("InventoryItemPriceField", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity } },
     })
-    queryClient.setQueryData(["auth", "user"], { user: { role: "USER" } })
+    queryClient.setQueryData(["auth", "user"], { user: { role: "ADMIN" } })
 
     render(
       <QueryClientProvider client={queryClient}>
