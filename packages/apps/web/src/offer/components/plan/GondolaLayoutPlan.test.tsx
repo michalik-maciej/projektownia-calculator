@@ -100,6 +100,32 @@ describe("GondolaLayoutPlan", () => {
     expect(unitsOnPlan(80)).toHaveLength(3)
   })
 
+  it("locks the top cover on the unlinked second side to the first side", () => {
+    render(<Harness sides={[createSide(80), createSide(100)]} />)
+
+    fireEvent.click(unitsOnPlan(100)[0]!)
+
+    expect(screen.getByRole("checkbox", { name: "Maskownica" })).toBeDisabled()
+
+    fireEvent.focus(
+      screen.getByRole("button", { name: "Jak liczone są maskownice" }),
+    )
+
+    expect(screen.getByRole("tooltip")).toHaveTextContent(
+      "Maskownica jest wspólna dla obu stron gondoli i liczona według regałów strony 1.",
+    )
+  })
+
+  it("explains top covers only once the sides are unlinked", () => {
+    render(<Harness sides={[createSide(80), createSide(80)]} />)
+
+    fireEvent.click(unitsOnPlan(80)[0]!)
+
+    expect(
+      screen.queryByRole("button", { name: "Jak liczone są maskownice" }),
+    ).not.toBeInTheDocument()
+  })
+
   it("opens a gondola with different sides unlinked", () => {
     render(<Harness sides={[createSide(80), createSide(100)]} />)
 

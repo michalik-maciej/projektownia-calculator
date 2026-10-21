@@ -49,12 +49,13 @@ describe("calculateWallLayoutDemand", () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it("doubles the backs and adds base covers when the run asks for them", () => {
+  it("doubles the backs and adds base and top covers when the run asks for them", () => {
     const result = calculateWallLayoutDemand(
       {
         backVariant: 2,
         depth: 47,
         hasBaseCover: true,
+        hasTopCover: true,
         height: 130,
         numberOfLayouts: 2,
         shelfUnits: [
@@ -85,6 +86,8 @@ describe("calculateWallLayoutDemand", () => {
       { id: "shelf-80-37", quantity: 40 },
       { id: "support-37", quantity: 80 },
       { id: "foot-47", quantity: 12 },
+      { id: "top-cover-100", quantity: 2 },
+      { id: "top-cover-80", quantity: 8 },
       { id: "leg-130-8-3", quantity: 12 },
     ]
 

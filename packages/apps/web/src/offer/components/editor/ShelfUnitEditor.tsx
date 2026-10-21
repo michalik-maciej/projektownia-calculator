@@ -14,6 +14,7 @@ import { useInventoryDimensions } from "../../hooks/useInventoryDimensions"
 import { RunOptionsPath, UnitsPath } from "../../offer.types"
 
 export function ShelfUnitEditor({
+  areGondolaSidesUnlinked,
   isSingleModule = false,
   layoutIndex,
   onDuplicateUnit,
@@ -26,6 +27,7 @@ export function ShelfUnitEditor({
   unitIndex,
   unitsPath,
 }: {
+  areGondolaSidesUnlinked?: boolean
   isSingleModule?: boolean
   layoutIndex: number
   onDuplicateUnit?: () => void
@@ -113,7 +115,11 @@ export function ShelfUnitEditor({
         unitIndex={unitIndex}
         unitsPath={unitsPath}
       />
-      <OptionsFields layoutIndex={layoutIndex} optionsPath={optionsPath} />
+      <OptionsFields
+        areGondolaSidesUnlinked={areGondolaSidesUnlinked}
+        layoutIndex={layoutIndex}
+        optionsPath={optionsPath}
+      />
     </div>
   )
 }

@@ -297,4 +297,44 @@ describe("calculateGondolaLayoutDemand", () => {
 
     expect(result).toEqual(expectedResult)
   })
+
+  it("orders top covers once for both sides, counted on the first side", () => {
+    const result = calculateGondolaLayoutDemand(
+      {
+        height: 130,
+        numberOfLayouts: 2,
+        sides: [
+          {
+            backVariant: 0,
+            depth: 47,
+            hasTopCover: true,
+            shelfUnits: [
+              {
+                numberOfShelfUnits: 2,
+                shelves: [],
+                width: 80,
+              },
+            ],
+          },
+          {
+            backVariant: 0,
+            depth: 47,
+            shelfUnits: [
+              {
+                numberOfShelfUnits: 1,
+                shelves: [],
+                width: 100,
+              },
+            ],
+          },
+        ],
+      },
+      componentCatalogMock,
+    )
+
+    expect(result).toContainEqual({ id: "top-cover-80", quantity: 4 })
+    expect(result).not.toContainEqual(
+      expect.objectContaining({ id: "top-cover-100" }),
+    )
+  })
 })

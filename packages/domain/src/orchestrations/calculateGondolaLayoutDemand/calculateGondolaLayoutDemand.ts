@@ -3,7 +3,9 @@ import { compact, sumBy } from "lodash/fp"
 import { LayoutGondola } from "@/schemas/LayoutGondola.schema"
 
 import { calculateLegDemand } from "../../calculations/calculateLegDemand/calculateLegDemand"
+import { calculateTopCoverDemand } from "../../calculations/calculateTopCoverDemand/calculateTopCoverDemand"
 import { Component } from "../../models/component"
+import { countShelfUnitsByWidth } from "../../transformations/countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { calculateRunSideDemand } from "../calculateRunSideDemand/calculateRunSideDemand"
 import { calculateWallLayoutDemand } from "../calculateWallLayoutDemand/calculateWallLayoutDemand"
 
@@ -29,6 +31,17 @@ export function calculateGondolaLayoutDemand(
     ...sides.flatMap((side) =>
       calculateRunSideDemand({ ...side, height, numberOfLayouts }, inventory),
     ),
+    ...(sides[0].hasTopCover
+      ? calculateTopCoverDemand(
+          {
+            shelfUnitsByWidth: countShelfUnitsByWidth(
+              sides[0].shelfUnits,
+              numberOfLayouts,
+            ),
+          },
+          inventory,
+        )
+      : []),
     ...calculateLegDemand(
       { height, numberOfLayouts, numberOfUnits },
       inventory,

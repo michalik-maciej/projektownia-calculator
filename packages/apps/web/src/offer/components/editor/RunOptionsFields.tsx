@@ -1,3 +1,4 @@
+import { Info } from "lucide-react"
 import { useId } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -10,16 +11,27 @@ import { OfferInput } from "@/schemas/Offer.schema"
 import { Button } from "../../../core/ui/button"
 import { Checkbox } from "../../../core/ui/checkbox"
 import { Label } from "../../../core/ui/label"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../../core/ui/tooltip"
 import { RunOptionsPath } from "../../offer.types"
 
 export function RunOptionsFields({
+  areGondolaSidesUnlinked = false,
   optionsPath,
 }: {
+  areGondolaSidesUnlinked?: boolean
   optionsPath: RunOptionsPath
 }) {
   const { control } = useFormContext<OfferInput>()
   const baseCoverId = useId()
   const topCoverId = useId()
+  const isSecondGondolaSide = optionsPath.endsWith(".sides.1")
+  const topCoverPath = isSecondGondolaSide
+    ? (optionsPath.replace(/1$/, "0") as RunOptionsPath)
+    : optionsPath
 
   return (
     <>
@@ -78,18 +90,39 @@ export function RunOptionsFields({
       </div>
 
       <div className="flex items-center gap-1.5">
-        <Label
-          className="w-28 shrink-0 cursor-pointer font-normal text-muted-foreground"
-          htmlFor={topCoverId}
-        >
-          Maskownica
-        </Label>
+        <div className="flex w-28 shrink-0 items-center gap-1">
+          <Label
+            className="cursor-pointer font-normal text-muted-foreground"
+            htmlFor={topCoverId}
+          >
+            Maskownica
+          </Label>
+          {areGondolaSidesUnlinked && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  aria-label="Jak liczone są maskownice"
+                  className="text-muted-foreground hover:text-foreground"
+                  type="button"
+                >
+                  <Info className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {isSecondGondolaSide
+                  ? "Maskownica jest wspólna dla obu stron gondoli i liczona według regałów strony 1."
+                  : "Rozpiska maskownic wynika z układu regałów strony 1."}
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </div>
         <Controller
           control={control}
-          name={`${optionsPath}.hasTopCover`}
+          name={`${topCoverPath}.hasTopCover`}
           render={({ field }) => (
             <Checkbox
               checked={field.value ?? false}
+              disabled={isSecondGondolaSide}
               id={topCoverId}
               onBlur={field.onBlur}
               onCheckedChange={field.onChange}

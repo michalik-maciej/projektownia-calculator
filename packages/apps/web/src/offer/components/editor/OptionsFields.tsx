@@ -4,9 +4,11 @@ import { SectionLabel } from "./SectionLabel"
 import { RunOptionsPath } from "../../offer.types"
 
 export function OptionsFields({
+  areGondolaSidesUnlinked,
   layoutIndex,
   optionsPath,
 }: {
+  areGondolaSidesUnlinked?: boolean
   layoutIndex: number
   optionsPath: RunOptionsPath
 }) {
@@ -14,7 +16,10 @@ export function OptionsFields({
     <div className="flex flex-col gap-2 rounded-lg border bg-background p-4">
       <SectionLabel>Opcje</SectionLabel>
 
-      <RunOptionsFields optionsPath={optionsPath} />
+      <RunOptionsFields
+        areGondolaSidesUnlinked={areGondolaSidesUnlinked}
+        optionsPath={optionsPath}
+      />
 
       <ComponentQuantityFields
         label="Inne elementy"

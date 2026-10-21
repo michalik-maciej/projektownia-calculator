@@ -343,6 +343,7 @@ export function GondolaLayoutPlan({
                   )}
                 </div>
                 <ShelfUnitEditor
+                  areGondolaSidesUnlinked={!areSidesLinked}
                   key={selectedSideUnit.id}
                   layoutIndex={layoutIndex}
                   onDuplicateUnit={() => handleDuplicateUnit(selectedUnitIndex)}
