@@ -6,7 +6,6 @@ import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 
 import { Component } from "../../models/component"
 import { ShelfUnit } from "../../models/shelfUnit"
-import { countShelfUnitsByWidth } from "../countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { describeComponent } from "../describeComponent/describeComponent"
 import { describeFirstShelf } from "../describeFirstShelf/describeFirstShelf"
 
@@ -47,15 +46,14 @@ export function buildLayoutDescription(
       }),
     )
     const [firstEndCap, secondEndCap] = endCaps
-    const unitsByWidth = countShelfUnitsByWidth(
-      sides.flatMap(({ shelfUnits }) => shelfUnits),
-      1,
+    const unitWidths = uniq(
+      sides.map(({ shelfUnits }) => describeUnitWidths(shelfUnits)),
     )
 
     return compact([
       `H${height}`,
       `B${depths.join("/")}`,
-      describeUnitWidths(unitsByWidth),
+      unitWidths.join(" / "),
       shelves.length > 0 && `półki ${shelves.join("/")}`,
       ...(firstEndCap && firstEndCap === secondEndCap
         ? [`2× ${firstEndCap}`]

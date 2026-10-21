@@ -74,10 +74,10 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual("H130 · B47 · 4×80 + 2×100")
+    expect(description).toEqual("H130 · B47 · 2×80 + 1×100")
   })
 
-  it("sums the units of both sides and lists the bases and shelves that differ", () => {
+  it("describes a gondola by one side and lists what differs between the sides", () => {
     const description = buildLayoutDescription(
       {
         height: 130,
@@ -114,7 +114,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "H130 · B47/37 · 3×125 + 1×80 · półki 4×47/3×37",
+      "H130 · B47/37 · 2×125 / 1×125 + 1×80 · półki 4×47/3×37",
     )
   })
 
@@ -142,7 +142,7 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual("H130 · B47 · 4×80")
+    expect(description).toEqual("H130 · B47 · 2×80")
   })
 
   it("builds description of item set", () => {
@@ -222,7 +222,7 @@ describe("buildLayoutDescription", () => {
     )
 
     expect(description).toEqual(
-      "H130 · B47 · 4×80 · szczyt 100/37 · szczyt 66/30",
+      "H130 · B47 · 2×80 · szczyt 100/37 · szczyt 66/30",
     )
   })
 
@@ -247,6 +247,6 @@ describe("buildLayoutDescription", () => {
       componentCatalogMock,
     )
 
-    expect(description).toEqual("H130 · B47 · 4×80 · 2× szczyt 100/37")
+    expect(description).toEqual("H130 · B47 · 2×80 · 2× szczyt 100/37")
   })
 })
