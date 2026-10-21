@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.2.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.1.0...v1.2.0) (2026-10-21)
+
+
+### Features
+
+* add a user menu with role, user management and logout ([e9384ed](https://github.com/michalik-maciej/projektownia-calculator/commit/e9384ed0eade026cf2087e4d9f4f3aae7bd5ce2f))
+* default new offers to a 44% discount ([de45dfe](https://github.com/michalik-maciej/projektownia-calculator/commit/de45dfe4e53492453bc1cee18a71c0e152bb206f))
+* order part groups ([5ec5bc7](https://github.com/michalik-maciej/projektownia-calculator/commit/5ec5bc7163a185cf7355bfb59e011a5d081f5884))
+* price offers at current catalogue prices when opened ([4d2b517](https://github.com/michalik-maciej/projektownia-calculator/commit/4d2b5174737a764f8dbcff6e182b15668e2e55d5))
+* rotate end cap labels to face the gondola centre ([3e25507](https://github.com/michalik-maciej/projektownia-calculator/commit/3e255074d1152c5fcf5cc5267f92b058cd9e4105))
+* show catalogue prices with two decimal places ([406ead3](https://github.com/michalik-maciej/projektownia-calculator/commit/406ead3adb23c439e3f3617064f8b58d1c96044e))
+* start new runs at 210 cm high and 47 cm deep with six shelves ([42ce023](https://github.com/michalik-maciej/projektownia-calculator/commit/42ce0230f5932cae0b0c4e41e11130b7381b853b))
+
+
+### Bug Fixes
+
+* keep password manager icons out of catalogue fields ([972fee2](https://github.com/michalik-maciej/projektownia-calculator/commit/972fee268916f5ffde7e6d7870f8109a71382bbe))
+* show parts added to an open catalogue section ([a220758](https://github.com/michalik-maciej/projektownia-calculator/commit/a220758fe7b75f5382477106f38c84e1e433e7bd))
+* trigger dialog and accordion animations on Radix state attributes ([b6d8f5f](https://github.com/michalik-maciej/projektownia-calculator/commit/b6d8f5fdefc7dc990e6562e7642234459df5a97a))
+
 ## [1.1.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.0.0...v1.1.0) (2026-10-17)
 
 
