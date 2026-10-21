@@ -6,12 +6,30 @@ import { LayoutItemSetValue } from "./LayoutItemSet.schema"
 import { LayoutWallValue } from "./LayoutWall.schema"
 import { MissingComponentSchema } from "./OfferError.schema"
 
+export const PRICE_STRIP_COLORS = [
+  "white",
+  "black",
+  "red",
+  "orange",
+  "yellow",
+  "green",
+  "blue",
+  "transparent",
+] as const
+
+export const METAL_COLORS = ["graphite", "cream"] as const
+
+export type PriceStripColor = (typeof PRICE_STRIP_COLORS)[number]
+export type MetalColor = (typeof METAL_COLORS)[number]
+
 export const OfferInputSchema = v.object({
   discountPercentage: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
   hasPriceStrips: v.optional(v.boolean()),
   layouts: v.array(
     v.union([LayoutGondolaValue, LayoutWallValue, LayoutItemSetValue]),
   ),
+  metalColor: v.optional(v.picklist(METAL_COLORS)),
+  priceStripColor: v.optional(v.picklist(PRICE_STRIP_COLORS)),
   title: v.string(),
 })
 
