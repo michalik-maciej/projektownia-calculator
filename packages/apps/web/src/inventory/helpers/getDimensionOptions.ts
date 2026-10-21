@@ -23,6 +23,7 @@ export function getDimensionOptions({ dimension, inventoryItems }: Params) {
     foot: [],
     leg: [],
     misc: [],
+    priceStrip: [],
     shelf: [],
     support: [],
     topCover: [],

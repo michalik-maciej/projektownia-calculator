@@ -36,6 +36,9 @@ describe("createOfferPreview", () => {
         shelf: [{ id: "shelf-100-47", quantity: 1, label: "Półka 100/47" }],
         leg: [{ id: "leg-180-8-3", quantity: 2, label: "Noga 180/8/3" }],
         foot: [{ id: "foot-47", quantity: 2, label: "Stopa 47" }],
+        priceStrip: [
+          { id: "price-strip-100", quantity: 1, label: "Listwa cenowa 100" },
+        ],
       },
       layouts: [
         {
@@ -52,9 +55,10 @@ describe("createOfferPreview", () => {
           },
         },
       ],
+      priceStrips: { basePrice: 2.2, quantity: 1 },
       pricing: {
-        basePrice: 553.85,
-        discountPrice: 498.47,
+        basePrice: 556.05,
+        discountPrice: 500.45,
         discountPercentage: 10,
       },
       title: "Test Offer",

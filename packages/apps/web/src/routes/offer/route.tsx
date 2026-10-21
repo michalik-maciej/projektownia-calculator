@@ -156,8 +156,17 @@ function OfferPage() {
                   keys: fields.map((field) => field.id),
                   layoutOutputs: output?.layouts,
                   layouts,
+                  priceStrips: output?.priceStrips,
                 }).map(
-                  ({ basePrice, code, description, key, name, quantity }) => (
+                  ({
+                    basePrice,
+                    code,
+                    description,
+                    key,
+                    name,
+                    quantity,
+                    unit,
+                  }) => (
                     <tr key={key}>
                       <td className="px-3 py-2">
                         {code && <LayoutCode code={code} />}
@@ -171,7 +180,8 @@ function OfferPage() {
                         </div>
                       </td>
                       <td className={`px-3 py-2 text-right ${textFigure}`}>
-                        {quantity ?? "—"}
+                        {quantity?.toLocaleString("pl-PL") ?? "—"}
+                        {unit && ` ${unit}`}
                       </td>
                       <td className={`px-3 py-2 text-right ${textFigure}`}>
                         {basePrice === null ? "—" : formatPrice(basePrice)}

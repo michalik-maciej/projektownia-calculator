@@ -1,20 +1,26 @@
 import type { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculateBomPrice"
+import { calculatePriceStripDemand } from "../../calculations/calculatePriceStripDemand/calculatePriceStripDemand"
 import { Component } from "../../models/component"
 import { breakdownDemandByCategory } from "../../transformations/breakdownDemandByCategory/breakdownDemandByCategory"
 import { mapLayoutsToOfferOutput } from "../../transformations/mapLayoutsToOfferOutput/mapLayoutsToOfferOutput"
+import { summarizePriceStrips } from "../../transformations/summarizePriceStrips/summarizePriceStrips"
 import { calculateOfferDemand } from "../calculateOfferDemand/calculateOfferDemand"
 
 export function createOfferPreview(
-  { discountPercentage, layouts, title }: OfferInput,
+  { discountPercentage, hasPriceStrips = true, layouts, title }: OfferInput,
   inventory: Component[],
 ): OfferOutput {
-  const bom = calculateOfferDemand(layouts, inventory)
+  const priceStripDemand = hasPriceStrips
+    ? calculatePriceStripDemand(layouts, inventory)
+    : []
+  const bom = [...calculateOfferDemand(layouts, inventory), ...priceStripDemand]
 
   return {
     breakdown: breakdownDemandByCategory(bom, inventory),
     layouts: mapLayoutsToOfferOutput(layouts, inventory),
+    priceStrips: summarizePriceStrips(priceStripDemand, inventory),
     pricing: {
       ...calculateBomPrice({ bom, discountPercentage }, inventory),
       discountPercentage,

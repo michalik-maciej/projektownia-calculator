@@ -8,6 +8,7 @@ import { MissingComponentSchema } from "./OfferError.schema"
 
 export const OfferInputSchema = v.object({
   discountPercentage: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+  hasPriceStrips: v.optional(v.boolean()),
   layouts: v.array(
     v.union([LayoutGondolaValue, LayoutWallValue, LayoutItemSetValue]),
   ),
@@ -43,6 +44,12 @@ export const OfferOutputSchema = v.object({
           }),
         ),
       ),
+    }),
+  ),
+  priceStrips: v.nullable(
+    v.object({
+      basePrice: v.pipe(v.number(), v.minValue(0)),
+      quantity: v.number(),
     }),
   ),
   pricing: v.object({

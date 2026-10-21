@@ -8,6 +8,7 @@ export const COMPONENT_CATEGORIES = [
   "support",
   "baseCover",
   "topCover",
+  "priceStrip",
   "misc",
 ] as const
 
@@ -24,6 +25,7 @@ export const CATEGORY_REQUIREMENTS: Record<
   foot: { required: ["depth"] },
   leg: { required: ["width", "height", "depth"] },
   misc: { required: [] },
+  priceStrip: { required: ["width"] },
   shelf: { required: ["width", "depth"] },
   support: { required: ["depth"] },
   topCover: { required: ["width"] },

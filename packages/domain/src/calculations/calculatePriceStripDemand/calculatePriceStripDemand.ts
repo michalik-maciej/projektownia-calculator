@@ -1,0 +1,82 @@
+import { compact, find, sumBy } from "lodash/fp"
+
+import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
+import { isLayoutWall } from "@/schemas/LayoutWall.schema"
+import { OfferInput } from "@/schemas/Offer.schema"
+
+import { Component, ComponentDemand } from "../../models/component"
+import { MissingComponentError } from "../../models/missingComponentError"
+import { ShelfUnit } from "../../models/shelfUnit"
+
+const BASE_SHELVES_PER_UNIT = 1
+const END_CAP_RUN_COUNT = 1
+
+type ShelfRun = {
+  numberOfRuns: number
+  shelfUnits: ShelfUnit[]
+}
+
+function listShelfRuns(layout: OfferInput["layouts"][number]): ShelfRun[] {
+  if (isLayoutWall(layout)) {
+    return [
+      { numberOfRuns: layout.numberOfLayouts, shelfUnits: layout.shelfUnits },
+    ]
+  }
+
+  if (isLayoutGondola(layout)) {
+    const { leftEndCap, numberOfLayouts, rightEndCap, sides } = layout
+
+    return [
+      ...sides.map(({ shelfUnits }) => ({
+        numberOfRuns: numberOfLayouts,
+        shelfUnits,
+      })),
+      ...compact([leftEndCap, rightEndCap]).map(({ shelfUnits }) => ({
+        numberOfRuns: END_CAP_RUN_COUNT,
+        shelfUnits,
+      })),
+    ]
+  }
+
+  return []
+}
+
+export function calculatePriceStripDemand(
+  layouts: OfferInput["layouts"],
+  inventory: Component[],
+): ComponentDemand {
+  const numberOfShelvesByWidth = new Map<number, number>()
+
+  for (const { numberOfRuns, shelfUnits } of layouts.flatMap(listShelfRuns)) {
+    for (const { numberOfShelfUnits, shelves = [], width } of shelfUnits) {
+      const numberOfShelves =
+        numberOfRuns *
+        numberOfShelfUnits *
+        (BASE_SHELVES_PER_UNIT + sumBy("numberOfShelves", shelves))
+      const current = numberOfShelvesByWidth.get(width) ?? 0
+
+      numberOfShelvesByWidth.set(width, current + numberOfShelves)
+    }
+  }
+
+  return Array.from(numberOfShelvesByWidth)
+    .filter(([, numberOfShelves]) => numberOfShelves > 0)
+    .map(([width, numberOfShelves]) => {
+      const availablePriceStrip = find(
+        { category: "priceStrip", width },
+        inventory,
+      )
+
+      if (!availablePriceStrip) {
+        throw new MissingComponentError(
+          `No price strip found for width ${width}cm`,
+          { category: "priceStrip", width },
+        )
+      }
+
+      return {
+        id: availablePriceStrip.id,
+        quantity: numberOfShelves,
+      }
+    })
+}

@@ -44,6 +44,7 @@ enum ComponentCategory {
   foot
   leg
   misc
+  priceStrip
   shelf
   support
   topCover

@@ -38,6 +38,7 @@ describe("buildOfferRows", () => {
           ],
         },
       ],
+      priceStrips: null,
     })
 
     expect(rows).toEqual([
@@ -74,6 +75,7 @@ describe("buildOfferRows", () => {
         keys: ["wall"],
         layoutOutputs: undefined,
         layouts: [wallLayout],
+        priceStrips: undefined,
       }),
     ).toEqual([
       {
@@ -85,5 +87,24 @@ describe("buildOfferRows", () => {
         quantity: 3,
       },
     ])
+  })
+
+  it("lists all price strips as one row, in running metres, after the runs", () => {
+    const rows = buildOfferRows({
+      keys: ["wall"],
+      layoutOutputs: undefined,
+      layouts: [wallLayout],
+      priceStrips: { basePrice: 40, quantity: 4.2 },
+    })
+
+    expect(rows.at(-1)).toEqual({
+      basePrice: 40,
+      code: null,
+      description: "do wszystkich półek",
+      key: "price-strips",
+      name: "Listwy cenowe",
+      quantity: 4.2,
+      unit: "mb",
+    })
   })
 })
