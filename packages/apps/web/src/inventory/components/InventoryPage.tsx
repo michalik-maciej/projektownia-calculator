@@ -2,6 +2,8 @@ import { CopyPlusIcon } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useParams } from "@tanstack/react-router"
 
+import { COMPONENT_CATEGORIES } from "@/schemas/inventory/Component.schema"
+
 import { InventoryItemPriceField } from "./InventoryItemPriceField"
 import {
   Accordion,
@@ -11,8 +13,8 @@ import {
 } from "../../core/ui/accordion"
 import { Button } from "../../core/ui/button"
 import { textSection } from "../../core/ui/typography"
+import { CATEGORY_LABELS } from "../../offer/helpers/categoryLabels"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
-import { CATEGORY_LABELS } from "../components/labels.inventory"
 import { sortInventoryItemsBySize } from "../helpers/sortInventoryItemsBySize"
 import { inventoryQueries } from "../inventory.api"
 
@@ -56,7 +58,10 @@ export function InventoryPage() {
         )}
       </div>
       <Accordion type="single" collapsible className="border bg-card">
-        {Object.entries(data).map(([category, items]) => (
+        {COMPONENT_CATEGORIES.flatMap((category) => {
+          const items = data[category] ?? []
+          return items.length === 0 ? [] : [{ category, items }]
+        }).map(({ category, items }) => (
           <AccordionItem
             className="data-[state=open]:bg-highlight/10"
             key={category}
@@ -65,7 +70,7 @@ export function InventoryPage() {
             <AccordionTrigger
               className={`items-center justify-start rounded-none px-4 py-3 hover:no-underline **:data-[slot=accordion-trigger-icon]:ml-0 ${textSection}`}
             >
-              {CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS]}
+              {CATEGORY_LABELS[category]}
               <span className="mr-3 ml-auto font-mono text-xs font-normal text-muted-foreground">
                 {items.length}
               </span>

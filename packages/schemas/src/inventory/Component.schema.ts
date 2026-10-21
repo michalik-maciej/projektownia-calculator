@@ -1,13 +1,13 @@
 import * as v from "valibot"
 
 export const COMPONENT_CATEGORIES = [
-  "back",
-  "baseCover",
-  "foot",
   "leg",
-  "misc",
+  "foot",
+  "back",
   "shelf",
   "support",
+  "baseCover",
+  "misc",
 ] as const
 
 export const ComponentCategorySchema = v.picklist(COMPONENT_CATEGORIES)
