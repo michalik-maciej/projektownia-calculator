@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.2.1...v1.3.0) (2026-10-21)
+
+
+### Features
+
+* add price strips ([f060728](https://github.com/michalik-maciej/projektownia-calculator/commit/f0607287bfb0e049a28aa3d5b186bc0fd29498b0))
+* add top covers as a run option ([7832d54](https://github.com/michalik-maciej/projektownia-calculator/commit/7832d544ba7535e56762f6bd9d14bf69efe6c09e))
+* link the top bar logo ([fbb9d63](https://github.com/michalik-maciej/projektownia-calculator/commit/fbb9d636145edbc90a58e4b1a3c199b64c9527ad))
+* restrict catalogue editing to admins ([572ee0b](https://github.com/michalik-maciej/projektownia-calculator/commit/572ee0b21e6e5e22c41c4792cd70c92d1ea293fe))
+
+
+### Bug Fixes
+
+* describe a gondola by one side instead of summing both ([72b861a](https://github.com/michalik-maciej/projektownia-calculator/commit/72b861a250eb7cee8e1a7d6d5f067a71d9e8894c))
+* use Tailwind v4 variable syntax in select dropdown classes ([b886568](https://github.com/michalik-maciej/projektownia-calculator/commit/b88656871a2cbce06cfcb0fc9043431d7b9308ca))
+
 ## [1.2.1](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.2.0...v1.2.1) (2026-10-21)
 
 
