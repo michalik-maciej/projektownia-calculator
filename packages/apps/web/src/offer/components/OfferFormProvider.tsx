@@ -7,7 +7,7 @@ import { OfferInput, SavedOffer } from "@/schemas/Offer.schema"
 
 import { PreviewErrorBanner } from "./PreviewErrorBanner"
 import { isUnauthorized } from "../../core/createMethod.api"
-import { createDefaultOfferTitle } from "../helpers/createDefaultOfferTitle"
+import { createDefaultOfferInput } from "../helpers/createDefaultOfferInput"
 import { describeMissingComponent } from "../helpers/describeMissingComponent"
 import { useOffer } from "../hooks/useOffer"
 import { offerApi, offerMutationKeys, offerQueries } from "../offer.api"
@@ -17,11 +17,7 @@ const AUTOSAVE_RETRIES = 2
 
 export function OfferFormProvider({ children }: { children: ReactNode }) {
   const form = useForm<OfferInput>({
-    defaultValues: {
-      discountPercentage: 30,
-      layouts: [],
-      title: createDefaultOfferTitle(),
-    },
+    defaultValues: createDefaultOfferInput(),
     mode: "onChange",
     reValidateMode: "onChange",
   })
