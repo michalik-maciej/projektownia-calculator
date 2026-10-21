@@ -25,7 +25,7 @@ export function offerControllers({
 > {
   return {
     create: createOfferController({ ...offers, getInventory }),
-    details: getOfferController(offers),
+    details: getOfferController({ ...offers, getInventory }),
     list: getOffersController(offers),
     preview: calculateOfferController({ getInventory }),
     remove: deleteOfferController(offers),

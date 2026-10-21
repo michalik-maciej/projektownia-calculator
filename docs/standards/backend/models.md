@@ -15,11 +15,11 @@ export async function getAllComponents(): Promise<Component[]> {
 Input types for writes are declared beside the functions that take them (`CreateOfferInput`,
 `UpdateOfferInput`).
 
-### An Offer Stores Its Own Output
+### An Offer Is Priced at Today's Prices
 
-The `Offer` model persists both `input` and `output` as JSON. An offer is a record of what was
-quoted, not a query to be re-run: reopening one must never recompute it against today's prices. The
-accepted consequence is that a fix to the calculation rules does not reach offers already saved.
+The `Offer` model persists both `input` and `output` as JSON, but reading an offer recomputes its
+output from `input` against the current inventory (decision 7). The stored `output` is written on
+save and not read back.
 
 ### An Offer Belongs to the User Who Created It
 

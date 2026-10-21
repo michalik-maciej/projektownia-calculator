@@ -15,6 +15,7 @@ export function useCreateInventoryItem() {
       await queryClient.invalidateQueries({
         queryKey: inventoryQueries.list().queryKey,
       })
+      await queryClient.invalidateQueries({ queryKey: ["offer", "details"] })
     },
   })
 }

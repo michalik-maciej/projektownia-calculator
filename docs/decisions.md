@@ -124,18 +124,21 @@ different sites (Vercel and Fly).
 **Cost.** A token cannot be revoked before it expires. For a tool with a handful of known users that
 is acceptable; it would not be for a multi-tenant product.
 
-## 7. An offer stores its own output, not just its input
+## 7. An offer is priced at today's catalogue prices
 
-**Decision.** The `Offer` model persists both `input` and `output` as JSON
-(`packages/apps/api/prisma/schema.prisma`).
+**Decision.** Opening an offer (`GET /api/offers/:id`) recomputes its output from the stored `input`
+against the current inventory. The web app invalidates the open offer after every catalogue change,
+so its prices follow the catalogue while it is open. The `output` column is still written on every
+save, but nothing reads it back.
 
-**Why.** Component prices in the inventory change. If an offer were only its input, reopening one
-from six months ago would recompute it against today's prices and silently show different numbers.
-Storing the output makes an offer a record of what was quoted, not a query that happens to be
-re-run.
+**Why.** The end client asked for it: an offer is a working document, and a price change in the
+catalogue has to reach it without re-entering the configuration. This reverses the earlier rule that
+an offer was a record of what was quoted.
 
-**Cost.** A fix to the calculation rules does not propagate to offers already saved. That is the
-point, but it means an old offer and a new one can legitimately disagree.
+**Cost.** Reopening an offer sent months ago shows today's prices, not the ones the customer saw, and
+a fix to the calculation rules changes old offers too. A component removed from the catalogue turns
+a priced offer into a missing-component warning. Another user's catalogue change reaches an open
+offer only on its next refetch, not live.
 
 ## 8. Vercel for the front end, Fly.io for the API
 

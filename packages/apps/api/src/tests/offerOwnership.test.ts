@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest"
 
 import { componentCatalogMock } from "@/domain/fixtures/componentCatalog"
 import { validOfferInput } from "@/domain/fixtures/validOfferInput"
+import { createOfferPreview } from "@/domain/orchestrations/createOfferPreview/createOfferPreview"
 
 import { createInMemoryOfferStore } from "./inMemoryOfferStore"
 import { createApp } from "../app"
@@ -85,6 +86,30 @@ describe("offer routes scoped to the offer owner", () => {
 
     expect(res.status).toBe(200)
     expect(res.body).toMatchObject({ id: ownOffer.id, userId: ownerId })
+  })
+
+  it("prices an opened offer at the current catalogue prices", async () => {
+    const offers = createInMemoryOfferStore()
+    const ownOffer = await offers.createOffer({
+      title: "Owner offer",
+      input: validOfferInput,
+      output: createOfferPreview(validOfferInput, componentCatalogMock),
+      userId: ownerId,
+    })
+    const repricedCatalog = componentCatalogMock.map((component) => ({
+      ...component,
+      price: component.price * 2,
+    }))
+    const app = createApp({ getInventory: async () => repricedCatalog, offers })
+
+    const res = await request(app)
+      .get(`/api/offers/${ownOffer.id}`)
+      .set("Cookie", ownerCookie)
+
+    expect(res.status).toBe(200)
+    expect(res.body.output).toEqual(
+      createOfferPreview(validOfferInput, repricedCatalog),
+    )
   })
 
   it("hides an offer owned by somebody else behind a 404", async () => {

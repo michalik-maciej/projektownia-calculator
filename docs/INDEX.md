@@ -22,7 +22,7 @@ Located in `docs/project/`
 
 ### Vision (`project/vision.md`)
 
-What Projektownia Calculator is for and where it is going: turning wall and gondola shelf configurations into a bill of materials and a priced offer, why offers store the output they were quoted at rather than being recomputed, the current state of the repository (age, single maintainer, one commercial user), and the goals for the next 6 to 12 months (a scale-drawing configuration UI, the missing run configuration form, the end client's backlog with gondolas first). Also records that the calculation rules have survived four rewrites, which is why they live in a dependency-free package.
+What Projektownia Calculator is for and where it is going: turning wall and gondola shelf configurations into a bill of materials and a priced offer, why offers are priced at today's catalogue prices whenever they are opened, the current state of the repository (age, single maintainer, one commercial user), and the goals for the next 6 to 12 months (a scale-drawing configuration UI, the missing run configuration form, the end client's backlog with gondolas first). Also records that the calculation rules have survived four rewrites, which is why they live in a dependency-free package.
 
 ### Tech Stack (`project/tech-stack.md`)
 
@@ -125,7 +125,7 @@ The domain package depending on nothing, four layers running in one direction (m
 
 #### Models and Persistence (`standards/backend/models.md`)
 
-Prisma confined to `src/db`, an offer storing its own output rather than being recomputed and belonging to the user who created it, clear names with real database constraints, validation belonging above the database.
+Prisma confined to `src/db`, an offer priced at today's prices when opened and belonging to the user who created it, clear names with real database constraints, validation belonging above the database.
 
 #### Queries (`standards/backend/queries.md`)
 

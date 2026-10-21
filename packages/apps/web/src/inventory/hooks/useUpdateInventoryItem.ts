@@ -22,6 +22,7 @@ export function useUpdateInventoryItem() {
       await queryClient.invalidateQueries({
         queryKey: inventoryQueries.list().queryKey,
       })
+      await queryClient.invalidateQueries({ queryKey: ["offer", "details"] })
     },
   })
 }

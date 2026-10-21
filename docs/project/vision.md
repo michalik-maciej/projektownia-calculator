@@ -20,9 +20,9 @@ Quoting a shelf system means counting components across several layouts (shelves
 legs, base shelves) and then pricing them. Done by hand this is slow and quietly error-prone: a wrong
 upright count or a mispriced back panel produces a plausible-looking offer that is simply wrong.
 
-The application makes that calculation repeatable, and stores each offer together with the output it
-was quoted at, rather than recomputing it against today's prices. That is a deliberate choice, so
-that reopening an old offer shows what was actually promised (decision 7 in `docs/decisions.md`).
+The application makes that calculation repeatable, and prices each offer at today's catalogue prices
+whenever it is opened, so a price change reaches every offer without re-entering it (decision 7 in
+`docs/decisions.md`).
 
 The component inventory is shared by everybody, an offer is not: it belongs to the account that
 created it, and nobody else reaches it (decision 11 in `docs/decisions.md`).
