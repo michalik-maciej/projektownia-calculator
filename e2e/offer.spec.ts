@@ -35,9 +35,7 @@ test("the catalogue is read only for the demo account", async ({ page }) => {
   await page.getByRole("button", { name: "Demo" }).click()
   await page.getByRole("link", { name: "Katalog części" }).click()
 
-  await expect(
-    page.getByText("Wersja demo: katalog tylko do odczytu"),
-  ).toBeVisible()
+  await expect(page.getByText("Katalog tylko do odczytu")).toBeVisible()
   await expect(page.getByRole("link", { name: "Dodaj" })).toHaveCount(0)
 })
 
