@@ -113,6 +113,18 @@ describe("demo account", () => {
     expect(res.status).toBe(400)
   })
 
+  it("answers an admin's registration with the created user", async () => {
+    const { app } = setup()
+
+    const res = await request(app)
+      .post("/api/auth/register")
+      .set("Cookie", cookieFor("ADMIN"))
+      .send({ email: "new@example.com", password: "password123" })
+
+    expect(res.status).toBe(201)
+    expect(res.body).toMatchObject({ email: "new@example.com", role: "USER" })
+  })
+
   it("keeps the demo session out of the admin-only registration", async () => {
     const { app } = setup()
 

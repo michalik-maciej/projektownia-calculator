@@ -13,6 +13,8 @@ regression.
 Feature components are one per file, `PascalCase.tsx`, named after the component they export. The
 shadcn and Radix primitives under `core/ui/` keep their upstream kebab-case file names and export
 lowercase-named building blocks composed with the `cn()` merger defined in `core/ui/utils.ts`.
+They are copied in by hand from the shadcn source, not through its CLI: the web app has no import
+alias for its own `src`, which the CLI requires.
 
 ### Props Inline, Destructured, Alphabetical
 

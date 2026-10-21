@@ -34,7 +34,7 @@ export function createAuthRouter({
     demoLoginController({ ...users, ...offers, getInventory }),
   )
   guarded.post("/logout", logoutController)
-  guarded.post("/register", requireAdmin, registerController)
+  guarded.post("/register", requireAdmin, registerController(users))
 
   return router
 }
