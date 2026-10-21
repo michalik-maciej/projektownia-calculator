@@ -16,6 +16,7 @@ import { Label } from "../../core/ui/label"
 import { RadioGroup, RadioGroupItem } from "../../core/ui/radio-group"
 import { textEyebrow } from "../../core/ui/typography"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
+import { passwordManagerIgnore } from "../helpers/passwordManagerIgnore"
 import { useCreateInventoryItem } from "../hooks/useCreateInventoryItem"
 import { useDeleteInventoryItem } from "../hooks/useDeleteInventoryItem"
 import { useUpdateInventoryItem } from "../hooks/useUpdateInventoryItem"
@@ -88,6 +89,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
           <div className="flex flex-col grow space-y-1 gap-2">
             <Label className={textEyebrow}>Nazwa</Label>
             <Input
+              {...passwordManagerIgnore}
               {...register("label", {
                 required: "Nazwa jest wymagana",
                 validate: (value) =>
@@ -106,6 +108,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
           <div className="flex flex-col w-36 space-y-1 gap-2">
             <Label className={textEyebrow}>Cena</Label>
             <Input
+              {...passwordManagerIgnore}
               type="number"
               step="0.01"
               min={0}

@@ -6,6 +6,7 @@ import { textFigure } from "../../core/ui/typography"
 import { formatPrice } from "../../offer/helpers/formatPrice"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { parseInventoryPriceInput } from "../helpers/parseInventoryPriceInput"
+import { passwordManagerIgnore } from "../helpers/passwordManagerIgnore"
 import { useUpdateInventoryItem } from "../hooks/useUpdateInventoryItem"
 import type { InventoryItem } from "../inventory.api"
 
@@ -54,6 +55,7 @@ export function InventoryItemPriceField({ item }: Props) {
     <div className="flex flex-col items-end gap-0.5">
       <div className="flex items-center gap-1">
         <Input
+          {...passwordManagerIgnore}
           aria-label="Cena"
           className={`h-7 w-24 text-right ${textFigure} md:text-[15px]`}
           min={0}

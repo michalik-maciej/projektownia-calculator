@@ -9,6 +9,7 @@ import { Label } from "../../core/ui/label"
 import { textEyebrow } from "../../core/ui/typography"
 import { cn } from "../../core/ui/utils"
 import { getDimensionOptions } from "../../inventory/helpers/getDimensionOptions"
+import { passwordManagerIgnore } from "../helpers/passwordManagerIgnore"
 import { inventoryQueries } from "../inventory.api"
 
 interface Props {
@@ -62,6 +63,7 @@ export const InventoryItemDimensionField = ({ dimension, label }: Props) => {
         render={({ field, fieldState }) => (
           <>
             <Input
+              {...passwordManagerIgnore}
               list={suggestionsId}
               min={0}
               name={field.name}
