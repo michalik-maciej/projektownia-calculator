@@ -14,10 +14,15 @@ export function TopBar() {
         aria-label="Primary"
       >
         <div className="flex items-center gap-8">
-          <span className="flex items-center gap-2.5 font-display text-xl font-bold uppercase tracking-wide">
+          <a
+            className="flex items-center gap-2.5 font-display text-xl font-bold uppercase tracking-wide"
+            href="https://projekty-sklepow.pl/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             <img alt="" className="h-9" src="/logo.svg" />
             Projektownia
-          </span>
+          </a>
           <div className="flex gap-1">
             <Link
               className={tabClassName}

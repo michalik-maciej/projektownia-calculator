@@ -33,7 +33,7 @@ export const LoginForm = () => {
       >
         <DialogHeader className="gap-1">
           <DialogTitle className="flex items-center gap-2.5 font-display text-2xl font-bold uppercase tracking-wide">
-            <span aria-hidden="true" className="size-4 bg-highlight" />
+            <img alt="" className="h-10" src="/logo.svg" />
             Projektownia
           </DialogTitle>
           <p className={textEyebrow}>Zaloguj się, aby kalkulować</p>
