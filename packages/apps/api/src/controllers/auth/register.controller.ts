@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 import * as v from "valibot"
 
 import { LoginInputSchema } from "@/schemas/auth/Login.schema"
+import type { User } from "@/schemas/user/User.schema"
 
 import { createUser } from "../../db/user.repository"
 
@@ -13,7 +14,7 @@ type ErrorResponse = {
 
 export async function registerController(
   req: Request,
-  res: Response<ErrorResponse | void>,
+  res: Response<ErrorResponse | User>,
 ) {
   const { success, output, issues } = v.safeParse(LoginInputSchema, req.body)
 
@@ -25,10 +26,10 @@ export async function registerController(
 
   const { email, password } = output
   try {
-    await createUser(email, await bcrypt.hash(password, 10))
+    const user = await createUser(email, await bcrypt.hash(password, 10))
+    res.status(201).json({ id: user.id, email: user.email, role: user.role })
   } catch (error) {
     console.error("Failed to create user:", error)
-    return res.status(500).json({ error: "Failed to create user" })
+    res.status(500).json({ error: "Failed to create user" })
   }
-  res.sendStatus(201)
 }

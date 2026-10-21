@@ -1,24 +1,7 @@
-import { LogOut } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 
-import { Button } from "../core/ui/button"
 import { OfferSaveStatus } from "../offer/components/OfferSaveStatus"
-import { UserManagementButton } from "../user/components/UserManagementButton"
-import { useLogoutUser } from "../user/hooks/useLogoutUser"
-
-function UserButton() {
-  const { mutate: logout } = useLogoutUser()
-  return (
-    <Button
-      aria-label="Wyloguj"
-      size="icon"
-      variant="outline"
-      onClick={() => logout()}
-    >
-      <LogOut className="h-5 w-5" />
-    </Button>
-  )
-}
+import { UserMenu } from "../user/components/UserMenu"
 
 const tabClassName =
   "inline-flex h-9 items-center rounded-lg px-3.5 font-display text-[15px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:bg-highlight aria-[current=page]:text-foreground"
@@ -64,8 +47,7 @@ export function TopBar() {
         </div>
         <div className="flex items-center gap-3">
           <OfferSaveStatus />
-          <UserManagementButton />
-          <UserButton />
+          <UserMenu />
         </div>
       </nav>
     </header>

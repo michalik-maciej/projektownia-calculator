@@ -4,6 +4,7 @@ import {
   LoginInput,
   LoginResponseSchema,
 } from "@/schemas/auth/Login.schema"
+import { UserSchema } from "@/schemas/user/User.schema"
 
 import {
   apiType,
@@ -37,6 +38,7 @@ export const authApi = {
     method: "POST",
     path: `${apiUrl}/auth/register`,
     data: apiType<LoginInput>(),
+    response: UserSchema,
   }),
   user: createApiMethod({
     method: "GET",
