@@ -255,11 +255,13 @@ account.
 Nothing inside `packages/*` is versioned independently: `domain`, `schemas` and `api` keep whatever
 number they happen to carry, because none of them is installed from a registry or depended on
 through `package.json` (decision 4), so a per-package version has never meant anything. Release
-Please (`.github/workflows/release-please.yml`) reads Conventional Commit messages on `main` and
+Please (the `release-please` job in `.github/workflows/ci.yml`) reads Conventional Commit messages on `main` and
 keeps a standing "release PR" with the next version and a generated `CHANGELOG.md`. Merging that PR
-is what cuts the release: it tags `main` as `v{version}` and opens a GitHub Release. Deploys stay
-exactly as they were, every push to `main` still ships through CI regardless of whether anyone ever
-merges a release PR; a version is a label applied after the fact, not a gate in front of shipping.
+is what cuts the release: it tags `main` as `v{version}` and opens a GitHub Release. Merging it is
+also the only thing that deploys the API: `deploy-api` runs when the `release-please` job reports
+`release_created`, so every deployed build carries a version and a changelog entry. (This replaced
+the original arrangement, where every push to `main` deployed and the release merge deployed the
+same code a second time.)
 
 **Why.** A product with one real deployment target per app does not benefit from independently
 versioned internal packages the way a published library monorepo would; the only reader of a version
@@ -278,7 +280,9 @@ messages feeding it, and historically word-for-word adherence to Conventional Co
 enforced (`docs/decisions.md` predates it; the `commit-msg` hook that would have enforced it was
 proposed and declined). History before the first tag is not retrofitted into the changelog; the
 changelog starts clean at `v1.0.0` rather than trying to reconstruct 144 commits of prior history
-into sections that were never written with a changelog in mind.
+into sections that were never written with a changelog in mind. Because deploys wait for a release,
+a fix on `main` is not live until someone merges the release PR, and an unmerged release PR means
+the API is running older code than `main`.
 
 ## 14. A gondola has two independent sides, and mismatched uprights are the user's to add
 

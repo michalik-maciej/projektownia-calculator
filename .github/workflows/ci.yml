@@ -104,10 +104,27 @@ jobs:
           path: test-results/
           retention-days: 7
 
+  release-please:
+    name: Release Please
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+    steps:
+      - id: release
+        uses: googleapis/release-please-action@v5
+        with:
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
+
   deploy-api:
     name: Deploy API to Fly.io
-    needs: [lint, build, test, e2e]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, build, test, e2e, release-please]
+    if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:

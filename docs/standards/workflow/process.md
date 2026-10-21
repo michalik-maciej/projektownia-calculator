@@ -22,11 +22,13 @@ has been opened in a browser.
 
 ### What Green Means Here
 
-CI runs four jobs. Three of them run in parallel, each on its own runner, each repeating checkout,
+CI runs six jobs. Four checks run in parallel, each on its own runner, each repeating checkout,
 Node, pnpm and `pnpm install --frozen-lockfile` before doing its own work: `lint` runs `pnpm lint`
-and `pnpm format:check`, `build` runs `pnpm build`, and `test` runs `pnpm vitest run`. The fourth,
-`deploy-api`, waits on all three. The workflow also declares a `pull_request` trigger, which never
-fires, because this repository does not use pull requests.
+and `pnpm format:check`, `build` runs `pnpm build`, `test` runs `pnpm vitest run`, and `e2e` drives
+a browser against a real database. Alongside them, `release-please` updates the release PR. The
+sixth, `deploy-api`, waits on all five. The workflow also declares a `pull_request` trigger, which
+never fires: the only pull request here is the release PR, and Release Please opens it with
+`GITHUB_TOKEN`, whose events do not start other workflows.
 
 There is no separate typecheck job, and that is deliberate rather than an oversight. `pnpm build`
 runs `tsc -b` in the API and the web app, and TypeScript project references make that walk into
@@ -42,9 +44,12 @@ which is worth having, but it is a net rather than a gate. Splitting one job int
 failure easier to read and lets a single job be rerun, but it does not turn CI into a gate. The gate
 is running `pnpm validate` and `pnpm vitest run` locally, before the commit.
 
-`deploy-api` runs `flyctl deploy --remote-only` after `lint`, `build` and `test` all pass, and only
-on a push to `main`. It exists because Vercel redeploys the front end on every push while Fly.io does
-not. A single `deploy-api` concurrency group keeps two deploys from running the migration release
+`deploy-api` runs `flyctl deploy --remote-only` after `lint`, `build`, `test` and `e2e` all pass,
+and only on the push that merges the Release Please PR: it waits on the `release-please` job and
+runs when that job reports `release_created`. Ordinary pushes run the checks but do not deploy. It
+exists because Fly.io, unlike Vercel, has no integration that deploys on its own. Vercel still
+redeploys the front end on every push, so between releases the front end can be ahead of the API.
+A single `deploy-api` concurrency group keeps two deploys from running the migration release
 command at the same time.
 
 Two things are worth knowing about. No CI job runs `pnpm validate` itself, it runs the pieces, so the

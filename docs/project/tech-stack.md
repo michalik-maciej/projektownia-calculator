@@ -66,9 +66,10 @@ Multi-stage `Dockerfile` for the API (deps, build, runner).
 
 GitHub Actions (`.github/workflows/ci.yml`): three parallel jobs, `lint` (`pnpm lint` and
 `pnpm format:check`), `build` (`pnpm build`, which typechecks every package through project
-references) and `test` (`prisma generate`, then `pnpm vitest run`), followed by a `deploy-api` job
-running `flyctl deploy --remote-only`. All fire on push to `main`, which is where all work lands, and
-`deploy-api` runs only there and only once the other three are green. The workflow also declares a
+references) and `test` (`prisma generate`, then `pnpm vitest run`), plus `e2e`, a `release-please` job
+and a `deploy-api` job running `flyctl deploy --remote-only`. All fire on push to `main`, which is
+where all work lands; `deploy-api` runs only on the push that merges the release PR, and only once
+the checks are green. The workflow also declares a
 `pull_request` trigger, kept but dormant, since the repository does not use pull requests. Deploying
 the API needs a `FLY_API_TOKEN` repository secret.
 

@@ -85,9 +85,11 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 
 ### Backend Deployment (Fly.io)
 
-The deploy is not manual. The `deploy-api` job in `.github/workflows/ci.yml` runs
-`flyctl deploy --remote-only` on every push to `main` once the `lint`, `build` and `test` jobs are
-green, using the `FLY_API_TOKEN` repository secret.
+The deploy is not manual, but it is not on every push either. The `deploy-api` job in
+`.github/workflows/ci.yml` runs `flyctl deploy --remote-only` only on the push that merges the
+Release Please PR (the `release-please` job reports `release_created`), once the `lint`, `build`,
+`test` and `e2e` jobs are green for that commit, using the `FLY_API_TOKEN` repository secret.
+Ordinary commits on `main` do not reach Fly.io until the next release is merged.
 
 ### Frontend Deployment (Vercel)
 
@@ -191,9 +193,9 @@ A branch is still fine for something genuinely speculative that should not touch
 works. That is an exception the maintainer decides on, not a routine.
 
 The one standing exception to "no pull requests" is the release PR that Release Please
-(`.github/workflows/release-please.yml`) keeps open and updates on every push to `main`: it proposes
+(the `release-please` job in `.github/workflows/ci.yml`) keeps open and updates on every push to `main`: it proposes
 the next SemVer version and a generated changelog from Conventional Commit messages. See decision 13
-in `docs/decisions.md`. Merging it is still the maintainer's call, never the agent's.
+in `docs/decisions.md`. Merging it is still the maintainer's call, never the agent's, and it is what deploys the API.
 
 ### Commit Messages
 
