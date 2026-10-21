@@ -17,6 +17,7 @@ export const GondolaSideValue = v.object({
   backVariant: v.optional(v.picklist(BACK_VARIANTS)),
   depth: v.number(),
   hasBaseCover: v.optional(v.boolean()),
+  hasTopCover: v.optional(v.boolean()),
   shelfUnits: v.array(ShelfUnitValue),
 })
 

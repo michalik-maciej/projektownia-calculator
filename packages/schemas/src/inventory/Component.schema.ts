@@ -7,6 +7,7 @@ export const COMPONENT_CATEGORIES = [
   "shelf",
   "support",
   "baseCover",
+  "topCover",
   "misc",
 ] as const
 
@@ -25,6 +26,7 @@ export const CATEGORY_REQUIREMENTS: Record<
   misc: { required: [] },
   shelf: { required: ["width", "depth"] },
   support: { required: ["depth"] },
+  topCover: { required: ["width"] },
 }
 
 export const ComponentBaseSchema = v.object({

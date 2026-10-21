@@ -7,6 +7,7 @@ import { calculateBaseCoverDemand } from "../../calculations/calculateBaseCoverD
 import { calculateBaseShelfDemand } from "../../calculations/calculateBaseShelfDemand/calculateBaseShelfDemand"
 import { calculateFootDemand } from "../../calculations/calculateFootDemand/calculateFootDemand"
 import { calculateShelfDemand } from "../../calculations/calculateShelfDemand/calculateShelfDemand"
+import { calculateTopCoverDemand } from "../../calculations/calculateTopCoverDemand/calculateTopCoverDemand"
 import { Component } from "../../models/component"
 import { countShelfUnitsByWidth } from "../../transformations/countShelfUnitsByWidth/countShelfUnitsByWidth"
 
@@ -20,6 +21,7 @@ export function calculateRunSideDemand(
     backVariant,
     depth,
     hasBaseCover = false,
+    hasTopCover = false,
     height,
     numberOfLayouts,
     shelfUnits,
@@ -36,6 +38,9 @@ export function calculateRunSideDemand(
     ),
     ...(hasBaseCover
       ? calculateBaseCoverDemand({ shelfUnitsByWidth }, inventory)
+      : []),
+    ...(hasTopCover
+      ? calculateTopCoverDemand({ shelfUnitsByWidth }, inventory)
       : []),
     ...calculateBaseShelfDemand({ depth, shelfUnitsByWidth }, inventory),
     ...calculateShelfDemand({ shelfUnits, numberOfLayouts }, inventory),

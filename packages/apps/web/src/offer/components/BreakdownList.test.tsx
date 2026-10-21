@@ -4,7 +4,7 @@ import { render } from "@testing-library/react"
 import { BreakdownList } from "./BreakdownList"
 
 describe("BreakdownList", () => {
-  it("lists groups as legs, feet, backs, shelves, supports, covers, other", () => {
+  it("lists groups as legs, feet, backs, shelves, supports, covers, top covers, other", () => {
     const item = (id: string) => [{ id, label: id, quantity: 1 }]
 
     const { container } = render(
@@ -12,6 +12,7 @@ describe("BreakdownList", () => {
         breakdown={{
           back: item("back"),
           baseCover: item("baseCover"),
+          topCover: item("topCover"),
           foot: item("foot"),
           leg: item("leg"),
           misc: item("misc"),
@@ -30,6 +31,7 @@ describe("BreakdownList", () => {
       "Półki",
       "Wsporniki",
       "Osłony dolne",
+      "Maskownice",
       "Inne",
     ])
   })

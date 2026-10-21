@@ -19,6 +19,7 @@ export function RunOptionsFields({
 }) {
   const { control } = useFormContext<OfferInput>()
   const baseCoverId = useId()
+  const topCoverId = useId()
 
   return (
     <>
@@ -69,6 +70,27 @@ export function RunOptionsFields({
             <Checkbox
               checked={field.value ?? false}
               id={baseCoverId}
+              onBlur={field.onBlur}
+              onCheckedChange={field.onChange}
+            />
+          )}
+        />
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        <Label
+          className="w-28 shrink-0 cursor-pointer font-normal text-muted-foreground"
+          htmlFor={topCoverId}
+        >
+          Maskownica
+        </Label>
+        <Controller
+          control={control}
+          name={`${optionsPath}.hasTopCover`}
+          render={({ field }) => (
+            <Checkbox
+              checked={field.value ?? false}
+              id={topCoverId}
               onBlur={field.onBlur}
               onCheckedChange={field.onChange}
             />

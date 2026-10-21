@@ -21,6 +21,7 @@ export const LayoutWallValue = v.object({
   ),
   backVariant: v.optional(v.picklist(BACK_VARIANTS)),
   hasBaseCover: v.optional(v.boolean()),
+  hasTopCover: v.optional(v.boolean()),
   extras: v.optional(
     v.array(
       v.object({

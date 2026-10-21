@@ -8,6 +8,7 @@ export const CATEGORY_LABELS: Record<ComponentCategory, string> = {
   misc: "Inne",
   shelf: "Półki",
   support: "Wsporniki",
+  topCover: "Maskownice",
 }
 
 export const CATEGORY_LABELS_GENITIVE: Record<string, string> = {
@@ -18,4 +19,5 @@ export const CATEGORY_LABELS_GENITIVE: Record<string, string> = {
   misc: "elementu",
   shelf: "półki",
   support: "wspornika",
+  topCover: "maskownicy",
 }

@@ -9,6 +9,7 @@ describe("calculateRunSideDemand", () => {
       {
         depth: 47,
         hasBaseCover: true,
+        hasTopCover: true,
         height: 130,
         numberOfLayouts: 2,
         shelfUnits: [
@@ -25,6 +26,7 @@ describe("calculateRunSideDemand", () => {
     expect(result).toEqual([
       { id: "back-40-80", quantity: 12 },
       { id: "base-cover-80", quantity: 4 },
+      { id: "top-cover-80", quantity: 4 },
       { id: "shelf-80-47", quantity: 4 },
       { id: "shelf-80-37", quantity: 4 },
       { id: "support-37", quantity: 8 },

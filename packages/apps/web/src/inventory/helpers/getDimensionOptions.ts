@@ -25,6 +25,7 @@ export function getDimensionOptions({ dimension, inventoryItems }: Params) {
     misc: [],
     shelf: [],
     support: [],
+    topCover: [],
   }
 
   for (const category of COMPONENT_CATEGORIES) {

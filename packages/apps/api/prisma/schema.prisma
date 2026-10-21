@@ -46,6 +46,7 @@ enum ComponentCategory {
   misc
   shelf
   support
+  topCover
 }
 
 model Offer {
