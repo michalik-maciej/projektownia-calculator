@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.2.0...v1.2.1) (2026-10-21)
+
+
+### Miscellaneous Chores
+
+* release 1.2.1 ([1c98d07](https://github.com/michalik-maciej/projektownia-calculator/commit/1c98d076bb5a11cfb740730257010f58457cd951))
+
 ## [1.2.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.1.0...v1.2.0) (2026-10-21)
 
 
