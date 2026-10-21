@@ -250,12 +250,18 @@ export function GondolaLayoutPlan({
           }}
           type="button"
         >
-          <span>{[unit.width, endCap.depth, layout.height].join("/")}</span>
-          <span className="text-muted-foreground">
-            <ShelvesSummary
-              highlightedIndex={isSelected ? selectedShelfIndex : null}
-              shelves={unit.shelves}
-            />
+          <span
+            className={`flex flex-col items-center gap-1 [writing-mode:vertical-rl] ${
+              part === "leftEndCap" ? "rotate-180" : ""
+            }`}
+          >
+            <span>{[unit.width, endCap.depth, layout.height].join("/")}</span>
+            <span className="text-muted-foreground">
+              <ShelvesSummary
+                highlightedIndex={isSelected ? selectedShelfIndex : null}
+                shelves={unit.shelves}
+              />
+            </span>
           </span>
         </button>
       </div>
