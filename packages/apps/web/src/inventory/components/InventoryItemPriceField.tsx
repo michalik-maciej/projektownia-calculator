@@ -1,12 +1,11 @@
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
 
-import { Input } from "../../core/ui/input"
+import { PriceInput } from "./PriceInput"
 import { textFigure } from "../../core/ui/typography"
 import { formatPrice } from "../../offer/helpers/formatPrice"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { parseInventoryPriceInput } from "../helpers/parseInventoryPriceInput"
-import { passwordManagerIgnore } from "../helpers/passwordManagerIgnore"
 import { useUpdateInventoryItem } from "../hooks/useUpdateInventoryItem"
 import type { InventoryItem } from "../inventory.api"
 
@@ -18,12 +17,12 @@ export function InventoryItemPriceField({ item }: Props) {
   const isDemo = useIsDemo()
   const updateMutation = useUpdateInventoryItem()
   const [syncedPrice, setSyncedPrice] = useState(item.price)
-  const [value, setValue] = useState(String(item.price))
+  const [value, setValue] = useState(item.price.toFixed(2))
   const [error, setError] = useState<string | null>(null)
 
   if (syncedPrice !== item.price) {
     setSyncedPrice(item.price)
-    setValue(String(item.price))
+    setValue(item.price.toFixed(2))
     setError(null)
   }
 
@@ -40,7 +39,7 @@ export function InventoryItemPriceField({ item }: Props) {
 
     if (parsed == null) {
       setError("Cena musi być dodatnia")
-      setValue(String(item.price))
+      setValue(item.price.toFixed(2))
       return
     }
 
@@ -54,18 +53,14 @@ export function InventoryItemPriceField({ item }: Props) {
   return (
     <div className="flex flex-col items-end gap-0.5">
       <div className="flex items-center gap-1">
-        <Input
-          {...passwordManagerIgnore}
+        <PriceInput
           aria-label="Cena"
-          className={`h-7 w-24 text-right ${textFigure} md:text-[15px]`}
-          min={0}
+          className={`h-7 w-28 ${textFigure} md:text-[15px]`}
           onBlur={commit}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Enter") event.currentTarget.blur()
           }}
-          step="0.01"
-          type="number"
           value={value}
         />
         {updateMutation.isPending && (

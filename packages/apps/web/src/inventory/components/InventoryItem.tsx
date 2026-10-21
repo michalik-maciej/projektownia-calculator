@@ -9,6 +9,7 @@ import {
 
 import { InventoryItemDimensionField } from "./InventoryItemDimensionField"
 import { CATEGORY_LABELS } from "./labels.inventory"
+import { PriceInput } from "./PriceInput"
 import { Badge } from "../../core/ui/badge"
 import { Button } from "../../core/ui/button"
 import { Input } from "../../core/ui/input"
@@ -107,19 +108,27 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
           {/* Price */}
           <div className="flex flex-col w-36 space-y-1 gap-2">
             <Label className={textEyebrow}>Cena</Label>
-            <Input
-              {...passwordManagerIgnore}
-              type="number"
-              step="0.01"
-              min={0}
-              {...register("price", {
-                valueAsNumber: true,
+            <Controller
+              control={control}
+              name="price"
+              rules={{
                 required: "Cena jest wymagana",
                 validate: (value) =>
                   Number.isFinite(value) && value > 0
                     ? true
                     : "Cena musi być dodatnia",
-              })}
+              }}
+              render={({ field }) => (
+                <PriceInput
+                  defaultValue={field.value.toFixed(2)}
+                  name={field.name}
+                  onBlur={field.onBlur}
+                  onChange={(event) =>
+                    field.onChange(event.target.valueAsNumber)
+                  }
+                  ref={field.ref}
+                />
+              )}
             />
             <p
               className={`text-xs text-destructive min-h-5 ${
