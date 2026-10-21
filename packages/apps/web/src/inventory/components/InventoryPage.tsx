@@ -74,7 +74,7 @@ export function InventoryPage() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className={`flex items-center justify-between gap-4 border-t py-1.5 pr-4 pl-7 ${
+                  className={`relative flex items-center justify-between gap-4 border-t py-1.5 pr-4 pl-7 ${
                     item.id === componentId
                       ? "bg-highlight/20 font-semibold"
                       : ""
@@ -84,11 +84,13 @@ export function InventoryPage() {
                     to="/inventory/$componentId"
                     params={{ componentId: item.id }}
                     search={true}
-                    className="truncate hover:underline"
+                    className="truncate after:absolute after:inset-0 hover:underline"
                   >
                     {item.label}
                   </Link>
-                  <InventoryItemPriceField item={item} />
+                  <div className="relative">
+                    <InventoryItemPriceField item={item} />
+                  </div>
                 </div>
               ))}
             </AccordionContent>
