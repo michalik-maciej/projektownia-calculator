@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import * as v from "valibot"
 
 import { IdParamSchema } from "@/schemas/IdParam.schema"
-import { OfferInputSchema } from "@/schemas/Offer.schema"
+import { OfferUpdateSchema } from "@/schemas/Offer.schema"
 
 import { priceOffer } from "./priceOffer"
 import { toOfferScope } from "./toOfferScope"
@@ -23,7 +23,7 @@ export function updateOfferController({
       return res.status(400).json({ error: "Invalid request" })
     }
 
-    const parsed = v.safeParse(OfferInputSchema, req.body)
+    const parsed = v.safeParse(OfferUpdateSchema, req.body)
 
     if (parsed.issues) {
       return res.status(400).json({
@@ -43,18 +43,27 @@ export function updateOfferController({
       return res.status(404).json({ error: "Offer not found" })
     }
 
+    const { expectedUpdatedAt, ...input } = parsed.output
+
     try {
       const inventory = await getInventory()
       const updated = await updateOffer({
+        expectedUpdatedAt: new Date(expectedUpdatedAt),
         id: params.output.id,
-        title: parsed.output.title,
-        discountPercentage: parsed.output.discountPercentage,
-        input: parsed.output,
+        title: input.title,
+        discountPercentage: input.discountPercentage,
+        input,
       })
+
+      if (!updated) {
+        return res
+          .status(409)
+          .json({ error: "Offer was changed by somebody else" })
+      }
 
       return res
         .status(200)
-        .json({ ...updated, ...priceOffer(parsed.output, inventory) })
+        .json({ ...updated, ...priceOffer(input, inventory) })
     } catch (error) {
       console.error("Offer update failed:", error)
       return res.status(500).json({ error: "Offer update failed" })

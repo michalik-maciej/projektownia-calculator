@@ -35,6 +35,13 @@ export const OfferInputSchema = v.object({
 
 export type OfferInput = v.InferOutput<typeof OfferInputSchema>
 
+export const OfferUpdateSchema = v.object({
+  ...OfferInputSchema.entries,
+  expectedUpdatedAt: v.pipe(v.string(), v.isoTimestamp()),
+})
+
+export type OfferUpdate = v.InferOutput<typeof OfferUpdateSchema>
+
 const BreakdownSchema = v.record(
   ComponentCategorySchema,
   v.array(
@@ -95,6 +102,7 @@ export const SavedOfferSchema = v.object({
   missingComponent: v.optional(MissingComponentSchema),
   output: v.nullable(OfferOutputSchema),
   title: v.string(),
+  updatedAt: v.string(),
 })
 
 export const OfferSharesSchema = v.object({

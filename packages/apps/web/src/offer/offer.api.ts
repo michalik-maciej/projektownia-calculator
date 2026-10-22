@@ -5,6 +5,7 @@ import {
   OfferShares,
   OfferSharesSchema,
   OfferSummarySchema,
+  OfferUpdate,
   SavedOfferSchema,
 } from "@/schemas/Offer.schema"
 
@@ -43,7 +44,7 @@ export const offerApi = {
     method: "PUT",
     path: `${apiUrl}/offers/:id`,
     response: SavedOfferSchema,
-    data: apiType<OfferInput>(),
+    data: apiType<OfferUpdate>(),
   }),
   delete: createApiMethod({
     method: "DELETE",

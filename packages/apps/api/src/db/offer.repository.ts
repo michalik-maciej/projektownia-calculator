@@ -15,6 +15,7 @@ export type CreateOfferInput = {
 }
 
 export type UpdateOfferInput = Omit<Partial<CreateOfferInput>, "userId"> & {
+  expectedUpdatedAt: Date
   id: string
 }
 
@@ -32,7 +33,7 @@ export type OfferStore = {
   getOfferById: (id: string, scope: OfferScope) => Promise<Offer | null>
   getOfferShares: (offerId: string) => Promise<string[]>
   setOfferShares: (offerId: string, userIds: string[]) => Promise<void>
-  updateOffer: (data: UpdateOfferInput) => Promise<Offer>
+  updateOffer: (data: UpdateOfferInput) => Promise<Offer | null>
 }
 
 function accessFilter(scope: OfferScope): Prisma.OfferWhereInput {
@@ -50,13 +51,17 @@ export async function createOffer(data: CreateOfferInput): Promise<Offer> {
   return prisma.offer.create({ data })
 }
 
-export async function updateOffer(data: UpdateOfferInput): Promise<Offer> {
-  const { id, ...update } = data
+export async function updateOffer(
+  data: UpdateOfferInput,
+): Promise<Offer | null> {
+  const { expectedUpdatedAt, id, ...update } = data
 
-  return prisma.offer.update({
-    where: { id },
+  const { count } = await prisma.offer.updateMany({
+    where: { id, updatedAt: expectedUpdatedAt },
     data: update,
   })
+
+  return count === 0 ? null : prisma.offer.findUniqueOrThrow({ where: { id } })
 }
 
 export async function getAllOffers(

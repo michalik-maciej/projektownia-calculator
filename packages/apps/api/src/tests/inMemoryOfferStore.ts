@@ -82,6 +82,10 @@ export function createInMemoryOfferStore(): TestOfferStore {
         throw new Error(`No offer with id ${data.id}`)
       }
 
+      if (existing.updatedAt.getTime() !== data.expectedUpdatedAt.getTime()) {
+        return null
+      }
+
       const updated: Offer = {
         ...existing,
         discountPercentage:

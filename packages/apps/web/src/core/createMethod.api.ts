@@ -36,6 +36,10 @@ export function isNotFound(error: unknown): boolean {
   return error instanceof ApiError && error.status === 404
 }
 
+export function isConflict(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 409
+}
+
 export function isUnauthorized(error: unknown): boolean {
   return error instanceof ApiError && error.status === 401
 }

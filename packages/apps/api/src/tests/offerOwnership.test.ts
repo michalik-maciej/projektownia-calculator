@@ -160,7 +160,11 @@ describe("offer routes scoped to the offer owner", () => {
     const res = await request(app)
       .put(`/api/offers/${ownOffer.id}`)
       .set("Cookie", ownerCookie)
-      .send({ ...validOfferInput, title: "Renamed by the owner" })
+      .send({
+        ...validOfferInput,
+        expectedUpdatedAt: ownOffer.updatedAt.toISOString(),
+        title: "Renamed by the owner",
+      })
 
     expect(res.status).toBe(200)
     expect(res.body).toMatchObject({
@@ -170,13 +174,37 @@ describe("offer routes scoped to the offer owner", () => {
     })
   })
 
+  it("refuses to overwrite an offer changed since the caller loaded it", async () => {
+    const { app, offers, ownOffer } = await setup()
+
+    const res = await request(app)
+      .put(`/api/offers/${ownOffer.id}`)
+      .set("Cookie", ownerCookie)
+      .send({
+        ...validOfferInput,
+        expectedUpdatedAt: "2020-01-01T00:00:00.000Z",
+        title: "Saved over a newer version",
+      })
+
+    expect(res.status).toBe(409)
+    expect(res.body).toEqual({ error: "Offer was changed by somebody else" })
+    expect(offers.all().map(({ title }) => title)).toEqual([
+      "Owner offer",
+      "Stranger offer",
+    ])
+  })
+
   it("refuses to update an offer owned by somebody else", async () => {
     const { app, offers, strangerOffer } = await setup()
 
     const res = await request(app)
       .put(`/api/offers/${strangerOffer.id}`)
       .set("Cookie", ownerCookie)
-      .send({ ...validOfferInput, title: "Renamed by a stranger" })
+      .send({
+        ...validOfferInput,
+        expectedUpdatedAt: strangerOffer.updatedAt.toISOString(),
+        title: "Renamed by a stranger",
+      })
 
     expect(res.status).toBe(404)
     expect(res.body).toEqual({ error: "Offer not found" })
@@ -224,7 +252,11 @@ describe("offer shared by an admin", () => {
     const update = await request(app)
       .put(`/api/offers/${strangerOffer.id}`)
       .set("Cookie", ownerCookie)
-      .send({ ...validOfferInput, title: "Renamed by a colleague" })
+      .send({
+        ...validOfferInput,
+        expectedUpdatedAt: strangerOffer.updatedAt.toISOString(),
+        title: "Renamed by a colleague",
+      })
 
     expect(share.status).toBe(200)
     expect(list.body.map(({ id }: OfferSummary) => id)).toContain(

@@ -335,6 +335,7 @@ move. Both foreign keys cascade, so deleting the offer or the user removes the s
 those offers, including offers written by another employee. Sharing through the existing scope
 keeps one access rule for every offer route instead of a second check per controller.
 
-**Cost.** Two people editing the same offer overwrite each other through the autosave with no
-warning, until conflict detection arrives. A shared user can also delete the offer, because delete
-uses the same scope as edit.
+**Cost.** Two people can edit the same offer at once. An update carries the `updatedAt` of the
+version it was based on and answers 409 when the offer has changed since, so the later save is
+refused rather than silent, and the web replaces the refused edits with the current version. A
+shared user can also delete the offer, because delete uses the same scope as edit.

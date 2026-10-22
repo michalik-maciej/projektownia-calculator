@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { OfferInput, SavedOffer } from "@/schemas/Offer.schema"
 
 import { PreviewErrorBanner } from "./PreviewErrorBanner"
-import { isUnauthorized } from "../../core/createMethod.api"
+import { isConflict, isUnauthorized } from "../../core/createMethod.api"
 import { createDefaultOfferInput } from "../helpers/createDefaultOfferInput"
 import { describeMissingComponent } from "../helpers/describeMissingComponent"
 import { useOffer } from "../hooks/useOffer"
@@ -26,23 +26,45 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
   const { offer, offerId } = useOffer()
 
-  const hydratedRef = useRef<{ id: string; input: string } | null>(null)
+  const hydratedRef = useRef<Pick<SavedOffer, "id" | "updatedAt"> | null>(null)
+
+  const hydrate = ({ id, updatedAt }: SavedOffer) => {
+    hydratedRef.current = { id, updatedAt }
+  }
 
   const autoSave = useMutation({
     mutationKey: offerMutationKeys.autoSave,
     mutationFn: (values: OfferInput) =>
-      offerApi.update({ data: values, params: { id: offerId ?? "" } }),
+      offerApi.update({
+        data: {
+          ...values,
+          expectedUpdatedAt: hydratedRef.current?.updatedAt ?? "",
+        },
+        params: { id: offerId ?? "" },
+      }),
     retry: (failureCount, error) =>
-      !isUnauthorized(error) && failureCount < AUTOSAVE_RETRIES,
+      !isUnauthorized(error) &&
+      !isConflict(error) &&
+      failureCount < AUTOSAVE_RETRIES,
     onSuccess: (saved: SavedOffer) => {
-      hydratedRef.current = {
-        id: saved.id,
-        input: JSON.stringify(saved.input),
-      }
+      hydrate(saved)
       queryClient.setQueryData(offerQueries.details(saved.id).queryKey, saved)
       reset(getValues(), { keepValues: true })
     },
-    onError: (error) => {
+    onError: async (error) => {
+      if (isConflict(error) && offerId) {
+        const latest = await queryClient.fetchQuery(
+          offerQueries.details(offerId),
+        )
+        hydrate(latest)
+        reset(latest.input)
+        toast.warning(
+          "Ktoś inny zmienił w międzyczasie tę ofertę. Wczytano aktualną wersję, Twoje ostatnie zmiany nie zostały zapisane.",
+          { position: "top-center" },
+        )
+        return
+      }
+
       console.error("Autosaving the offer failed:", error)
       toast.error("Nie udało się zapisać zmian.", { position: "top-center" })
     },
@@ -56,18 +78,17 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    const serverInput = JSON.stringify(offer.input)
     const hydrated = hydratedRef.current
     const isSameOffer = hydrated?.id === offer.id
 
     if (
       isSameOffer &&
-      (hydrated.input === serverInput || isDirty || isSaving)
+      (hydrated.updatedAt === offer.updatedAt || isDirty || isSaving)
     ) {
       return
     }
 
-    hydratedRef.current = { id: offer.id, input: serverInput }
+    hydrate(offer)
     reset(offer.input)
   }, [isDirty, isSaving, offer, reset])
 
