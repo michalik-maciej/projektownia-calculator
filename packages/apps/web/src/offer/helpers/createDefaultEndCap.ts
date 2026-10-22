@@ -1,4 +1,4 @@
-import { GondolaEndCap } from "@/schemas/LayoutGondola.schema"
+import { GondolaSide } from "@/schemas/LayoutGondola.schema"
 import { DEFAULT_BACK_VARIANT } from "@/schemas/LayoutWall.schema"
 
 import { createDefaultWallLayout } from "./createDefaultWallLayout"
@@ -6,7 +6,7 @@ import { InventoryDimensions } from "../hooks/useInventoryDimensions"
 
 export function createDefaultEndCap(
   dimensions: InventoryDimensions,
-): GondolaEndCap | null {
+): GondolaSide | null {
   const wallLayout = createDefaultWallLayout(dimensions)
 
   if (!wallLayout) return null

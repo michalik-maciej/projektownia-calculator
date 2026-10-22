@@ -12,5 +12,3 @@ export type RunOptionsPath = `layouts.${number}` | EndCapPath | GondolaSidePath
 export type ComponentQuantitiesPath =
   | `layouts.${number}.extras`
   | `layouts.${number}.items`
-
-export type UnitsPath = RunOptionsPath

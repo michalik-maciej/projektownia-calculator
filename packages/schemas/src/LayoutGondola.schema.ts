@@ -22,7 +22,6 @@ export const GondolaSideValue = v.object({
 })
 
 export type GondolaSide = v.InferOutput<typeof GondolaSideValue>
-export type GondolaEndCap = GondolaSide
 
 const ExtrasValue = v.optional(
   v.array(

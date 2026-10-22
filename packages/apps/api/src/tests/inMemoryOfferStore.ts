@@ -10,10 +10,6 @@ import {
 
 type TestOfferStore = OfferStore & { all: () => Offer[] }
 
-function toStoredJson(value: Prisma.InputJsonValue): Prisma.JsonValue {
-  return value as Prisma.JsonValue
-}
-
 export function createInMemoryOfferStore(
   userAccountIds: string[] = [],
 ): TestOfferStore {
@@ -33,7 +29,7 @@ export function createInMemoryOfferStore(
         createdAt: new Date(),
         discountPercentage: data.discountPercentage ?? null,
         id: randomUUID(),
-        input: toStoredJson(data.input),
+        input: data.input as Prisma.JsonValue,
         lastUpdatedById: data.userId,
         title: data.title,
         updatedAt: new Date(),
@@ -104,7 +100,9 @@ export function createInMemoryOfferStore(
         discountPercentage:
           data.discountPercentage ?? existing.discountPercentage,
         input:
-          data.input === undefined ? existing.input : toStoredJson(data.input),
+          data.input === undefined
+            ? existing.input
+            : (data.input as Prisma.JsonValue),
         lastUpdatedById: data.lastUpdatedById,
         title: data.title ?? existing.title,
         updatedAt: new Date(),

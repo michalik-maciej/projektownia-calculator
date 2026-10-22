@@ -11,7 +11,7 @@ import { SectionNavigator } from "./SectionNavigator"
 import { ShelvesFields } from "./ShelvesFields"
 import { Button } from "../../../core/ui/button"
 import { useInventoryDimensions } from "../../hooks/useInventoryDimensions"
-import { RunOptionsPath, UnitsPath } from "../../offer.types"
+import { RunOptionsPath } from "../../offer.types"
 
 export function ShelfUnitEditor({
   areGondolaSidesUnlinked,
@@ -38,7 +38,7 @@ export function ShelfUnitEditor({
   selectedShelfIndex: number
   unitCount: number
   unitIndex: number
-  unitsPath: UnitsPath
+  unitsPath: RunOptionsPath
 }) {
   const { control } = useFormContext<OfferInput>()
   const { layoutDepths, layoutHeights, shelfDepths, shelfUnitWidths } =

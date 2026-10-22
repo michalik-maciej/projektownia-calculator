@@ -102,6 +102,9 @@ export function OfferList() {
                       type="button"
                     >
                       <span className="truncate">{offer.title}</span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {offer.authorEmail}
+                      </span>
                     </button>
                     <span className="flex shrink-0 flex-col items-end text-xs text-muted-foreground">
                       <span className="tabular-nums">

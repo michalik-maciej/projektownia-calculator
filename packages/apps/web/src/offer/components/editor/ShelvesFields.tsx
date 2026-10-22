@@ -9,7 +9,7 @@ import { OptionStepper } from "./OptionStepper"
 import { SectionLabel } from "./SectionLabel"
 import { SectionNavigator } from "./SectionNavigator"
 import { Button } from "../../../core/ui/button"
-import { UnitsPath } from "../../offer.types"
+import { RunOptionsPath } from "../../offer.types"
 
 export function ShelvesFields({
   layoutIndex,
@@ -24,7 +24,7 @@ export function ShelvesFields({
   selectedShelfIndex: number
   shelfDepthOptions: number[]
   unitIndex: number
-  unitsPath: UnitsPath
+  unitsPath: RunOptionsPath
 }) {
   const { control } = useFormContext<OfferInput>()
   const height = useWatch({ control, name: `layouts.${layoutIndex}.height` })
