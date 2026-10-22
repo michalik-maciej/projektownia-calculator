@@ -32,8 +32,9 @@ Layout descriptions built in the domain (`buildLayoutDescription`) are Polish, b
 product copy that happens to be assembled server-side. That is deliberate, and it is the one place
 where domain output is not language-neutral.
 
-### Category Labels Are Per-Feature Maps
+### Category Labels Live in One Module
 
-Human-readable component category names live in per-feature label maps, because the grammatical form
-differs by context: the offer breakdown needs plural and genitive forms, the inventory list needs the
-singular. Two maps currently exist and should stay in sync when a category is added.
+Human-readable component category names live in `offer/helpers/categoryLabels.ts`, one map per
+grammatical form: `CATEGORY_LABELS` (plural) for the offer breakdown, the extras picker and the
+catalogue, and `CATEGORY_LABELS_GENITIVE` for missing component messages. Both are keyed by
+`ComponentCategory`, so a new category is added to both.

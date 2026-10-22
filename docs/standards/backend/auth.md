@@ -58,7 +58,7 @@ happen, because `parseEnv` refuses to boot without it (see `../global/convention
 | Role    | Offers                      | Component catalogue | Registration |
 | ------- | --------------------------- | ------------------- | ------------ |
 | `ADMIN` | every offer, read and write | read and write      | allowed      |
-| `USER`  | its own and shared with it  | read and write      | refused, 403 |
+| `USER`  | its own and shared with it  | read only           | refused, 403 |
 | `DEMO`  | its own and shared with it  | read only           | refused, 403 |
 
 `DEMO` exists so the login screen can offer a way in without an account. `POST /api/auth/demo`
@@ -66,9 +66,9 @@ creates a fresh account on every call, with a random password nobody holds, so t
 not a way into it and two visitors never land on the same account. The new account is seeded with
 one priced offer (`demoExampleOffer`) before the response goes out, so the visitor's first screen is
 a filled-in configuration, not an empty one; seeding is best-effort and never fails the login, since
-`priceOffer` already turns a missing component into data instead of an error. `requireInventoryWriter`
-is what makes the catalogue read-only for that role: the catalogue is shared by everybody, so a
-visitor editing it would be editing the real one. Offers are per author already, so a demo visitor
+`priceOffer` already turns a missing component into data instead of an error. `requireAdmin` on the
+catalogue write routes keeps it read-only for that role, as for `USER` (decision 15): the catalogue is
+shared by everybody, so a visitor editing it would be editing the real one. Offers are per author already, so a demo visitor
 writing offers touches nothing but their own. `deleteExpiredDemoAccounts` deletes `DEMO` accounts
 (and their offers) older than 24 hours as a side effect of the next `/demo` call, and `listUsers`
 excludes the role so the admin's user list is not the place that count shows up (see decision 12).
@@ -80,7 +80,7 @@ the `ADMIN` role is answered 403 and an anonymous one 401. It was public for mon
 application where offers belong to their author meant anybody could give themselves a working
 account.
 
-Its only client is the user management dialog (`UserManagementButton` in the top bar, admin-only):
+Its only client is the user management dialog (`UserManagementDialog`, opened from the user menu in the top bar, admin-only):
 creating an account there calls this endpoint directly rather than going through a dedicated
 `/api/users` route, since creation and registration are the same operation. Accounts are still made
 deliberately, by an admin, not by anyone signing themselves up. That leaves the question of where the

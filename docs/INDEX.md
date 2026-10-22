@@ -97,7 +97,7 @@ No hand-written `fetch`, query options living in `{feature}Queries`, components 
 
 #### Language and Formatting (`standards/frontend/language.md`)
 
-Every user-facing string in Polish, English staying under the surface in identifiers and logs, numbers and dates through `Intl` with locale `pl-PL`, Polish reaching the domain where it describes the product, category labels as per-feature maps.
+Every user-facing string in Polish, English staying under the surface in identifiers and logs, numbers and dates through `Intl` with locale `pl-PL`, Polish reaching the domain where it describes the product, category labels in one module with a map per grammatical form.
 
 #### Responsive Design (`standards/frontend/responsive.md`)
 
@@ -117,7 +117,7 @@ One controller file per endpoint exporting a handler or a factory for it, one fe
 
 #### Authentication and Route Protection (`standards/backend/auth.md`)
 
-Stateless JWT in an httpOnly cookie bound through the `withAuth` router wrapper, with only the health check and login public, why the guard stays per route, the payload validated and not just the signature, three roles and what each may write with `DEMO` read-only on the catalogue, the demo session endpoint behind the login screen's button, registration as an admin action and where the first admin comes from, the three ADMIN-only `/api/users` routes for listing, deleting and resetting passwords, a per-IP budget of failed login attempts with the proxy trusted for one hop, security headers from helmet, offers scoped to their author with ADMIN exempt and a 404 for anybody else, CORS is not authorization, never log or return credentials.
+Stateless JWT in an httpOnly cookie bound through the `withAuth` router wrapper, with only the health check and login public, why the guard stays per route, the payload validated and not just the signature, three roles and what each may write with only `ADMIN` writing to the catalogue, the demo session endpoint behind the login screen's button, registration as an admin action and where the first admin comes from, the three ADMIN-only `/api/users` routes for listing, deleting and resetting passwords, a per-IP budget of failed login attempts with the proxy trusted for one hop, security headers from helmet, offers scoped to their author or a user they are shared with, ADMIN exempt and a 404 for anybody else, CORS is not authorization, never log or return credentials.
 
 #### Domain Layer (`standards/backend/domain.md`)
 
