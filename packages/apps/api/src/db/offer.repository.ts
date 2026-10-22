@@ -27,6 +27,7 @@ export type OfferStore = {
   deleteOffer: (id: string) => Promise<Offer>
   getAllOffers: (scope: OfferScope) => Promise<OfferSummaryRow[]>
   getOfferById: (id: string, scope: OfferScope) => Promise<Offer | null>
+  getOfferShares: (offerId: string) => Promise<string[]>
   setOfferShares: (offerId: string, userIds: string[]) => Promise<void>
   updateOffer: (data: UpdateOfferInput) => Promise<Offer>
 }
@@ -81,6 +82,15 @@ export async function getOfferById(
   return prisma.offer.findFirst({ where: { id, ...accessFilter(scope) } })
 }
 
+export async function getOfferShares(offerId: string): Promise<string[]> {
+  const shares = await prisma.offerShare.findMany({
+    where: { offerId },
+    select: { userId: true },
+  })
+
+  return shares.map(({ userId }) => userId)
+}
+
 export async function setOfferShares(
   offerId: string,
   userIds: string[],
@@ -102,6 +112,7 @@ export const offerStore: OfferStore = {
   deleteOffer,
   getAllOffers,
   getOfferById,
+  getOfferShares,
   setOfferShares,
   updateOffer,
 }

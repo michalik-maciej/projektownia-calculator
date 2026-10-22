@@ -74,6 +74,7 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 - `POST /api/offers`: Create offer (calls domain logic)
 - `GET /api/offers`: List offers (the caller's own and those shared with them, unless they are an
   ADMIN)
+- `GET /api/offers/:id/shares`: Users an offer is shared with (ADMIN only)
 - `PUT /api/offers/:id/shares`: Replace the list of users an offer is shared with (ADMIN only)
 - `POST /api/auth/register`: Create a user account (ADMIN only; this is how the user management
   dialog adds accounts, there is no public sign-up)

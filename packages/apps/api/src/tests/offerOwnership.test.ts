@@ -236,6 +236,21 @@ describe("offer shared by an admin", () => {
     })
   })
 
+  it("tells an admin who an offer is shared with", async () => {
+    const { app, strangerOffer } = await setup()
+
+    await request(app)
+      .put(`/api/offers/${strangerOffer.id}/shares`)
+      .set("Cookie", adminCookie)
+      .send({ userIds: [ownerId] })
+    const res = await request(app)
+      .get(`/api/offers/${strangerOffer.id}/shares`)
+      .set("Cookie", adminCookie)
+
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({ userIds: [ownerId] })
+  })
+
   it("refuses to let a non-admin share an offer", async () => {
     const { app, ownOffer } = await setup()
 

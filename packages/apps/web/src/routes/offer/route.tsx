@@ -18,11 +18,13 @@ import {
 import { LayoutCode } from "../../offer/components/LayoutCode"
 import { MissingOfferNotice } from "../../offer/components/MissingOfferNotice"
 import { OfferList } from "../../offer/components/OfferList"
+import { OfferShareDialog } from "../../offer/components/OfferShareDialog"
 import { buildOfferRows } from "../../offer/helpers/buildOfferRows"
 import { formatPrice } from "../../offer/helpers/formatPrice"
 import { useCreateOffer } from "../../offer/hooks/useCreateOffer"
 import { useDeleteOffer } from "../../offer/hooks/useDeleteOffer"
 import { useOffer } from "../../offer/hooks/useOffer"
+import { useIsAdmin } from "../../user/hooks/useIsAdmin"
 
 export const Route = createFileRoute("/offer")({
   component: OfferPage,
@@ -40,6 +42,7 @@ function OfferPage() {
   const { isMissing, offer, offerId } = useOffer()
   const createOffer = useCreateOffer()
   const deleteOffer = useDeleteOffer()
+  const isAdmin = useIsAdmin()
   const [confirming, setConfirming] = useState<"delete" | "new" | null>(null)
 
   const hasOpenOffer = !!offerId && !isMissing
@@ -104,6 +107,7 @@ function OfferPage() {
             Nowa
           </Button>
           <OfferList />
+          {isAdmin && hasOpenOffer && <OfferShareDialog offerId={offerId} />}
           <Button
             className="text-destructive hover:text-destructive"
             disabled={!hasOpenOffer || deleteOffer.isPending}

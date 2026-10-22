@@ -20,6 +20,7 @@ export function createOffersRouter(
   guarded.post("/", offer.create)
   guarded.put("/:id", offer.update)
   guarded.delete("/:id", offer.remove)
+  guarded.get("/:id/shares", requireAdmin, offer.shares)
   guarded.put("/:id/shares", requireAdmin, offer.share)
 
   return router

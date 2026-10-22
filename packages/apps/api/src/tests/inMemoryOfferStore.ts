@@ -67,6 +67,8 @@ export function createInMemoryOfferStore(): TestOfferStore {
       return offer && isVisibleTo(offer, scope) ? offer : null
     },
 
+    getOfferShares: async (offerId: string) => sharedWith.get(offerId) ?? [],
+
     setOfferShares: async (offerId: string, userIds: string[]) => {
       sharedWith.set(offerId, userIds)
     },

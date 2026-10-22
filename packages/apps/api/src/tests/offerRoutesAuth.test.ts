@@ -16,6 +16,7 @@ const guardedRoutes = [
   { method: "post", path: "/api/offers" },
   { method: "put", path: `/api/offers/${offerId}` },
   { method: "delete", path: `/api/offers/${offerId}` },
+  { method: "get", path: `/api/offers/${offerId}/shares` },
   { method: "put", path: `/api/offers/${offerId}/shares` },
 ] as const
 
