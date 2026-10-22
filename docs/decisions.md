@@ -357,3 +357,23 @@ separate end cap type and a read-time transform for a field nobody misreads toda
 
 **Cost.** `sides[1].hasTopCover` can still be stored, for example after splitting linked sides, and
 nothing reads it. When side 2 is longer, the covers it lacks are added by hand as extras.
+
+## 18. Code is reviewed per release and in a weekly audit, not per commit
+
+**Decision.** Commits land on `main` without review. Before the release PR is merged, the range from
+the previous release tag to `main` is reviewed against the standards and this log, and a finding
+that would break production blocks the merge. Once a week one area of the repository is audited as
+it stands, in the fixed rotation listed in `docs/standards/workflow/process.md`. Both write to one
+backlog, `docs/review/findings.md`, and each finding is resolved, deferred or rejected as its own
+step and commit.
+
+**Why.** A review of every commit costs a session per commit for a single maintainer committing
+several times a day, and most of those reviews would find nothing. The release merge is already the
+point where code reaches production (decision 13), so it is where a review protects the most. A
+diff review cannot see drift that builds up across changes, two patterns for the same job or a
+standard the code has moved away from, which is what the audit of whole areas is for.
+
+**Cost.** A bad change sits on `main` until the next release review, and the web, which deploys on
+every push, can ship it before then. When releases are far apart the range to review grows large.
+Nothing enforces either rhythm: CI does not check that a review happened, so both depend on being
+remembered.

@@ -161,7 +161,11 @@ The agent never stages, commits or pushes, everything happens on `main` without 
 
 #### Working Process (`standards/workflow/process.md`)
 
-One concern per step, problems reported rather than quietly fixed, verification with `pnpm validate` and `pnpm vitest run`, what green actually means here, the five CI jobs with coverage thresholds enforced in the test job and a database only in the end-to-end one, why there is no typecheck job among them, the toolchain version pinned in three places, CI running without a database, and reading `docs/decisions.md` before touching wiring, auth or persistence.
+One concern per step, problems reported rather than quietly fixed, verification with `pnpm validate` and `pnpm vitest run`, what green actually means here, the six CI jobs with coverage thresholds enforced in the test job and a database only in the end-to-end one, why there is no typecheck job among them, the toolchain version pinned in three places, CI running without a database, reading `docs/decisions.md` before touching wiring, auth or persistence, and code review on two rhythms instead of per commit: the range since the last release tag before the release PR is merged, and a weekly audit of one area in a fixed rotation.
+
+#### Review Findings (`review/findings.md`)
+
+The backlog both reviews write to: one row per finding with its source and status, rejected findings kept with their reason, and each fix landing as its own commit that updates the row.
 
 ---
 

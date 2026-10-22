@@ -91,3 +91,28 @@ reaches a test.
 `docs/decisions.md` records why the architecture is what it is, and what each choice costs. Read it
 before changing package wiring, authentication or how offers are persisted, so that a change is made
 deliberately rather than by accident.
+
+### Review Runs on Two Rhythms, Not per Commit
+
+Commits land on `main` without review. Code is reviewed instead at two fixed points, and everything
+either of them finds goes to `docs/review/findings.md`.
+
+Before the release PR is merged, the range from the previous release tag to `main` is reviewed
+against `docs/standards/` and `docs/decisions.md`, with a security pass when the range touches auth
+or the API. The release tag is the record of what has been reviewed. A finding that would break
+production blocks the merge, the rest are triaged.
+
+Once a week one area is audited as it stands, not as a diff, because drift between modules and
+between code and documentation never shows up in a single change. The areas rotate in this order:
+
+| Area                  | Scope                                               | Last audit |
+| --------------------- | --------------------------------------------------- | ---------- |
+| Domain                | `packages/domain`                                   | never      |
+| API: auth and sharing | `packages/apps/api`                                 | never      |
+| Web                   | `packages/apps/web`: components and data fetching   | never      |
+| Documentation vs code | `CLAUDE.md`, `docs/`                                | never      |
+| Build and CI          | `tsconfig*.json`, `turbo.json`, `.github/workflows` | never      |
+
+Every finding is triaged as fixed, deferred or rejected, and a rejected one keeps its reason so the
+next review does not raise it again. Each fix is its own step and its own commit, which also updates
+the finding's status. The audit that completes an area updates its date in the table above.

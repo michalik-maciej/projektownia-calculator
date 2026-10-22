@@ -4,6 +4,7 @@
   "bump-patch-for-minor-pre-major": false,
   "include-component-in-tag": false,
   "pull-request-title-pattern": "chore: release ${version}",
+  "pull-request-header": "**Before merging:** run the release review on the range from the previous release tag to `main` and triage its findings in `docs/review/findings.md` (see `docs/standards/workflow/process.md`). Merging deploys the API.",
   "packages": {
     ".": {
       "release-type": "node",
