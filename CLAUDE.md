@@ -61,8 +61,8 @@ whenever an offer is created, read or updated, since pricing is not stored.
 - `Component`: Catalog inventory (category, dimensions, price)
 - `Offer`: Offer records (input JSON, discount; pricing computed on every read, not stored), owned by the `User` that created
   them (`userId`, required), with the account that saved them last (`lastUpdatedById`, optional)
-- `OfferShare`: Grants a user access to an offer they do not own (`offerId`, `userId`), set by an
-  ADMIN
+- `OfferShare`: Gives a user the owner's rights (read, edit, delete) to an offer they do not own
+  (`offerId`, `userId`), set by an ADMIN
 
 **API Endpoints**:
 

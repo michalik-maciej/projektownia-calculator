@@ -165,20 +165,6 @@ One concern per step, problems reported rather than quietly fixed, verification 
 
 ---
 
-### End Client and Prior Art
-
-Two documents that are neither standards nor project overview, kept because their content cannot be
-recovered from the code or from git history:
-
-- `docs/client-requirements.md` — the end client's requirements list for the configurator, eight
-  areas, gondolas first. Binding input, to be verified as work progresses rather than treated as
-  background.
-- `docs/gondola-prior-art.md` — how gondolas were modelled in the three earlier calculators, and
-  how that maps onto today's `sides` (two sides, not segments along the run). Recovered from
-  `projektownia-kalkulator`, `next-kalkulator` and `remix-kalkulator`.
-
----
-
 ## How to Use This Documentation
 
 1. **Start Here**: Always read this INDEX.md first to understand what documentation exists

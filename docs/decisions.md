@@ -187,14 +187,16 @@ implementation was discarded, which means gondola support in the configurator re
 the seven task groups behind it would have to be redone; what survives of that work is the analysis,
 not the code. The task's specification, implementation plan, work log, mockups and audit are no
 longer in the working tree, but they are in commits `09b92e1` and `eceb46d` and can be read back
-with `git show`.
+with `git show`. The requirements list and the prior art were later removed as no longer needed
+(2026-10-22) and are likewise left to git history.
 
 ## 11. An offer belongs to the user who created it
 
 **Decision.** `Offer.userId` is required and carries a foreign key to `User`. Every offer endpoint
 turns the caller's token into an `OfferScope` (`{ isAdmin, userId }`) and passes it to the
-repository, which filters the list and every read by owner. An offer belonging to somebody else
-answers 404, exactly as one that does not exist. A user with the `ADMIN` role is exempt and reaches
+repository, which filters the list and every read by owner, or by a share an admin created
+(decision 16). An offer the caller can reach neither way answers 404, exactly as one that does not
+exist. A user with the `ADMIN` role is exempt and reaches
 every offer, including for editing.
 
 **Why.** An offer is a document one person prepares for one customer. With a shared list, everybody

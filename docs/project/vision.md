@@ -25,7 +25,8 @@ whenever it is opened, so a price change reaches every offer without re-entering
 `docs/decisions.md`).
 
 The component inventory is shared by everybody, an offer is not: it belongs to the account that
-created it, and nobody else reaches it (decision 11 in `docs/decisions.md`).
+created it, and only an admin or a user the admin shared it with reaches it as well (decisions 11
+and 16 in `docs/decisions.md`).
 
 ## Goals (Next 6-12 Months)
 
