@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../core/ui/dialog"
+import { useIsAdmin } from "../../user/hooks/useIsAdmin"
 import { offerQueries } from "../offer.api"
 
 const dateFormatter = new Intl.DateTimeFormat("pl-PL", {
@@ -28,6 +29,7 @@ export function OfferList() {
   const [pendingOffer, setPendingOffer] = useState<OfferSummary | null>(null)
 
   const navigate = useNavigate()
+  const isAdmin = useIsAdmin()
 
   const { data: offers, isPending } = useQuery({
     ...offerQueries.list(),
@@ -93,7 +95,14 @@ export function OfferList() {
                       onClick={() => openOffer(offer.id)}
                       type="button"
                     >
-                      <span className="truncate">{offer.title}</span>
+                      <span className="flex min-w-0 flex-col">
+                        <span className="truncate">{offer.title}</span>
+                        {isAdmin && (
+                          <span className="truncate text-xs text-muted-foreground">
+                            {offer.authorEmail}
+                          </span>
+                        )}
+                      </span>
                       <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
                         {dateFormatter.format(new Date(offer.createdAt))}
                       </span>

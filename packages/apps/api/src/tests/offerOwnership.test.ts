@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest"
 import { componentCatalogMock } from "@/domain/fixtures/componentCatalog"
 import { validOfferInput } from "@/domain/fixtures/validOfferInput"
 import { createOfferPreview } from "@/domain/orchestrations/createOfferPreview/createOfferPreview"
+import { OfferSummary } from "@/schemas/Offer.schema"
 
 import { createInMemoryOfferStore } from "./inMemoryOfferStore"
 import { createApp } from "../app"
@@ -58,6 +59,7 @@ describe("offer routes scoped to the offer owner", () => {
     expect(res.status).toBe(200)
     expect(res.body).toEqual([
       {
+        authorEmail: `${ownerId}@example.com`,
         createdAt: ownOffer.createdAt.toISOString(),
         id: ownOffer.id,
         title: "Owner offer",
@@ -65,15 +67,20 @@ describe("offer routes scoped to the offer owner", () => {
     ])
   })
 
-  it("lists every offer for an admin", async () => {
+  it("lists every offer with its author for an admin", async () => {
     const { app, ownOffer, strangerOffer } = await setup()
 
     const res = await request(app).get("/api/offers").set("Cookie", adminCookie)
 
     expect(res.status).toBe(200)
-    expect(res.body.map((offer: { id: string }) => offer.id)).toEqual([
-      ownOffer.id,
-      strangerOffer.id,
+    expect(
+      res.body.map(({ authorEmail, id }: OfferSummary) => ({
+        authorEmail,
+        id,
+      })),
+    ).toEqual([
+      { authorEmail: `${ownerId}@example.com`, id: ownOffer.id },
+      { authorEmail: `${strangerId}@example.com`, id: strangerOffer.id },
     ])
   })
 

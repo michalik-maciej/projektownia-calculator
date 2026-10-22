@@ -18,7 +18,9 @@ export type UpdateOfferInput = Omit<Partial<CreateOfferInput>, "userId"> & {
   id: string
 }
 
-export type OfferSummaryRow = Pick<Offer, "createdAt" | "id" | "title">
+export type OfferSummaryRow = Pick<Offer, "createdAt" | "id" | "title"> & {
+  authorEmail: string
+}
 
 export type OfferStore = {
   createOffer: (data: CreateOfferInput) => Promise<Offer>
@@ -48,14 +50,20 @@ export async function updateOffer(data: UpdateOfferInput): Promise<Offer> {
 export async function getAllOffers(
   scope: OfferScope,
 ): Promise<OfferSummaryRow[]> {
-  return prisma.offer.findMany({
+  const offers = await prisma.offer.findMany({
     where: ownerFilter(scope),
     select: {
       createdAt: true,
       id: true,
       title: true,
+      user: { select: { email: true } },
     },
   })
+
+  return offers.map(({ user, ...offer }) => ({
+    ...offer,
+    authorEmail: user.email,
+  }))
 }
 
 export async function getOfferById(

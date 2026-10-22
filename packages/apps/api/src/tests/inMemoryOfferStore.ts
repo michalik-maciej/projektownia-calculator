@@ -52,7 +52,12 @@ export function createInMemoryOfferStore(): TestOfferStore {
     getAllOffers: async (scope: OfferScope) =>
       [...stored.values()]
         .filter((offer) => isVisibleTo(offer, scope))
-        .map(({ createdAt, id, title }) => ({ createdAt, id, title })),
+        .map(({ createdAt, id, title, userId }) => ({
+          authorEmail: `${userId}@example.com`,
+          createdAt,
+          id,
+          title,
+        })),
 
     getOfferById: async (id: string, scope: OfferScope) => {
       const offer = stored.get(id)

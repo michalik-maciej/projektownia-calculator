@@ -81,6 +81,7 @@ export const OfferOutputSchema = v.object({
 export type OfferOutput = v.InferOutput<typeof OfferOutputSchema>
 
 export const OfferSummarySchema = v.object({
+  authorEmail: v.string(),
   createdAt: v.string(),
   id: v.string(),
   title: v.string(),
