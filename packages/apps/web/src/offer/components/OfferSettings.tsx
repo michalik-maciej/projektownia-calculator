@@ -30,7 +30,7 @@ import {
 
 export function OfferSettings() {
   const { control } = useFormContext<OfferInput>()
-  const hasPriceStrips = useWatch({ control, name: "hasPriceStrips" }) ?? true
+  const hasPriceStrips = useWatch({ control, name: "hasPriceStrips" })
   const priceStripsId = useId()
   const priceStripColorId = useId()
   const metalColorId = useId()

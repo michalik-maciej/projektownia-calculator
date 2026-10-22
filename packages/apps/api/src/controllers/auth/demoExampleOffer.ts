@@ -10,6 +10,7 @@ import { OfferInput } from "@/schemas/Offer.schema"
 export const demoExampleOffer: OfferInput = {
   title: "Przykładowa konfiguracja",
   discountPercentage: 10,
+  hasPriceStrips: true,
   layouts: [
     {
       depth: 47,

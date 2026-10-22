@@ -13,7 +13,7 @@ import {
 export function OfferColors() {
   const { control } = useFormContext<OfferInput>()
   const [
-    hasPriceStrips = true,
+    hasPriceStrips,
     metalColor = DEFAULT_METAL_COLOR,
     priceStripColor = DEFAULT_PRICE_STRIP_COLOR,
   ] = useWatch({

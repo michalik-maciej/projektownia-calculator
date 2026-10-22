@@ -3,6 +3,7 @@ import { OfferInput } from "@/schemas/Offer.schema"
 export const validOfferInput: OfferInput = {
   title: "Offer test",
   discountPercentage: 10,
+  hasPriceStrips: true,
   layouts: [
     {
       depth: 47,

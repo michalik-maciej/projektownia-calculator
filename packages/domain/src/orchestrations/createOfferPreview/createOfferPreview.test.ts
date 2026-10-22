@@ -8,6 +8,7 @@ describe("createOfferPreview", () => {
     const response = createOfferPreview(
       {
         discountPercentage: 10,
+        hasPriceStrips: true,
         layouts: [
           {
             height: 180,

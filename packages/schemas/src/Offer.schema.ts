@@ -24,7 +24,7 @@ export type MetalColor = (typeof METAL_COLORS)[number]
 
 export const OfferInputSchema = v.object({
   discountPercentage: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
-  hasPriceStrips: v.optional(v.boolean()),
+  hasPriceStrips: v.optional(v.boolean(), true),
   layouts: v.array(
     v.union([LayoutGondolaValue, LayoutWallValue, LayoutItemSetValue]),
   ),

@@ -9,7 +9,7 @@ import { summarizePriceStrips } from "../../transformations/summarizePriceStrips
 import { calculateOfferDemand } from "../calculateOfferDemand/calculateOfferDemand"
 
 export function createOfferPreview(
-  { discountPercentage, hasPriceStrips = true, layouts, title }: OfferInput,
+  { discountPercentage, hasPriceStrips, layouts, title }: OfferInput,
   inventory: Component[],
 ): OfferOutput {
   const priceStripDemand = hasPriceStrips
