@@ -5,11 +5,11 @@ import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 import { OfferInput } from "@/schemas/Offer.schema"
 
 import { Component, ComponentDemand } from "../../models/component"
+import { END_CAP_RUN_COUNT } from "../../models/endCap"
 import { MissingComponentError } from "../../models/missingComponentError"
 import { ShelfUnit } from "../../models/shelfUnit"
 
 const BASE_SHELVES_PER_UNIT = 1
-const END_CAP_RUN_COUNT = 1
 
 type ShelfRun = {
   numberOfRuns: number

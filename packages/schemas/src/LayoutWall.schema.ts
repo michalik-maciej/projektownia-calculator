@@ -3,6 +3,15 @@ import * as v from "valibot"
 export const BACK_VARIANTS = [0, 1, 2] as const
 export const DEFAULT_BACK_VARIANT = 1
 
+export const ExtrasValue = v.optional(
+  v.array(
+    v.object({
+      id: v.string(),
+      quantity: v.number(),
+    }),
+  ),
+)
+
 export const LayoutWallValue = v.object({
   depth: v.number(),
   height: v.number(),
@@ -22,14 +31,7 @@ export const LayoutWallValue = v.object({
   backVariant: v.optional(v.picklist(BACK_VARIANTS)),
   hasBaseCover: v.optional(v.boolean()),
   hasTopCover: v.optional(v.boolean()),
-  extras: v.optional(
-    v.array(
-      v.object({
-        id: v.string(),
-        quantity: v.number(),
-      }),
-    ),
-  ),
+  extras: ExtrasValue,
 })
 
 export type LayoutWall = v.InferOutput<typeof LayoutWallValue>

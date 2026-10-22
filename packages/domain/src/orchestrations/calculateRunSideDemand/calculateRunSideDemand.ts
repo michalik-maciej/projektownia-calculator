@@ -3,8 +3,8 @@ import { sumBy } from "lodash/fp"
 import { GondolaSide } from "@/schemas/LayoutGondola.schema"
 
 import { calculateBackPanelDemand } from "../../calculations/calculateBackPanelDemand/calculateBackPanelDemand"
-import { calculateBaseCoverDemand } from "../../calculations/calculateBaseCoverDemand/calculateBaseCoverDemand"
 import { calculateBaseShelfDemand } from "../../calculations/calculateBaseShelfDemand/calculateBaseShelfDemand"
+import { calculateCoverDemand } from "../../calculations/calculateCoverDemand/calculateCoverDemand"
 import { calculateFootDemand } from "../../calculations/calculateFootDemand/calculateFootDemand"
 import { calculateShelfDemand } from "../../calculations/calculateShelfDemand/calculateShelfDemand"
 import { Component } from "../../models/component"
@@ -35,7 +35,10 @@ export function calculateRunSideDemand(
       inventory,
     ),
     ...(hasBaseCover
-      ? calculateBaseCoverDemand({ shelfUnitsByWidth }, inventory)
+      ? calculateCoverDemand(
+          { category: "baseCover", shelfUnitsByWidth },
+          inventory,
+        )
       : []),
     ...calculateBaseShelfDemand({ depth, shelfUnitsByWidth }, inventory),
     ...calculateShelfDemand({ shelfUnits, numberOfLayouts }, inventory),

@@ -2,14 +2,13 @@ import { compact, sumBy } from "lodash/fp"
 
 import { LayoutGondola } from "@/schemas/LayoutGondola.schema"
 
+import { calculateCoverDemand } from "../../calculations/calculateCoverDemand/calculateCoverDemand"
 import { calculateLegDemand } from "../../calculations/calculateLegDemand/calculateLegDemand"
-import { calculateTopCoverDemand } from "../../calculations/calculateTopCoverDemand/calculateTopCoverDemand"
 import { Component } from "../../models/component"
+import { END_CAP_RUN_COUNT } from "../../models/endCap"
 import { countShelfUnitsByWidth } from "../../transformations/countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { calculateRunSideDemand } from "../calculateRunSideDemand/calculateRunSideDemand"
 import { calculateWallLayoutDemand } from "../calculateWallLayoutDemand/calculateWallLayoutDemand"
-
-const END_CAP_RUN_COUNT = 1
 
 export function calculateGondolaLayoutDemand(
   {
@@ -32,8 +31,9 @@ export function calculateGondolaLayoutDemand(
       calculateRunSideDemand({ ...side, height, numberOfLayouts }, inventory),
     ),
     ...(sides[0].hasTopCover
-      ? calculateTopCoverDemand(
+      ? calculateCoverDemand(
           {
+            category: "topCover",
             shelfUnitsByWidth: countShelfUnitsByWidth(
               sides[0].shelfUnits,
               numberOfLayouts,

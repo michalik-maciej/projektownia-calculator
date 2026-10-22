@@ -4,26 +4,27 @@ import { Component } from "../../models/component"
 import { MissingComponentError } from "../../models/missingComponentError"
 import { ShelfUnit } from "../../models/shelfUnit"
 
-type TopCoverCalculationContext = {
+type CoverCalculationContext = {
+  category: "baseCover" | "topCover"
   shelfUnitsByWidth: ShelfUnit[]
 }
 
-export function calculateTopCoverDemand(
-  { shelfUnitsByWidth }: TopCoverCalculationContext,
+export function calculateCoverDemand(
+  { category, shelfUnitsByWidth }: CoverCalculationContext,
   inventory: Component[],
 ) {
   return map(({ numberOfShelfUnits, width }) => {
-    const availableTopCover = find({ category: "topCover", width }, inventory)
+    const availableCover = find({ category, width }, inventory)
 
-    if (!availableTopCover) {
+    if (!availableCover) {
       throw new MissingComponentError(
-        `No top cover found for width ${width}cm`,
-        { category: "topCover", width },
+        `No ${category} found for width ${width}cm`,
+        { category, width },
       )
     }
 
     return {
-      id: availableTopCover.id,
+      id: availableCover.id,
       quantity: numberOfShelfUnits,
     }
   }, shelfUnitsByWidth)

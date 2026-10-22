@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest"
 
-import { calculateTopCoverDemand } from "./calculateTopCoverDemand"
+import { calculateCoverDemand } from "./calculateCoverDemand"
 import { componentCatalogMock } from "../../fixtures/componentCatalog"
+import { MissingComponentError } from "../../models/missingComponentError"
 
-describe("calculateTopCoverDemand", () => {
-  it("orders one cover per shelf unit, matched on width", () => {
-    const result = calculateTopCoverDemand(
+describe("calculateCoverDemand", () => {
+  it("orders one cover of the given category per shelf unit, matched on width", () => {
+    const result = calculateCoverDemand(
       {
+        category: "topCover",
         shelfUnitsByWidth: [
           {
             width: 100,
@@ -27,10 +29,11 @@ describe("calculateTopCoverDemand", () => {
     ])
   })
 
-  it("throws if top cover not found", () => {
+  it("throws if no cover of the given category matches the width", () => {
     expect(() =>
-      calculateTopCoverDemand(
+      calculateCoverDemand(
         {
+          category: "baseCover",
           shelfUnitsByWidth: [
             {
               width: 16,
@@ -40,6 +43,6 @@ describe("calculateTopCoverDemand", () => {
         },
         componentCatalogMock,
       ),
-    ).toThrow()
+    ).toThrow(MissingComponentError)
   })
 })

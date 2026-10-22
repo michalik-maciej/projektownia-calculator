@@ -2,8 +2,8 @@ import { sumBy } from "lodash/fp"
 
 import { LayoutWall } from "@/schemas/LayoutWall.schema"
 
+import { calculateCoverDemand } from "../../calculations/calculateCoverDemand/calculateCoverDemand"
 import { calculateLegDemand } from "../../calculations/calculateLegDemand/calculateLegDemand"
-import { calculateTopCoverDemand } from "../../calculations/calculateTopCoverDemand/calculateTopCoverDemand"
 import { Component } from "../../models/component"
 import { countShelfUnitsByWidth } from "../../transformations/countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { calculateRunSideDemand } from "../calculateRunSideDemand/calculateRunSideDemand"
@@ -18,8 +18,9 @@ export function calculateWallLayoutDemand(
   return [
     ...calculateRunSideDemand(layout, inventory),
     ...(hasTopCover
-      ? calculateTopCoverDemand(
+      ? calculateCoverDemand(
           {
+            category: "topCover",
             shelfUnitsByWidth: countShelfUnitsByWidth(
               shelfUnits,
               numberOfLayouts,

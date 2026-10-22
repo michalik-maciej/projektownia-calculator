@@ -1,6 +1,6 @@
 import * as v from "valibot"
 
-import { BACK_VARIANTS } from "./LayoutWall.schema"
+import { BACK_VARIANTS, ExtrasValue } from "./LayoutWall.schema"
 
 const ShelfUnitValue = v.object({
   numberOfShelfUnits: v.pipe(v.number(), v.minValue(0)),
@@ -22,15 +22,6 @@ export const GondolaSideValue = v.object({
 })
 
 export type GondolaSide = v.InferOutput<typeof GondolaSideValue>
-
-const ExtrasValue = v.optional(
-  v.array(
-    v.object({
-      id: v.string(),
-      quantity: v.number(),
-    }),
-  ),
-)
 
 const CurrentLayoutGondolaValue = v.object({
   height: v.number(),

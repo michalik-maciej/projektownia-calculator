@@ -87,7 +87,7 @@ export function GondolaLayoutPlan({
 
     const secondSide = getValues(secondSidePath)
 
-    if (JSON.stringify(secondSide) === JSON.stringify(firstSide)) return
+    if (areGondolaSidesEqual([firstSide, secondSide])) return
 
     const mirroredSide = structuredClone(firstSide)
 
