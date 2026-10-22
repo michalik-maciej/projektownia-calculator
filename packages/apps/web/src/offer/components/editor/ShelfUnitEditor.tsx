@@ -23,6 +23,7 @@ export function ShelfUnitEditor({
   onSelectUnit,
   optionsPath,
   selectedShelfIndex,
+  topCoverPath,
   unitCount,
   unitIndex,
   unitsPath,
@@ -36,6 +37,7 @@ export function ShelfUnitEditor({
   onSelectUnit: (unitIndex: number) => void
   optionsPath: RunOptionsPath
   selectedShelfIndex: number
+  topCoverPath?: RunOptionsPath
   unitCount: number
   unitIndex: number
   unitsPath: RunOptionsPath
@@ -119,6 +121,7 @@ export function ShelfUnitEditor({
         areGondolaSidesUnlinked={areGondolaSidesUnlinked}
         layoutIndex={layoutIndex}
         optionsPath={optionsPath}
+        topCoverPath={topCoverPath}
       />
     </div>
   )

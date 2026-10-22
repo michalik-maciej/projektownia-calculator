@@ -7,10 +7,12 @@ export function OptionsFields({
   areGondolaSidesUnlinked,
   layoutIndex,
   optionsPath,
+  topCoverPath,
 }: {
   areGondolaSidesUnlinked?: boolean
   layoutIndex: number
   optionsPath: RunOptionsPath
+  topCoverPath?: RunOptionsPath
 }) {
   return (
     <div className="flex flex-col gap-2 rounded-lg border bg-background p-4">
@@ -19,6 +21,7 @@ export function OptionsFields({
       <RunOptionsFields
         areGondolaSidesUnlinked={areGondolaSidesUnlinked}
         optionsPath={optionsPath}
+        topCoverPath={topCoverPath}
       />
 
       <ComponentQuantityFields

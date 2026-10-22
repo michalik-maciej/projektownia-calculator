@@ -356,6 +356,7 @@ export function GondolaLayoutPlan({
                   }
                   optionsPath={editedSidePath}
                   selectedShelfIndex={selectedShelfIndex}
+                  topCoverPath={firstSidePath}
                   unitCount={editedUnits.fields.length}
                   unitIndex={selectedUnitIndex}
                   unitsPath={editedSidePath}

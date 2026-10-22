@@ -342,3 +342,18 @@ keeps one access rule for every offer route instead of a second check per contro
 version it was based on and answers 409 when the offer has changed since, so the later save is
 refused rather than silent, and the web replaces the refused edits with the current version. A
 shared user can also delete the offer, because delete uses the same scope as edit.
+
+## 17. A gondola's top covers follow side 1
+
+**Decision.** A gondola has one set of top covers for both sides, switched on by
+`sides[0].hasTopCover` and counted from the shelf units of side 1. Side 2 shows the same checkbox,
+disabled and bound to side 1, through the `topCoverPath` that `GondolaLayoutPlan` passes down. End
+caps keep their own `hasTopCover`, read like a wall run's.
+
+**Why.** The end client confirmed side 1 as the reference when the sides have different shelf
+units. Moving the flag onto `LayoutGondola` would state the rule in the model, but `GondolaSide` is
+also the end cap type, and offers saved since 1.3.0 carry the flag on `sides[0]`, so it would cost a
+separate end cap type and a read-time transform for a field nobody misreads today.
+
+**Cost.** `sides[1].hasTopCover` can still be stored, for example after splitting linked sides, and
+nothing reads it. When side 2 is longer, the covers it lacks are added by hand as extras.

@@ -21,17 +21,16 @@ import { RunOptionsPath } from "../../offer.types"
 export function RunOptionsFields({
   areGondolaSidesUnlinked = false,
   optionsPath,
+  topCoverPath = optionsPath,
 }: {
   areGondolaSidesUnlinked?: boolean
   optionsPath: RunOptionsPath
+  topCoverPath?: RunOptionsPath
 }) {
   const { control } = useFormContext<OfferInput>()
   const baseCoverId = useId()
   const topCoverId = useId()
-  const isSecondGondolaSide = optionsPath.endsWith(".sides.1")
-  const topCoverPath = isSecondGondolaSide
-    ? (optionsPath.replace(/1$/, "0") as RunOptionsPath)
-    : optionsPath
+  const isTopCoverShared = topCoverPath !== optionsPath
 
   return (
     <>
@@ -109,7 +108,7 @@ export function RunOptionsFields({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                {isSecondGondolaSide
+                {isTopCoverShared
                   ? "Maskownica jest wspólna dla obu stron gondoli i liczona według regałów strony 1."
                   : "Rozpiska maskownic wynika z układu regałów strony 1."}
               </TooltipContent>
@@ -122,7 +121,7 @@ export function RunOptionsFields({
           render={({ field }) => (
             <Checkbox
               checked={field.value ?? false}
-              disabled={isSecondGondolaSide}
+              disabled={isTopCoverShared}
               id={topCoverId}
               onBlur={field.onBlur}
               onCheckedChange={field.onChange}
