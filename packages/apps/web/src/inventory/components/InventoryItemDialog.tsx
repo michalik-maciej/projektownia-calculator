@@ -8,7 +8,20 @@ import {
   DialogTitle,
 } from "../../core/ui/dialog"
 import { textEyebrow, textName } from "../../core/ui/typography"
+import { useIsAdmin } from "../../user/hooks/useIsAdmin"
 import { inventoryQueries } from "../inventory.api"
+
+function describeDialog({
+  componentId,
+  isAdmin,
+}: {
+  componentId?: string
+  isAdmin: boolean
+}) {
+  if (!componentId) return "Nowy element"
+
+  return isAdmin ? "Edycja elementu" : "Podgląd elementu"
+}
 
 export function InventoryItemDialog({
   componentId,
@@ -17,6 +30,7 @@ export function InventoryItemDialog({
   componentId?: string
   onOpenChange: (open: boolean) => void
 }) {
+  const isAdmin = useIsAdmin()
   const { data, isPending } = useQuery({
     ...inventoryQueries.list(),
     enabled: !!componentId,
@@ -33,7 +47,7 @@ export function InventoryItemDialog({
       >
         <DialogHeader className="gap-0.5">
           <span className={textEyebrow}>
-            {componentId ? "Edycja elementu" : "Nowy element"}
+            {describeDialog({ componentId, isAdmin })}
           </span>
           <DialogTitle className={textName}>{data?.label ?? ""}</DialogTitle>
         </DialogHeader>

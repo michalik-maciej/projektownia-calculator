@@ -85,117 +85,119 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5">
-        <div className="flex gap-4">
-          {/* Label */}
-          <div className="flex flex-col grow space-y-1 gap-2">
-            <Label className={textEyebrow}>Nazwa</Label>
-            <Input
-              {...passwordManagerIgnore}
-              {...register("label", {
-                required: "Nazwa jest wymagana",
-                validate: (value) =>
-                  value.trim().length > 0 || "Nazwa nie może być pusta",
-              })}
-            />
-            <p
-              className={`text-xs text-destructive min-h-5 ${
-                formState.errors.label?.message ? "" : "invisible"
-              }`}
-            >
-              {formState.errors.label?.message}
-            </p>
+        <fieldset className="contents" disabled={!isAdmin}>
+          <div className="flex gap-4">
+            {/* Label */}
+            <div className="flex flex-col grow space-y-1 gap-2">
+              <Label className={textEyebrow}>Nazwa</Label>
+              <Input
+                {...passwordManagerIgnore}
+                {...register("label", {
+                  required: "Nazwa jest wymagana",
+                  validate: (value) =>
+                    value.trim().length > 0 || "Nazwa nie może być pusta",
+                })}
+              />
+              <p
+                className={`text-xs text-destructive min-h-5 ${
+                  formState.errors.label?.message ? "" : "invisible"
+                }`}
+              >
+                {formState.errors.label?.message}
+              </p>
+            </div>
+            {/* Price */}
+            <div className="flex flex-col w-36 space-y-1 gap-2">
+              <Label className={textEyebrow}>Cena</Label>
+              <Controller
+                control={control}
+                name="price"
+                rules={{
+                  required: "Cena jest wymagana",
+                  validate: (value) =>
+                    Number.isFinite(value) && value > 0
+                      ? true
+                      : "Cena musi być dodatnia",
+                }}
+                render={({ field }) => (
+                  <PriceInput
+                    defaultValue={field.value.toFixed(2)}
+                    name={field.name}
+                    onBlur={field.onBlur}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
+                    ref={field.ref}
+                  />
+                )}
+              />
+              <p
+                className={`text-xs text-destructive min-h-5 ${
+                  formState.errors.price?.message ? "" : "invisible"
+                }`}
+              >
+                {formState.errors.price?.message}
+              </p>
+            </div>
           </div>
-          {/* Price */}
-          <div className="flex flex-col w-36 space-y-1 gap-2">
-            <Label className={textEyebrow}>Cena</Label>
+
+          {/* Category */}
+          <div className="space-y-1">
+            <Label className={textEyebrow}>Kategoria</Label>
+
             <Controller
+              name="category"
               control={control}
-              name="price"
               rules={{
-                required: "Cena jest wymagana",
+                required: "Kategoria jest wymagana",
                 validate: (value) =>
-                  Number.isFinite(value) && value > 0
-                    ? true
-                    : "Cena musi być dodatnia",
+                  COMPONENT_CATEGORIES.includes(value) ||
+                  "Nieprawidłowa kategoria",
               }}
               render={({ field }) => (
-                <PriceInput
-                  defaultValue={field.value.toFixed(2)}
-                  name={field.name}
-                  onBlur={field.onBlur}
-                  onChange={(event) =>
-                    field.onChange(event.target.valueAsNumber)
-                  }
-                  ref={field.ref}
-                />
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  className="flex flex-wrap gap-2 mt-2"
+                >
+                  {COMPONENT_CATEGORIES.map((category) => {
+                    const id = `category-${category}`
+                    const isSelected = field.value === category
+
+                    return (
+                      <div key={category} className="flex items-center">
+                        <RadioGroupItem
+                          id={id}
+                          value={category}
+                          className="hidden"
+                        />
+                        <Label htmlFor={id} className="cursor-pointer">
+                          <Badge variant={isSelected ? "selected" : "outline"}>
+                            {CATEGORY_LABELS[category]}
+                          </Badge>
+                        </Label>
+                      </div>
+                    )
+                  })}
+                </RadioGroup>
               )}
             />
             <p
               className={`text-xs text-destructive min-h-5 ${
-                formState.errors.price?.message ? "" : "invisible"
+                formState.errors.category?.message ? "" : "invisible"
               }`}
             >
-              {formState.errors.price?.message}
+              {formState.errors.category?.message}
             </p>
           </div>
-        </div>
 
-        {/* Category */}
-        <div className="space-y-1">
-          <Label className={textEyebrow}>Kategoria</Label>
-
-          <Controller
-            name="category"
-            control={control}
-            rules={{
-              required: "Kategoria jest wymagana",
-              validate: (value) =>
-                COMPONENT_CATEGORIES.includes(value) ||
-                "Nieprawidłowa kategoria",
-            }}
-            render={({ field }) => (
-              <RadioGroup
-                value={field.value}
-                onValueChange={field.onChange}
-                className="flex flex-wrap gap-2 mt-2"
-              >
-                {COMPONENT_CATEGORIES.map((category) => {
-                  const id = `category-${category}`
-                  const isSelected = field.value === category
-
-                  return (
-                    <div key={category} className="flex items-center">
-                      <RadioGroupItem
-                        id={id}
-                        value={category}
-                        className="hidden"
-                      />
-                      <Label htmlFor={id} className="cursor-pointer">
-                        <Badge variant={isSelected ? "selected" : "outline"}>
-                          {CATEGORY_LABELS[category]}
-                        </Badge>
-                      </Label>
-                    </div>
-                  )
-                })}
-              </RadioGroup>
-            )}
-          />
-          <p
-            className={`text-xs text-destructive min-h-5 ${
-              formState.errors.category?.message ? "" : "invisible"
-            }`}
-          >
-            {formState.errors.category?.message}
-          </p>
-        </div>
-
-        {/* Dimensions */}
-        <div className="grid grid-cols-3 gap-4">
-          <InventoryItemDimensionField dimension="width" label="Szerokość" />
-          <InventoryItemDimensionField dimension="height" label="Wysokość" />
-          <InventoryItemDimensionField dimension="depth" label="Głębokość" />
-        </div>
+          {/* Dimensions */}
+          <div className="grid grid-cols-3 gap-4">
+            <InventoryItemDimensionField dimension="width" label="Szerokość" />
+            <InventoryItemDimensionField dimension="height" label="Wysokość" />
+            <InventoryItemDimensionField dimension="depth" label="Głębokość" />
+          </div>
+        </fieldset>
 
         {/* Actions */}
         <div className="flex justify-between gap-4 pt-4">
@@ -231,7 +233,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
             </Button>
             <Button type="button" variant="ghost" onClick={onClose}>
               <RefreshCwOff />
-              Anuluj
+              {isAdmin ? "Anuluj" : "Zamknij"}
             </Button>
           </div>
         </div>
