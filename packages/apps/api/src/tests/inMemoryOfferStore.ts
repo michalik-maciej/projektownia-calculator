@@ -33,6 +33,7 @@ export function createInMemoryOfferStore(): TestOfferStore {
         id: randomUUID(),
         input: toStoredJson(data.input),
         title: data.title,
+        updatedAt: new Date(),
         userId: data.userId,
       }
 
@@ -54,11 +55,12 @@ export function createInMemoryOfferStore(): TestOfferStore {
     getAllOffers: async (scope: OfferScope) =>
       [...stored.values()]
         .filter((offer) => isVisibleTo(offer, scope))
-        .map(({ createdAt, id, title, userId }) => ({
+        .map(({ createdAt, id, title, updatedAt, userId }) => ({
           authorEmail: `${userId}@example.com`,
           createdAt,
           id,
           title,
+          updatedAt,
         })),
 
     getOfferById: async (id: string, scope: OfferScope) => {
@@ -87,6 +89,7 @@ export function createInMemoryOfferStore(): TestOfferStore {
         input:
           data.input === undefined ? existing.input : toStoredJson(data.input),
         title: data.title ?? existing.title,
+        updatedAt: new Date(),
       }
 
       stored.set(updated.id, updated)

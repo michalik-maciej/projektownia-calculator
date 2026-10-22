@@ -26,14 +26,7 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
   const { offer, offerId } = useOffer()
 
-  const hydratedIdRef = useRef<string | null>(null)
-
-  useEffect(() => {
-    if (offer && hydratedIdRef.current !== offer.id) {
-      hydratedIdRef.current = offer.id
-      reset(offer.input)
-    }
-  }, [offer, reset])
+  const hydratedRef = useRef<{ id: string; input: string } | null>(null)
 
   const autoSave = useMutation({
     mutationKey: offerMutationKeys.autoSave,
@@ -42,8 +35,11 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
     retry: (failureCount, error) =>
       !isUnauthorized(error) && failureCount < AUTOSAVE_RETRIES,
     onSuccess: (saved: SavedOffer) => {
+      hydratedRef.current = {
+        id: saved.id,
+        input: JSON.stringify(saved.input),
+      }
       queryClient.setQueryData(offerQueries.details(saved.id).queryKey, saved)
-      hydratedIdRef.current = saved.id
       reset(getValues(), { keepValues: true })
     },
     onError: (error) => {
@@ -53,7 +49,28 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
   })
 
   const { isDirty } = useFormState({ control })
-  const { mutate: saveNow } = autoSave
+  const { isPending: isSaving, mutate: saveNow } = autoSave
+
+  useEffect(() => {
+    if (!offer) {
+      return
+    }
+
+    const serverInput = JSON.stringify(offer.input)
+    const hydrated = hydratedRef.current
+    const isSameOffer = hydrated?.id === offer.id
+
+    if (
+      isSameOffer &&
+      (hydrated.input === serverInput || isDirty || isSaving)
+    ) {
+      return
+    }
+
+    hydratedRef.current = { id: offer.id, input: serverInput }
+    reset(offer.input)
+  }, [isDirty, isSaving, offer, reset])
+
   const watchedValues = useWatch({ control })
 
   useEffect(() => {

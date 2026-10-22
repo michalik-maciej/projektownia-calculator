@@ -63,6 +63,7 @@ describe("offer routes scoped to the offer owner", () => {
         createdAt: ownOffer.createdAt.toISOString(),
         id: ownOffer.id,
         title: "Owner offer",
+        updatedAt: ownOffer.updatedAt.toISOString(),
       },
     ])
   })

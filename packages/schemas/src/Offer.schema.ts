@@ -85,6 +85,7 @@ export const OfferSummarySchema = v.object({
   createdAt: v.string(),
   id: v.string(),
   title: v.string(),
+  updatedAt: v.string(),
 })
 
 export const SavedOfferSchema = v.object({

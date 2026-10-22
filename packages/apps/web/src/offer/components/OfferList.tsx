@@ -104,7 +104,7 @@ export function OfferList() {
                         )}
                       </span>
                       <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                        {dateFormatter.format(new Date(offer.createdAt))}
+                        {dateFormatter.format(new Date(offer.updatedAt))}
                       </span>
                     </button>
                   </li>

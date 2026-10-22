@@ -18,7 +18,10 @@ export type UpdateOfferInput = Omit<Partial<CreateOfferInput>, "userId"> & {
   id: string
 }
 
-export type OfferSummaryRow = Pick<Offer, "createdAt" | "id" | "title"> & {
+export type OfferSummaryRow = Pick<
+  Offer,
+  "createdAt" | "id" | "title" | "updatedAt"
+> & {
   authorEmail: string
 }
 
@@ -61,10 +64,12 @@ export async function getAllOffers(
 ): Promise<OfferSummaryRow[]> {
   const offers = await prisma.offer.findMany({
     where: accessFilter(scope),
+    orderBy: { updatedAt: "desc" },
     select: {
       createdAt: true,
       id: true,
       title: true,
+      updatedAt: true,
       user: { select: { email: true } },
     },
   })
