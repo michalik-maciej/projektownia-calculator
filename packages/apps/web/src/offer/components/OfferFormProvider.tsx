@@ -46,10 +46,10 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
       !isUnauthorized(error) &&
       !isConflict(error) &&
       failureCount < AUTOSAVE_RETRIES,
-    onSuccess: (saved: SavedOffer) => {
+    onSuccess: (saved: SavedOffer, sentValues: OfferInput) => {
       hydrate(saved)
       queryClient.setQueryData(offerQueries.details(saved.id).queryKey, saved)
-      reset(getValues(), { keepValues: true })
+      reset(sentValues, { keepValues: true })
     },
     onError: async (error) => {
       if (isConflict(error) && offerId) {
@@ -95,7 +95,7 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
   const watchedValues = useWatch({ control })
 
   useEffect(() => {
-    if (!offerId || !isDirty || offer?.id !== offerId) {
+    if (!offerId || !isDirty || isSaving || offer?.id !== offerId) {
       return
     }
 
@@ -105,7 +105,7 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
     )
 
     return () => window.clearTimeout(timeoutId)
-  }, [getValues, isDirty, offer?.id, offerId, saveNow, watchedValues])
+  }, [getValues, isDirty, isSaving, offer?.id, offerId, saveNow, watchedValues])
 
   const missingComponent = offer?.missingComponent
   const errorMessage = missingComponent
