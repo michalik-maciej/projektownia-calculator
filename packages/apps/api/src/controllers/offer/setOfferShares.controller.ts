@@ -33,12 +33,12 @@ export function setOfferSharesController({
       return res.status(401).json({ error: "Unauthorized" })
     }
 
-    const existing = await getOfferById(params.output.id, scope)
-    if (!existing) {
-      return res.status(404).json({ error: "Offer not found" })
-    }
-
     try {
+      const existing = await getOfferById(params.output.id, scope)
+      if (!existing) {
+        return res.status(404).json({ error: "Offer not found" })
+      }
+
       const shared = await setOfferShares(
         params.output.id,
         parsed.output.userIds,

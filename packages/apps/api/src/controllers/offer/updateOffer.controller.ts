@@ -38,14 +38,14 @@ export function updateOfferController({
       return res.status(401).json({ error: "Unauthorized" })
     }
 
-    const existing = await getOfferById(params.output.id, scope)
-    if (!existing) {
-      return res.status(404).json({ error: "Offer not found" })
-    }
-
     const { expectedUpdatedAt, ...input } = parsed.output
 
     try {
+      const existing = await getOfferById(params.output.id, scope)
+      if (!existing) {
+        return res.status(404).json({ error: "Offer not found" })
+      }
+
       const inventory = await getInventory()
       const updated = await updateOffer({
         expectedUpdatedAt: new Date(expectedUpdatedAt),

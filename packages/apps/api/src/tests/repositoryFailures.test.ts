@@ -50,6 +50,15 @@ describe("endpoints whose storage is unreachable", () => {
     expect(res.body).toEqual({ error: "Reading the offer failed" })
   })
 
+  it("answers deleting an offer with a JSON 500", async () => {
+    const res = await request(appWithBrokenStorage())
+      .delete("/api/offers/9c92ab09-1f56-403d-a86f-c70087645c62")
+      .set("Cookie", cookie)
+
+    expect(res.status).toBe(500)
+    expect(res.body).toEqual({ error: "Offer deletion failed" })
+  })
+
   it("answers the catalogue with a JSON 500", async () => {
     const res = await request(appWithBrokenStorage())
       .get("/api/inventory/items")

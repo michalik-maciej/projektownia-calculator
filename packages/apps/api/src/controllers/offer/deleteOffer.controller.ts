@@ -23,12 +23,12 @@ export function deleteOfferController({
       return res.status(401).json({ error: "Unauthorized" })
     }
 
-    const existing = await getOfferById(params.output.id, scope)
-    if (!existing) {
-      return res.status(404).json({ error: "Offer not found" })
-    }
-
     try {
+      const existing = await getOfferById(params.output.id, scope)
+      if (!existing) {
+        return res.status(404).json({ error: "Offer not found" })
+      }
+
       await deleteOffer(params.output.id)
       return res.sendStatus(204)
     } catch (error) {
