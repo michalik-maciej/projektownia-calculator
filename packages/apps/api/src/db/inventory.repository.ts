@@ -4,6 +4,14 @@ import { prisma } from "./prisma"
 
 export type InventorySource = () => Promise<Component[]>
 
+export type ComponentStore = {
+  createComponent: (data: Omit<Component, "id">) => Promise<Component>
+  deleteComponent: (id: Component["id"]) => Promise<Component>
+  updateComponent: (
+    input: Partial<Component> & { id: Component["id"] },
+  ) => Promise<Component>
+}
+
 export async function getAllComponents(): Promise<Component[]> {
   return prisma.component.findMany()
 }
@@ -29,4 +37,10 @@ export async function deleteComponent(id: Component["id"]): Promise<Component> {
   return prisma.component.delete({
     where: { id },
   })
+}
+
+export const componentStore: ComponentStore = {
+  createComponent,
+  deleteComponent,
+  updateComponent,
 }

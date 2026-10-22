@@ -12,10 +12,27 @@ const cookie = `accessToken=${jwt.sign(
   process.env.JWT_SECRET,
 )}`
 
+const adminCookie = `accessToken=${jwt.sign(
+  {
+    sub: "88888888-8888-8888-8888-888888888888",
+    email: "d@e.f",
+    role: "ADMIN",
+  },
+  process.env.JWT_SECRET,
+)}`
+
 function appWithBrokenStorage() {
   const offers = createInMemoryOfferStore()
+  const connectionRefused = async () => {
+    throw new Error("connection refused")
+  }
 
   return createApp({
+    components: {
+      createComponent: connectionRefused,
+      deleteComponent: connectionRefused,
+      updateComponent: connectionRefused,
+    },
     getInventory: async () => {
       throw new Error("connection refused")
     },
@@ -66,5 +83,22 @@ describe("endpoints whose storage is unreachable", () => {
 
     expect(res.status).toBe(500)
     expect(res.body).toEqual({ error: "Reading the catalogue failed" })
+  })
+
+  it("answers adding a catalogue component with a JSON 500", async () => {
+    const res = await request(appWithBrokenStorage())
+      .post("/api/inventory/items")
+      .set("Cookie", adminCookie)
+      .send({
+        category: "shelf",
+        depth: 47,
+        height: null,
+        label: "Półka 80/47",
+        price: 10,
+        width: 80,
+      })
+
+    expect(res.status).toBe(500)
+    expect(res.body).toEqual({ error: "Component creation failed" })
   })
 })

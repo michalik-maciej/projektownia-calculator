@@ -25,9 +25,9 @@ export function createAuthRouter({
   guarded.get("/user", (req, res) => {
     res.json({ user: get("user", req) })
   })
-  router.post("/login", createLoginRateLimit(), loginController)
+  router.post("/login", createLoginRateLimit(), loginController(users))
   router.post("/demo", demoLoginController({ ...users, ...offers }))
-  guarded.post("/logout", logoutController)
+  guarded.post("/logout", logoutController())
   guarded.post("/register", requireAdmin, registerController(users))
 
   return router

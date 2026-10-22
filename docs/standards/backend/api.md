@@ -3,13 +3,11 @@
 ### One Controller File per Endpoint
 
 Each endpoint lives in `src/controllers/{feature}/{verb}{Resource}.controller.ts` and exports one
-function named `{verb}{Resource}Controller`, after its own file. Where the endpoint needs no
-dependency that export is the handler itself, typed `(req: Request, res: Response)`, as the
-inventory write controllers are. Where it does, the export takes the dependencies and returns the
-handler, as `getOffers.controller.ts` exports `getOffersController({ getAllOffers })`. Every offer controller
-is of the second kind, so within one feature folder the rule does not change from file to file.
-Helpers living in the same folder drop the suffix: `requireAuth.ts`, `priceOffer.ts`,
-`toOfferScope.ts`.
+function named `{verb}{Resource}Controller`, after its own file. That export is always a factory: it
+takes the dependencies and returns the handler, as `getOffers.controller.ts` exports
+`getOffersController({ getAllOffers })`. A controller with no dependency still follows the shape and
+is called without arguments, as `logoutController()` is, so no route binds a bare handler. Helpers
+living in the same folder drop the suffix: `requireAuth.ts`, `priceOffer.ts`, `toOfferScope.ts`.
 
 ### One Feature Factory Assembles the Handlers
 

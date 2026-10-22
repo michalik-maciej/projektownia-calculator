@@ -4,7 +4,12 @@ import type { Express } from "express"
 import express from "express"
 import helmet from "helmet"
 
-import { getAllComponents, InventorySource } from "./db/inventory.repository"
+import {
+  ComponentStore,
+  componentStore,
+  getAllComponents,
+  InventorySource,
+} from "./db/inventory.repository"
 import { OfferStore, offerStore } from "./db/offer.repository"
 import { UserStore, userStore } from "./db/user.repository"
 import { createAuthRouter } from "./routes/auth.routes"
@@ -14,6 +19,7 @@ import { createOffersRouter } from "./routes/offers.routes"
 import { createUsersRouter } from "./routes/users.routes"
 
 type AppDependencies = {
+  components: ComponentStore
   getInventory: InventorySource
   offers: OfferStore
   users: UserStore
@@ -32,6 +38,7 @@ type AppDependencies = {
  * repository; tests pass an in-memory store.
  */
 export function createApp({
+  components = componentStore,
   getInventory = getAllComponents,
   offers = offerStore,
   users = userStore,
@@ -47,7 +54,7 @@ export function createApp({
 
   app.use("/api/health", healthRoutes)
   app.use("/api/auth", createAuthRouter({ offers, users }))
-  app.use("/api/inventory", createInventoryRouter({ getInventory }))
+  app.use("/api/inventory", createInventoryRouter({ components, getInventory }))
   app.use("/api/offers", createOffersRouter({ getInventory, offers }))
   app.use("/api/users", createUsersRouter({ users }))
 

@@ -113,7 +113,7 @@ These standards apply to backend code (APIs, domain logic, auth, data layer).
 
 #### API Design (`standards/backend/api.md`)
 
-One controller file per endpoint exporting a handler or a factory for it, one feature factory assembling the offer handlers, routers that only wire, `app.ts` as the composition root, controllers calling the domain while repositories touch the database, resource paths, and why `bootstrap.ts` keeps its dynamic import.
+One controller file per endpoint exporting a factory for its handler, one feature factory assembling the offer handlers, routers that only wire, `app.ts` as the composition root, controllers calling the domain while repositories touch the database, resource paths, and why `bootstrap.ts` keeps its dynamic import.
 
 #### Authentication and Route Protection (`standards/backend/auth.md`)
 
