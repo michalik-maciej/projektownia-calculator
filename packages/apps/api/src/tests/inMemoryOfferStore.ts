@@ -14,7 +14,9 @@ function toStoredJson(value: Prisma.InputJsonValue): Prisma.JsonValue {
   return value as Prisma.JsonValue
 }
 
-export function createInMemoryOfferStore(): TestOfferStore {
+export function createInMemoryOfferStore(
+  userAccountIds: string[] = [],
+): TestOfferStore {
   const stored = new Map<string, Offer>()
   const sharedWith = new Map<string, string[]>()
 
@@ -78,7 +80,12 @@ export function createInMemoryOfferStore(): TestOfferStore {
     getOfferShares: async (offerId: string) => sharedWith.get(offerId) ?? [],
 
     setOfferShares: async (offerId: string, userIds: string[]) => {
+      if (!userIds.every((userId) => userAccountIds.includes(userId))) {
+        return false
+      }
+
       sharedWith.set(offerId, userIds)
+      return true
     },
 
     updateOffer: async (data: UpdateOfferInput) => {

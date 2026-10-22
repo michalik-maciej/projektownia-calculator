@@ -107,7 +107,13 @@ export const SavedOfferSchema = v.object({
 })
 
 export const OfferSharesSchema = v.object({
-  userIds: v.array(v.string()),
+  userIds: v.pipe(
+    v.array(v.pipe(v.string(), v.uuid())),
+    v.check(
+      (userIds) => new Set(userIds).size === userIds.length,
+      "User ids must be unique",
+    ),
+  ),
 })
 
 export type OfferShares = v.InferOutput<typeof OfferSharesSchema>

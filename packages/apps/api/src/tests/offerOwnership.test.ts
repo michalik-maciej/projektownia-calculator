@@ -30,7 +30,7 @@ const ownerCookie = cookieFor(ownerId, "USER")
 const adminCookie = cookieFor(adminId, "ADMIN")
 
 async function setup() {
-  const offers = createInMemoryOfferStore()
+  const offers = createInMemoryOfferStore([ownerId, strangerId])
   const app = createApp({
     getInventory: async () => componentCatalogMock,
     offers,
@@ -309,6 +309,34 @@ describe("offer shared by an admin", () => {
 
     expect(res.status).toBe(200)
     expect(res.body).toEqual({ userIds: [ownerId] })
+  })
+
+  it("refuses to list the same user twice", async () => {
+    const { app, strangerOffer } = await setup()
+
+    const res = await request(app)
+      .put(`/api/offers/${strangerOffer.id}/shares`)
+      .set("Cookie", adminCookie)
+      .send({ userIds: [ownerId, ownerId] })
+
+    expect(res.status).toBe(400)
+    expect(res.body.issues.nested).toEqual({
+      userIds: ["User ids must be unique"],
+    })
+  })
+
+  it("refuses to share with an account that is not a user account", async () => {
+    const { app, strangerOffer } = await setup()
+
+    const res = await request(app)
+      .put(`/api/offers/${strangerOffer.id}/shares`)
+      .set("Cookie", adminCookie)
+      .send({ userIds: [adminId] })
+
+    expect(res.status).toBe(400)
+    expect(res.body).toEqual({
+      error: "Offers can only be shared with user accounts",
+    })
   })
 
   it("refuses to let a non-admin share an offer", async () => {

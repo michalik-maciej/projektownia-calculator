@@ -1,4 +1,4 @@
-import { Offer, Prisma } from "@prisma/client"
+import { Offer, Prisma, Role } from "@prisma/client"
 
 import { prisma } from "./prisma"
 
@@ -34,7 +34,7 @@ export type OfferStore = {
   getAllOffers: (scope: OfferScope) => Promise<OfferSummaryRow[]>
   getOfferById: (id: string, scope: OfferScope) => Promise<Offer | null>
   getOfferShares: (offerId: string) => Promise<string[]>
-  setOfferShares: (offerId: string, userIds: string[]) => Promise<void>
+  setOfferShares: (offerId: string, userIds: string[]) => Promise<boolean>
   updateOffer: (data: UpdateOfferInput) => Promise<Offer | null>
 }
 
@@ -110,13 +110,23 @@ export async function getOfferShares(offerId: string): Promise<string[]> {
 export async function setOfferShares(
   offerId: string,
   userIds: string[],
-): Promise<void> {
-  await prisma.$transaction([
-    prisma.offerShare.deleteMany({ where: { offerId } }),
-    prisma.offerShare.createMany({
+): Promise<boolean> {
+  return prisma.$transaction(async (tx) => {
+    const shareableCount = await tx.user.count({
+      where: { id: { in: userIds }, role: Role.USER },
+    })
+
+    if (shareableCount !== userIds.length) {
+      return false
+    }
+
+    await tx.offerShare.deleteMany({ where: { offerId } })
+    await tx.offerShare.createMany({
       data: userIds.map((userId) => ({ offerId, userId })),
-    }),
-  ])
+    })
+
+    return true
+  })
 }
 
 export async function deleteOffer(id: string): Promise<Offer> {

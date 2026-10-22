@@ -39,7 +39,17 @@ export function setOfferSharesController({
     }
 
     try {
-      await setOfferShares(params.output.id, parsed.output.userIds)
+      const shared = await setOfferShares(
+        params.output.id,
+        parsed.output.userIds,
+      )
+
+      if (!shared) {
+        return res
+          .status(400)
+          .json({ error: "Offers can only be shared with user accounts" })
+      }
+
       return res.status(200).json(parsed.output)
     } catch (error) {
       console.error("Sharing the offer failed:", error)
