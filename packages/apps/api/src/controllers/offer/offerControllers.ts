@@ -4,6 +4,7 @@ import { createOfferController } from "./createOffer.controller"
 import { deleteOfferController } from "./deleteOffer.controller"
 import { getOfferController } from "./getOffer.controller"
 import { getOffersController } from "./getOffers.controller"
+import { setOfferSharesController } from "./setOfferShares.controller"
 import { updateOfferController } from "./updateOffer.controller"
 import { InventorySource } from "../../db/inventory.repository"
 import { OfferStore } from "../../db/offer.repository"
@@ -17,7 +18,7 @@ export function offerControllers({
   getInventory,
   offers,
 }: OfferControllerDependencies): Record<
-  "create" | "details" | "list" | "remove" | "update",
+  "create" | "details" | "list" | "remove" | "share" | "update",
   RequestHandler
 > {
   return {
@@ -25,6 +26,7 @@ export function offerControllers({
     details: getOfferController({ ...offers, getInventory }),
     list: getOffersController(offers),
     remove: deleteOfferController(offers),
+    share: setOfferSharesController(offers),
     update: updateOfferController({ ...offers, getInventory }),
   }
 }

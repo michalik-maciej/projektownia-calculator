@@ -41,7 +41,8 @@ payload in front of the controllers. Everything downstream can then rely on `sub
 ### An Offer Belongs to Its Author
 
 Offer endpoints turn `req.user` into an `OfferScope` (`{ isAdmin, userId }`) with `toOfferScope` and
-pass it to the repository, which filters by owner. An offer belonging to somebody else answers 404,
+pass it to the repository, which filters by owner or by an `OfferShare` an ADMIN created
+(`PUT /api/offers/:id/shares`, decision 16). Any other offer answers 404,
 the same as one that does not exist, so an id cannot be used to discover that an offer is there.
 A user with the `ADMIN` role is exempt and reaches every offer. See decision 11 in
 `docs/decisions.md`.
@@ -57,8 +58,8 @@ happen, because `parseEnv` refuses to boot without it (see `../global/convention
 | Role    | Offers                      | Component catalogue | Registration |
 | ------- | --------------------------- | ------------------- | ------------ |
 | `ADMIN` | every offer, read and write | read and write      | allowed      |
-| `USER`  | its own                     | read and write      | refused, 403 |
-| `DEMO`  | its own                     | read only           | refused, 403 |
+| `USER`  | its own and shared with it  | read and write      | refused, 403 |
+| `DEMO`  | its own and shared with it  | read only           | refused, 403 |
 
 `DEMO` exists so the login screen can offer a way in without an account. `POST /api/auth/demo`
 creates a fresh account on every call, with a random password nobody holds, so the ordinary login is

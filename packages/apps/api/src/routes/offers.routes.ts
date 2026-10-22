@@ -2,6 +2,7 @@ import type { Router as ExpressRouter } from "express"
 import { Router } from "express"
 
 import { withAuth } from "./withAuth"
+import { requireAdmin } from "../controllers/auth/requireAdmin"
 import {
   OfferControllerDependencies,
   offerControllers,
@@ -19,6 +20,7 @@ export function createOffersRouter(
   guarded.post("/", offer.create)
   guarded.put("/:id", offer.update)
   guarded.delete("/:id", offer.remove)
+  guarded.put("/:id/shares", requireAdmin, offer.share)
 
   return router
 }

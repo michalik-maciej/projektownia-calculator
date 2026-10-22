@@ -96,5 +96,10 @@ export const SavedOfferSchema = v.object({
   title: v.string(),
 })
 
+export const OfferSharesSchema = v.object({
+  userIds: v.array(v.string()),
+})
+
+export type OfferShares = v.InferOutput<typeof OfferSharesSchema>
 export type OfferSummary = v.InferOutput<typeof OfferSummarySchema>
 export type SavedOffer = v.InferOutput<typeof SavedOfferSchema>

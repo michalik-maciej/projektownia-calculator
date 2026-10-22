@@ -14,12 +14,14 @@ function toStoredJson(value: Prisma.InputJsonValue): Prisma.JsonValue {
   return value as Prisma.JsonValue
 }
 
-function isVisibleTo(offer: Offer, scope: OfferScope): boolean {
-  return scope.isAdmin || offer.userId === scope.userId
-}
-
 export function createInMemoryOfferStore(): TestOfferStore {
   const stored = new Map<string, Offer>()
+  const sharedWith = new Map<string, string[]>()
+
+  const isVisibleTo = (offer: Offer, scope: OfferScope): boolean =>
+    scope.isAdmin ||
+    offer.userId === scope.userId ||
+    (sharedWith.get(offer.id) ?? []).includes(scope.userId)
 
   return {
     all: () => [...stored.values()],
@@ -63,6 +65,10 @@ export function createInMemoryOfferStore(): TestOfferStore {
       const offer = stored.get(id)
 
       return offer && isVisibleTo(offer, scope) ? offer : null
+    },
+
+    setOfferShares: async (offerId: string, userIds: string[]) => {
+      sharedWith.set(offerId, userIds)
     },
 
     updateOffer: async (data: UpdateOfferInput) => {

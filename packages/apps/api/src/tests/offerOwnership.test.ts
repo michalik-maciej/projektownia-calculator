@@ -208,3 +208,43 @@ describe("offer routes scoped to the offer owner", () => {
     expect(offers.all().map(({ id }) => id)).toEqual([strangerOffer.id])
   })
 })
+
+describe("offer shared by an admin", () => {
+  it("lets the user it is shared with list, open and update it", async () => {
+    const { app, strangerOffer } = await setup()
+
+    const share = await request(app)
+      .put(`/api/offers/${strangerOffer.id}/shares`)
+      .set("Cookie", adminCookie)
+      .send({ userIds: [ownerId] })
+    const list = await request(app)
+      .get("/api/offers")
+      .set("Cookie", ownerCookie)
+    const update = await request(app)
+      .put(`/api/offers/${strangerOffer.id}`)
+      .set("Cookie", ownerCookie)
+      .send({ ...validOfferInput, title: "Renamed by a colleague" })
+
+    expect(share.status).toBe(200)
+    expect(list.body.map(({ id }: OfferSummary) => id)).toContain(
+      strangerOffer.id,
+    )
+    expect(update.status).toBe(200)
+    expect(update.body).toMatchObject({
+      title: "Renamed by a colleague",
+      userId: strangerId,
+    })
+  })
+
+  it("refuses to let a non-admin share an offer", async () => {
+    const { app, ownOffer } = await setup()
+
+    const res = await request(app)
+      .put(`/api/offers/${ownOffer.id}/shares`)
+      .set("Cookie", ownerCookie)
+      .send({ userIds: [strangerId] })
+
+    expect(res.status).toBe(403)
+    expect(res.body).toEqual({ error: "Forbidden" })
+  })
+})

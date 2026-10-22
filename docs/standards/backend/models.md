@@ -24,7 +24,8 @@ inventory whenever an offer is returned, never stored (decision 7).
 
 `Offer.userId` is required and carries a foreign key to `User`. Ownership is a column, not a
 convention: the repository takes an `OfferScope` and filters on it, so an offer cannot be read or
-written through any endpoint by anyone but its author (or an ADMIN). No endpoint reassigns it,
+written through any endpoint by anyone but its author, a user it is shared with through
+`OfferShare`, or an ADMIN. No endpoint reassigns it,
 which is why `UpdateOfferInput` excludes `userId`.
 
 ### Clear Names, Real Constraints

@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  offers    Offer[]
+  id          String       @id @default(uuid())
+  email       String       @unique
+  password    String
+  role        Role         @default(USER)
+  createdAt   DateTime     @default(now())
+  offers      Offer[]
+  offerShares OfferShare[]
 }
 
 enum Role {
@@ -51,14 +52,25 @@ enum ComponentCategory {
 }
 
 model Offer {
-  id                 String   @id @default(uuid())
+  id                 String       @id @default(uuid())
   title              String
   discountPercentage Float?
   input              Json
-  createdAt          DateTime @default(now())
+  createdAt          DateTime     @default(now())
   userId             String
-  user               User     @relation(fields: [userId], references: [id])
+  user               User         @relation(fields: [userId], references: [id])
+  shares             OfferShare[]
 
   @@index([createdAt])
+  @@index([userId])
+}
+
+model OfferShare {
+  offerId String
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([offerId, userId])
   @@index([userId])
 }

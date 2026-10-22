@@ -202,8 +202,8 @@ sees quotes they did not write and can open, edit or delete them, and the autosa
 silent. The component inventory stays common, because a price list is the company's, not the
 author's. 404 rather than 403 because an id alone should not confirm that an offer exists.
 
-**Cost.** Nothing hands an offer over to a colleague: there is no sharing, and no endpoint changes
-the owner, which is why `UpdateOfferInput` excludes `userId`. Offers that predated the column could
+**Cost.** No endpoint changes the owner, which is why `UpdateOfferInput` excludes `userId`. An
+admin can share an offer without handing it over (decision 16). Offers that predated the column could
 not be attributed to anybody and were deleted by migration
 `20260910120000_clear_offers_before_owner`. A summary carries the author's email, and the offer list
 shows it to an ADMIN only.
@@ -322,3 +322,19 @@ everyone who prepares offers.
 **Cost.** A price correction now waits for an admin, even when the user preparing the offer knows
 the right number. The guard is a role check, not a permission of its own, so giving one ordinary
 account catalogue rights without making it an admin would need a new role or a separate flag.
+
+## 16. An admin shares an offer with chosen users
+
+**Decision.** `OfferShare` (`offerId`, `userId`) grants a user access to an offer they do not own.
+Only an `ADMIN` sets it, through `PUT /api/offers/:id/shares`, which replaces the whole list. The
+repository's access filter lets a non-admin reach an offer they own or one shared with them, and
+the shared user gets the same rights as the owner: reading, editing and deleting. Ownership does not
+move. Both foreign keys cascade, so deleting the offer or the user removes the share.
+
+**Why.** The end client wants the admin to hand chosen offers to employees and to let them edit
+those offers, including offers written by another employee. Sharing through the existing scope
+keeps one access rule for every offer route instead of a second check per controller.
+
+**Cost.** Two people editing the same offer overwrite each other through the autosave with no
+warning, until conflict detection arrives. A shared user can also delete the offer, because delete
+uses the same scope as edit.

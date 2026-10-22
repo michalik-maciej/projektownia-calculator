@@ -60,6 +60,8 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 - `Component`: Catalog inventory (category, dimensions, price)
 - `Offer`: Offer records (input JSON, discount; pricing computed on every read, not stored), owned by the `User` that created
   them (`userId`, required)
+- `OfferShare`: Grants a user access to an offer they do not own (`offerId`, `userId`), set by an
+  ADMIN
 
 **API Endpoints**:
 
@@ -70,7 +72,9 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 - `POST /api/inventory`: Add component (ADMIN only)
 - `PATCH /api/inventory/:id`: Update component (ADMIN only)
 - `POST /api/offers`: Create offer (calls domain logic)
-- `GET /api/offers`: List offers (only the caller's own, unless they are an ADMIN)
+- `GET /api/offers`: List offers (the caller's own and those shared with them, unless they are an
+  ADMIN)
+- `PUT /api/offers/:id/shares`: Replace the list of users an offer is shared with (ADMIN only)
 - `POST /api/auth/register`: Create a user account (ADMIN only; this is how the user management
   dialog adds accounts, there is no public sign-up)
 - `GET /api/users`: List accounts (ADMIN only; excludes role DEMO)

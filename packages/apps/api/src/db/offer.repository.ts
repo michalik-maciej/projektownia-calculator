@@ -27,11 +27,19 @@ export type OfferStore = {
   deleteOffer: (id: string) => Promise<Offer>
   getAllOffers: (scope: OfferScope) => Promise<OfferSummaryRow[]>
   getOfferById: (id: string, scope: OfferScope) => Promise<Offer | null>
+  setOfferShares: (offerId: string, userIds: string[]) => Promise<void>
   updateOffer: (data: UpdateOfferInput) => Promise<Offer>
 }
 
-function ownerFilter(scope: OfferScope) {
-  return scope.isAdmin ? {} : { userId: scope.userId }
+function accessFilter(scope: OfferScope): Prisma.OfferWhereInput {
+  return scope.isAdmin
+    ? {}
+    : {
+        OR: [
+          { userId: scope.userId },
+          { shares: { some: { userId: scope.userId } } },
+        ],
+      }
 }
 
 export async function createOffer(data: CreateOfferInput): Promise<Offer> {
@@ -51,7 +59,7 @@ export async function getAllOffers(
   scope: OfferScope,
 ): Promise<OfferSummaryRow[]> {
   const offers = await prisma.offer.findMany({
-    where: ownerFilter(scope),
+    where: accessFilter(scope),
     select: {
       createdAt: true,
       id: true,
@@ -70,7 +78,19 @@ export async function getOfferById(
   id: string,
   scope: OfferScope,
 ): Promise<Offer | null> {
-  return prisma.offer.findFirst({ where: { id, ...ownerFilter(scope) } })
+  return prisma.offer.findFirst({ where: { id, ...accessFilter(scope) } })
+}
+
+export async function setOfferShares(
+  offerId: string,
+  userIds: string[],
+): Promise<void> {
+  await prisma.$transaction([
+    prisma.offerShare.deleteMany({ where: { offerId } }),
+    prisma.offerShare.createMany({
+      data: userIds.map((userId) => ({ offerId, userId })),
+    }),
+  ])
 }
 
 export async function deleteOffer(id: string): Promise<Offer> {
@@ -82,5 +102,6 @@ export const offerStore: OfferStore = {
   deleteOffer,
   getAllOffers,
   getOfferById,
+  setOfferShares,
   updateOffer,
 }
