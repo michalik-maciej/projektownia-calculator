@@ -45,7 +45,12 @@ async function seedDemoUser() {
 }
 
 async function seedComponents() {
-  await prisma.component.createMany({
+  if ((await prisma.component.count()) > 0) {
+    console.log("Skipped the catalogue: it already has components.")
+    return
+  }
+
+  const { count } = await prisma.component.createMany({
     data: [
       {
         category: "shelf",
@@ -497,6 +502,8 @@ async function seedComponents() {
       },
     ],
   })
+
+  console.log(`Seeded ${count} catalogue components.`)
 }
 
 async function main() {
