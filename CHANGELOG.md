@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.4.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.3.0...v1.4.0) (2026-10-22)
+
+
+### Features
+
+* add an offer sharing dialog for admins ([1e636ce](https://github.com/michalik-maciej/projektownia-calculator/commit/1e636ce9776219c4db33473b8c7fbe3aeae51e71))
+* add offer settings with price strip and metal colours ([7c4be58](https://github.com/michalik-maciej/projektownia-calculator/commit/7c4be584bacedccd30a1b936b06f2fd32b0aa5f9))
+* add share and delete actions to the saved offers list ([531dd1b](https://github.com/michalik-maciej/projektownia-calculator/commit/531dd1bd6f36a46778c714ff4932bead7f069a20))
+* let an admin share offers with chosen users ([a4b51ff](https://github.com/michalik-maciej/projektownia-calculator/commit/a4b51fff9ea2949c1349aa5fe641704d987e66c2))
+* refuse offer saves based on an outdated version ([c969da7](https://github.com/michalik-maciej/projektownia-calculator/commit/c969da7c8725ff33df1c61dbb37dff10ab7a9f8a))
+* show catalogue parts read only to accounts other than admin ([867e3b0](https://github.com/michalik-maciej/projektownia-calculator/commit/867e3b04b6a3602e8e2bc718ff49194f02a033f0))
+* show the offer author in the admin offer list ([126b5fe](https://github.com/michalik-maciej/projektownia-calculator/commit/126b5fedb482caeb5a91eeb4c3b97f73e0cd0b98))
+* start new gondolas with an end cap on both ends ([07c66b6](https://github.com/michalik-maciej/projektownia-calculator/commit/07c66b67bf53f970d0c5a3713d55b08052904105))
+* track when an offer was last updated ([8f818bc](https://github.com/michalik-maciej/projektownia-calculator/commit/8f818bc2b659ff1708334ee6ccc469b347de244a))
+
+
+### Bug Fixes
+
+* answer database errors in offer controllers with a JSON 500 ([ec03311](https://github.com/michalik-maciej/projektownia-calculator/commit/ec03311e9eef1af23c2bdfcad9effb0d02836948))
+* pass the API environment through Turbo to the dev task ([b6e9ce9](https://github.com/michalik-maciej/projektownia-calculator/commit/b6e9ce919f930767ebae0f628423994bdd6415cf))
+* share top covers between gondola sides ([0a2676c](https://github.com/michalik-maciej/projektownia-calculator/commit/0a2676cf5ee32c40adac14733b5ae9068bf392db))
+* skip seeding the catalogue when it already has components ([d04fd99](https://github.com/michalik-maciej/projektownia-calculator/commit/d04fd998da2fc3348f7e59357a0dad7321ace76e))
+* validate the accounts an offer is shared with ([70787b4](https://github.com/michalik-maciej/projektownia-calculator/commit/70787b4472ace6446a0411ac6d25e165b246ca73))
+* wait for a running autosave before sending the next one ([f54143c](https://github.com/michalik-maciej/projektownia-calculator/commit/f54143c6fbfc8d17292bd281830c43fd9fdee398))
+
+
+### Performance Improvements
+
+* poll the open offer only on the routes that show it ([ca9e4a1](https://github.com/michalik-maciej/projektownia-calculator/commit/ca9e4a1e358ba9314b90a725bef0d2c677e52cea))
+
 ## [1.3.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.2.1...v1.3.0) (2026-10-21)
 
 
