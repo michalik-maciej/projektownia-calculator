@@ -30,10 +30,11 @@ together, never that one screen looks right.
 
 A test file that depends on an environment variable sets it itself, at the top, as the auth tests do
 with `process.env.JWT_SECRET = "test-secret"`. Nothing may rely on `packages/apps/api/.env`: it is
-not in the repository, so it exists on the maintainer's machine and not on the runner. It reaches the
-tests only by accident, because `@prisma/client` loads it when the client is constructed, and that
-accident is what lets a suite pass locally and fail in CI on exactly the assertions that cover
-misconfiguration.
+not in the repository, so it exists on the maintainer's machine and not on the runner.
+`@prisma/client` loads that file when the client is constructed, but never overrides a variable that
+is already set, so the `node` project in `vitest.config.ts` sets every key the file holds to a test
+value. A variable added to `.env` needs an entry there too, or it leaks into the tests and lets a
+suite pass locally and fail in CI on exactly the assertions that cover misconfiguration.
 
 ### Tests Sit Beside Their Subject
 

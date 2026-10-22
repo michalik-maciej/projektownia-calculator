@@ -20,6 +20,11 @@ export default defineConfig({
         test: {
           name: "node",
           environment: "node",
+          env: {
+            DATABASE_URL: "postgresql://unused:unused@localhost:5432/unused",
+            JWT_SECRET: "test-secret",
+            WEBAPP_DOMAIN: "http://localhost:5173",
+          },
           include: ["packages/**/**/*.test.ts", "tests/**/*.test.ts"],
           exclude: ["packages/apps/web/**"],
         },
