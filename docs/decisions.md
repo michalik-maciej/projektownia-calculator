@@ -205,8 +205,9 @@ author's. 404 rather than 403 because an id alone should not confirm that an off
 **Cost.** No endpoint changes the owner, which is why `UpdateOfferInput` excludes `userId`. An
 admin can share an offer without handing it over (decision 16). Offers that predated the column could
 not be attributed to anybody and were deleted by migration
-`20260910120000_clear_offers_before_owner`. A summary carries the author's email, and the offer list
-shows it to an ADMIN only.
+`20260910120000_clear_offers_before_owner`. The offer list shows every caller the email of whoever saved
+the offer last (`Offer.lastUpdatedById`, set to null if that account is
+deleted).
 
 **Enforced by.** `packages/apps/api/src/tests/offerOwnership.test.ts` drives every offer route as an
 owner, as a stranger and as an admin. To make that possible without a database, the offer repository

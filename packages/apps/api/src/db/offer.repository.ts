@@ -17,6 +17,7 @@ export type CreateOfferInput = {
 export type UpdateOfferInput = Omit<Partial<CreateOfferInput>, "userId"> & {
   expectedUpdatedAt: Date
   id: string
+  lastUpdatedById: string
 }
 
 export type OfferSummaryRow = Pick<
@@ -24,6 +25,7 @@ export type OfferSummaryRow = Pick<
   "createdAt" | "id" | "title" | "updatedAt"
 > & {
   authorEmail: string
+  lastUpdatedByEmail: string | null
 }
 
 export type OfferStore = {
@@ -48,7 +50,9 @@ function accessFilter(scope: OfferScope): Prisma.OfferWhereInput {
 }
 
 export async function createOffer(data: CreateOfferInput): Promise<Offer> {
-  return prisma.offer.create({ data })
+  return prisma.offer.create({
+    data: { ...data, lastUpdatedById: data.userId },
+  })
 }
 
 export async function updateOffer(
@@ -76,12 +80,14 @@ export async function getAllOffers(
       title: true,
       updatedAt: true,
       user: { select: { email: true } },
+      lastUpdatedBy: { select: { email: true } },
     },
   })
 
-  return offers.map(({ user, ...offer }) => ({
+  return offers.map(({ lastUpdatedBy, user, ...offer }) => ({
     ...offer,
     authorEmail: user.email,
+    lastUpdatedByEmail: lastUpdatedBy?.email ?? null,
   }))
 }
 

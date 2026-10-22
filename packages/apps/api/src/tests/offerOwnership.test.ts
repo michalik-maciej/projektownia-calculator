@@ -62,6 +62,7 @@ describe("offer routes scoped to the offer owner", () => {
         authorEmail: `${ownerId}@example.com`,
         createdAt: ownOffer.createdAt.toISOString(),
         id: ownOffer.id,
+        lastUpdatedByEmail: `${ownerId}@example.com`,
         title: "Owner offer",
         updatedAt: ownOffer.updatedAt.toISOString(),
       },
@@ -266,6 +267,32 @@ describe("offer shared by an admin", () => {
     expect(update.body).toMatchObject({
       title: "Renamed by a colleague",
       userId: strangerId,
+    })
+  })
+
+  it("records the colleague who last updated it", async () => {
+    const { app, strangerOffer } = await setup()
+
+    await request(app)
+      .put(`/api/offers/${strangerOffer.id}/shares`)
+      .set("Cookie", adminCookie)
+      .send({ userIds: [ownerId] })
+    await request(app)
+      .put(`/api/offers/${strangerOffer.id}`)
+      .set("Cookie", ownerCookie)
+      .send({
+        ...validOfferInput,
+        expectedUpdatedAt: strangerOffer.updatedAt.toISOString(),
+      })
+    const list = await request(app)
+      .get("/api/offers")
+      .set("Cookie", adminCookie)
+
+    expect(
+      list.body.find(({ id }: OfferSummary) => id === strangerOffer.id),
+    ).toMatchObject({
+      authorEmail: `${strangerId}@example.com`,
+      lastUpdatedByEmail: `${ownerId}@example.com`,
     })
   })
 

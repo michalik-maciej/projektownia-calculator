@@ -13,7 +13,8 @@ model User {
   password    String
   role        Role         @default(USER)
   createdAt   DateTime     @default(now())
-  offers      Offer[]
+  offers      Offer[]      @relation("OfferAuthor")
+  lastUpdates Offer[]      @relation("OfferLastUpdatedBy")
   offerShares OfferShare[]
 }
 
@@ -59,7 +60,9 @@ model Offer {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @default(now()) @updatedAt
   userId             String
-  user               User         @relation(fields: [userId], references: [id])
+  user               User         @relation("OfferAuthor", fields: [userId], references: [id])
+  lastUpdatedById    String?
+  lastUpdatedBy      User?        @relation("OfferLastUpdatedBy", fields: [lastUpdatedById], references: [id], onDelete: SetNull)
   shares             OfferShare[]
 
   @@index([createdAt])

@@ -59,7 +59,7 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 - `User`: Email, hashed password, role (ADMIN/USER/DEMO)
 - `Component`: Catalog inventory (category, dimensions, price)
 - `Offer`: Offer records (input JSON, discount; pricing computed on every read, not stored), owned by the `User` that created
-  them (`userId`, required)
+  them (`userId`, required), with the account that saved them last (`lastUpdatedById`, optional)
 - `OfferShare`: Grants a user access to an offer they do not own (`offerId`, `userId`), set by an
   ADMIN
 

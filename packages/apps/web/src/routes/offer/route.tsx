@@ -1,4 +1,4 @@
-import { FilePlus2, Loader2, Trash2 } from "lucide-react"
+import { FilePlus2, Loader2, Share2, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import { createFileRoute } from "@tanstack/react-router"
@@ -107,7 +107,14 @@ function OfferPage() {
             Nowa
           </Button>
           <OfferList />
-          {isAdmin && hasOpenOffer && <OfferShareDialog offerId={offerId} />}
+          {isAdmin && hasOpenOffer && (
+            <OfferShareDialog offerId={offerId}>
+              <Button type="button" variant="outline">
+                <Share2 className="h-4 w-4" />
+                Udostępnij
+              </Button>
+            </OfferShareDialog>
+          )}
           <Button
             className="text-destructive hover:text-destructive"
             disabled={!hasOpenOffer || deleteOffer.isPending}
@@ -231,7 +238,7 @@ function OfferPage() {
         isPending={createOffer.isPending || deleteOffer.isPending}
         onConfirm={() => {
           if (confirming === "delete") {
-            deleteOffer.mutate()
+            deleteOffer.mutate(offerId ?? "")
           } else {
             createOffer.mutate()
           }

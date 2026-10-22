@@ -1,5 +1,5 @@
-import { Loader2, Share2 } from "lucide-react"
-import { useState } from "react"
+import { Loader2 } from "lucide-react"
+import { ReactNode, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 
 import type { User } from "@/schemas/user/User.schema"
@@ -73,7 +73,13 @@ function ShareForm({
   )
 }
 
-export function OfferShareDialog({ offerId }: { offerId: string }) {
+export function OfferShareDialog({
+  children,
+  offerId,
+}: {
+  children: ReactNode
+  offerId: string
+}) {
   const [isOpen, setIsOpen] = useState(false)
 
   const users = useQuery({ ...usersQueries.list(), enabled: isOpen })
@@ -81,12 +87,7 @@ export function OfferShareDialog({ offerId }: { offerId: string }) {
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      <DialogTrigger asChild>
-        <Button type="button" variant="outline">
-          <Share2 className="h-4 w-4" />
-          Udostępnij
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogTitle>Udostępnij ofertę</DialogTitle>
         {(users.isError || shares.isError) && (

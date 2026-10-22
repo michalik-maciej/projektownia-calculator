@@ -91,6 +91,7 @@ export const OfferSummarySchema = v.object({
   authorEmail: v.string(),
   createdAt: v.string(),
   id: v.string(),
+  lastUpdatedByEmail: v.nullable(v.string()),
   title: v.string(),
   updatedAt: v.string(),
 })

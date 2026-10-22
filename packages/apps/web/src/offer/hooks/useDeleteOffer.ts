@@ -11,16 +11,13 @@ export function useDeleteOffer() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: () => {
-      if (!offerId) {
-        throw new Error("Nothing to delete: no offer is open")
-      }
-      return offerApi.delete({ params: { id: offerId } })
-    },
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ["offer", "details"] })
+    mutationFn: (id: string) => offerApi.delete({ params: { id } }),
+    onSuccess: (_, id) => {
+      queryClient.removeQueries({ queryKey: ["offer", "details", id] })
       queryClient.invalidateQueries({ queryKey: ["offer", "list"] })
-      navigate({ search: {}, to: "." })
+      if (id === offerId) {
+        navigate({ search: {}, to: "." })
+      }
       toast.success("Oferta usunięta.", { position: "top-center" })
     },
     onError: (error) => {

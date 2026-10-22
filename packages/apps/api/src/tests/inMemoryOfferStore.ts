@@ -32,6 +32,7 @@ export function createInMemoryOfferStore(): TestOfferStore {
         discountPercentage: data.discountPercentage ?? null,
         id: randomUUID(),
         input: toStoredJson(data.input),
+        lastUpdatedById: data.userId,
         title: data.title,
         updatedAt: new Date(),
         userId: data.userId,
@@ -55,13 +56,18 @@ export function createInMemoryOfferStore(): TestOfferStore {
     getAllOffers: async (scope: OfferScope) =>
       [...stored.values()]
         .filter((offer) => isVisibleTo(offer, scope))
-        .map(({ createdAt, id, title, updatedAt, userId }) => ({
-          authorEmail: `${userId}@example.com`,
-          createdAt,
-          id,
-          title,
-          updatedAt,
-        })),
+        .map(
+          ({ createdAt, id, lastUpdatedById, title, updatedAt, userId }) => ({
+            authorEmail: `${userId}@example.com`,
+            createdAt,
+            id,
+            lastUpdatedByEmail: lastUpdatedById
+              ? `${lastUpdatedById}@example.com`
+              : null,
+            title,
+            updatedAt,
+          }),
+        ),
 
     getOfferById: async (id: string, scope: OfferScope) => {
       const offer = stored.get(id)
@@ -92,6 +98,7 @@ export function createInMemoryOfferStore(): TestOfferStore {
           data.discountPercentage ?? existing.discountPercentage,
         input:
           data.input === undefined ? existing.input : toStoredJson(data.input),
+        lastUpdatedById: data.lastUpdatedById,
         title: data.title ?? existing.title,
         updatedAt: new Date(),
       }

@@ -50,6 +50,7 @@ export function updateOfferController({
       const updated = await updateOffer({
         expectedUpdatedAt: new Date(expectedUpdatedAt),
         id: params.output.id,
+        lastUpdatedById: scope.userId,
         title: input.title,
         discountPercentage: input.discountPercentage,
         input,
