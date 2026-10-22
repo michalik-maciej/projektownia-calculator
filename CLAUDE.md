@@ -146,6 +146,8 @@ parallel `web` build is reading.
 When adding tasks, consider:
 
 - Include `.env*` in `inputs` if tasks read env vars (for cache invalidation)
+- Declare variables a task takes from the shell in `env` or `passThroughEnv`: Turbo 2 runs in strict
+  mode and drops the rest, which is why `dev` lists `DATABASE_URL` and the other API variables
 - Set `cache: false` for persistent processes (dev servers)
 - Use `^taskName` dependency for tasks needing upstream completion
 - Add an explicit `{package}#{task}` edge whenever a task touches output owned by another package
