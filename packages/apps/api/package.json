@@ -3,11 +3,11 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch --include \"../../domain/src/**/*.ts\" --include \"../../schemas/src/**/*.ts\" src/server.ts",
-    "build": "prisma generate && tsc -b",
+    "build": "prisma generate && tsc -b && tsc -p prisma",
     "start": "node dist/bootstrap.js",
     "migrate:deploy": "prisma migrate deploy",
     "lint": "eslint \"**/*.{ts,tsx}\"",
-    "typecheck": "prisma generate && tsc -b"
+    "typecheck": "prisma generate && tsc -b && tsc -p prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

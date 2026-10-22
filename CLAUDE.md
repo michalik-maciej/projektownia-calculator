@@ -138,7 +138,8 @@ two parallel builds race on the same files and fail with `TS6305` on a cold cach
 depending on the domain and schemas builds, and why `domain` and `schemas` have `build` scripts of
 their own.
 
-For the same reason the API's build script is `prisma generate && tsc -b` and must not regain
+For the same reason the API's build script is `prisma generate && tsc -b && tsc -p prisma` (the
+last step typechecks the seed, which sits outside `src`) and must not regain
 `tsc -b --clean`: a clean run from `api` deletes the shared `schemas` and `domain` output that a
 parallel `web` build is reading.
 

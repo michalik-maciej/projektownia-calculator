@@ -32,8 +32,10 @@ never fires: the only pull request here is the release PR, and Release Please op
 
 There is no separate typecheck job, and that is deliberate rather than an oversight. `pnpm build`
 runs `tsc -b` in the API and the web app, and TypeScript project references make that walk into
-`domain` and `schemas` as well, so the build already typechecks every package. A typecheck job would
-compile the same code a second time.
+`domain` and `schemas` as well, so the build already typechecks every package. The API's build also
+runs `tsc -p prisma`, which checks `prisma/seed.ts` without emitting, since the seed sits outside
+`src` and the emitting build must keep `rootDir` there. A typecheck job would compile the same code a
+second time.
 
 The `test` job generates the Prisma client itself before running Vitest. Its runner is a fresh
 machine that has never run a build, and `createApp` imports `@prisma/client` through the repository
