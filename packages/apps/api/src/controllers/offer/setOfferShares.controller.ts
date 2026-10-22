@@ -20,7 +20,7 @@ export function setOfferSharesController({
 
     const parsed = v.safeParse(OfferSharesSchema, req.body)
 
-    if (parsed.issues) {
+    if (!parsed.success) {
       return res.status(400).json({
         error: "Invalid input",
         issues: v.flatten(parsed.issues),

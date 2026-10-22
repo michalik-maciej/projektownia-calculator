@@ -15,7 +15,7 @@ export function createOfferController({
   return async (req: Request, res: Response) => {
     const parsed = v.safeParse(OfferInputSchema, req.body)
 
-    if (parsed.issues) {
+    if (!parsed.success) {
       return res.status(400).json({
         error: "Invalid input",
         issues: v.flatten(parsed.issues),

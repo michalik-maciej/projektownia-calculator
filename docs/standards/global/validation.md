@@ -35,8 +35,7 @@ if (!parsed.success) {
 }
 ```
 
-Use the `!parsed.success` spelling. Both `parsed.issues` and `!parsed.success` currently appear in
-the codebase for the same check; the success flag is the one to standardise on.
+Use the `!parsed.success` spelling rather than `parsed.issues` for the same check.
 
 ### Server-Side Always, Client-Side for Feedback
 

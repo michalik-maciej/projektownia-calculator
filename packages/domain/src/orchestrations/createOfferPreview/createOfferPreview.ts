@@ -1,12 +1,12 @@
 import type { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculateBomPrice"
-import { calculatePriceStripDemand } from "../../calculations/calculatePriceStripDemand/calculatePriceStripDemand"
 import { Component } from "../../models/component"
 import { breakdownDemandByCategory } from "../../transformations/breakdownDemandByCategory/breakdownDemandByCategory"
 import { mapLayoutsToOfferOutput } from "../../transformations/mapLayoutsToOfferOutput/mapLayoutsToOfferOutput"
 import { summarizePriceStrips } from "../../transformations/summarizePriceStrips/summarizePriceStrips"
 import { calculateOfferDemand } from "../calculateOfferDemand/calculateOfferDemand"
+import { calculatePriceStripDemand } from "../calculatePriceStripDemand/calculatePriceStripDemand"
 
 export function createOfferPreview(
   { discountPercentage, hasPriceStrips, layouts, title }: OfferInput,
