@@ -4,9 +4,9 @@
 
 Each endpoint lives in `src/controllers/{feature}/{verb}{Resource}.controller.ts` and exports one
 function named `{verb}{Resource}Controller`, after its own file. Where the endpoint needs no
-dependency that export is the handler itself, typed `(req: Request, res: Response)`, as every
-inventory controller is. Where it does, the export takes the dependencies and returns the handler,
-as `getOffers.controller.ts` exports `getOffersController({ getAllOffers })`. Every offer controller
+dependency that export is the handler itself, typed `(req: Request, res: Response)`, as the
+inventory write controllers are. Where it does, the export takes the dependencies and returns the
+handler, as `getOffers.controller.ts` exports `getOffersController({ getAllOffers })`. Every offer controller
 is of the second kind, so within one feature folder the rule does not change from file to file.
 Helpers living in the same folder drop the suffix: `requireAuth.ts`, `priceOffer.ts`,
 `toOfferScope.ts`.
@@ -14,9 +14,9 @@ Helpers living in the same folder drop the suffix: `requireAuth.ts`, `priceOffer
 ### One Feature Factory Assembles the Handlers
 
 `controllers/offer/offerControllers.ts` builds every offer handler from a single dependency object
-and returns them under the names the routes use (`list`, `details`, `create`, `update`, `remove`).
-The router asks for the set and binds it; it never assembles a controller itself. The
-dependency type is exported next to that factory, as `OfferControllerDependencies`.
+and returns them under the names the routes use (`list`, `details`, `create`, `update`, `remove`,
+`share`, `shares`). The router asks for the set and binds it; it never assembles a controller
+itself. The dependency type is exported next to that factory, as `OfferControllerDependencies`.
 
 ```ts
 const offer = offerControllers(dependencies)
@@ -32,7 +32,7 @@ validation, no database access. Middleware is applied per route rather than rout
 ```ts
 const guarded = withAuth(router)
 
-guarded.get("/items", getComponentsController)
+guarded.get("/items", getComponentsController({ getInventory }))
 ```
 
 ### app.ts Is the Composition Root

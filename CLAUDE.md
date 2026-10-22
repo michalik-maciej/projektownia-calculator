@@ -50,7 +50,8 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 - **Calculations**: Specific mathematical formulas (back panel area, foot quantity, etc.)
 - **Models**: TypeScript types defining domain concepts
 
-**Entry Point**: `createOfferPreview()` in orchestrations. This is called by the backend to generate preview offers.
+**Entry Point**: `createOfferPreview()` in orchestrations. The API calls it through `priceOffer`
+whenever an offer is created, read or updated, since pricing is not stored.
 
 ### API (`packages/apps/api/`)
 
@@ -68,12 +69,18 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 - `POST /api/auth/login`: Authenticate, return JWT cookie
 - `POST /api/auth/demo`: Create a fresh session account (role DEMO, catalogue read-only), seeded with
   one priced example offer; expired demo accounts (24h+) are cleaned up as a side effect of this call
-- `GET /api/inventory`: List components
-- `POST /api/inventory`: Add component (ADMIN only)
-- `PATCH /api/inventory/:id`: Update component (ADMIN only)
-- `POST /api/offers`: Create offer (calls domain logic)
+- `GET /api/auth/user`: The signed-in account
+- `POST /api/auth/logout`: Clear the JWT cookie
+- `GET /api/inventory/items`: List components
+- `POST /api/inventory/items`: Add component (ADMIN only)
+- `PUT /api/inventory/items/:id`: Update component (ADMIN only)
+- `DELETE /api/inventory/items/:id`: Delete component (ADMIN only)
+- `POST /api/offers`: Create offer, returned priced
 - `GET /api/offers`: List offers (the caller's own and those shared with them, unless they are an
   ADMIN)
+- `GET /api/offers/:id`: One offer, priced at today's catalogue prices
+- `PUT /api/offers/:id`: Update offer; 409 when `expectedUpdatedAt` no longer matches
+- `DELETE /api/offers/:id`: Delete offer
 - `GET /api/offers/:id/shares`: Users an offer is shared with (ADMIN only)
 - `PUT /api/offers/:id/shares`: Replace the list of users an offer is shared with (ADMIN only)
 - `POST /api/auth/register`: Create a user account (ADMIN only; this is how the user management
