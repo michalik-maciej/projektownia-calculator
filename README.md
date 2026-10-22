@@ -3,6 +3,7 @@
 Quotes for shop shelving: you lay out the shelves, it counts the parts and prices them.
 
 [![CI](https://github.com/michalik-maciej/projektownia-calculator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/michalik-maciej/projektownia-calculator/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/michalik-maciej/projektownia-calculator)](https://github.com/michalik-maciej/projektownia-calculator/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Try it: [projektownia.vercel.app](https://projektownia.vercel.app)** and click **Demo** on the
