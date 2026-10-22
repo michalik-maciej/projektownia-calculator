@@ -6,7 +6,7 @@ import { offerQueries } from "../offer.api"
 
 const OFFER_REFRESH_MS = 5000
 
-export function useOffer() {
+export function useOffer({ keepFresh = false }: { keepFresh?: boolean } = {}) {
   const { offerId } = useSearch({ strict: false })
 
   const {
@@ -16,7 +16,7 @@ export function useOffer() {
   } = useQuery({
     ...offerQueries.details(offerId ?? ""),
     enabled: !!offerId,
-    refetchInterval: OFFER_REFRESH_MS,
+    refetchInterval: keepFresh ? OFFER_REFRESH_MS : false,
   })
 
   return { isFetching, isMissing: isNotFound(error), offer, offerId }

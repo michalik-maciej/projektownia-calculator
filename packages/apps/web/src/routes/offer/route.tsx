@@ -39,7 +39,7 @@ function OfferPage() {
   const { fields } = useFieldArray({ control, name: "layouts" })
   const layouts = useWatch({ control, name: "layouts" })
 
-  const { isMissing, offer, offerId } = useOffer()
+  const { isMissing, offer, offerId } = useOffer({ keepFresh: true })
   const createOffer = useCreateOffer()
   const deleteOffer = useDeleteOffer()
   const isAdmin = useIsAdmin()

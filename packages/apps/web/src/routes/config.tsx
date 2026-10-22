@@ -12,7 +12,7 @@ export const Route = createFileRoute("/config")({
 })
 
 function ConfigPage() {
-  const { isMissing, offer, offerId } = useOffer()
+  const { isMissing, offer, offerId } = useOffer({ keepFresh: true })
   const createOffer = useCreateOffer()
 
   return (

@@ -9,7 +9,7 @@ export const Route = createFileRoute("/order")({
 })
 
 function OrderPage() {
-  const { offer } = useOffer()
+  const { offer } = useOffer({ keepFresh: true })
 
   return (
     <section className="flex max-w-2xl flex-col gap-4 p-8">
