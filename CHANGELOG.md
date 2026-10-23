@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.4.0...v1.5.0) (2026-10-23)
+
+
+### Features
+
+* add pdf import guide ([a41cae6](https://github.com/michalik-maciej/projektownia-calculator/commit/a41cae6bf20caac40d1c19361f8d813465c5f6bc))
+* import wall runs and gondolas from a PDF drawing ([c046d87](https://github.com/michalik-maciej/projektownia-calculator/commit/c046d872dcd232762cf0278d476e52b723ba40d5))
+
+
+### Bug Fixes
+
+* harden pdf import against empty paths, repeated run numbers and untyped files ([44eae29](https://github.com/michalik-maciej/projektownia-calculator/commit/44eae29a766f77a6b1638840f118d438a527d578))
+* sort components by size, misc by name, in catalogue and breakdown ([e24c1b0](https://github.com/michalik-maciej/projektownia-calculator/commit/e24c1b09e171702e87ff3f6372fcec1fe5a7db09))
+
 ## [1.4.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.3.0...v1.4.0) (2026-10-22)
 
 
