@@ -1,5 +1,7 @@
 import { find } from "lodash/fp"
 
+import { compareComponents } from "@/schemas/inventory/compareComponents"
+
 import { Component, ComponentDemand } from "../../models/component"
 import { MissingComponentError } from "../../models/missingComponentError"
 
@@ -16,7 +18,7 @@ export function breakdownDemandByCategory(
 ) {
   const bom: DemandByCategory = {}
 
-  for (const { id, quantity } of rawDemand) {
+  const demandWithComponents = rawDemand.map(({ id, quantity }) => {
     const component = find({ id }, inventory)
     if (!component) {
       throw new MissingComponentError(
@@ -24,7 +26,14 @@ export function breakdownDemandByCategory(
         { id },
       )
     }
+    return { id, quantity, component }
+  })
 
+  demandWithComponents.sort((a, b) =>
+    compareComponents(a.component, b.component),
+  )
+
+  for (const { id, quantity, component } of demandWithComponents) {
     const bucket = bom[component.category] ?? []
     const existing = find({ id }, bucket)
 

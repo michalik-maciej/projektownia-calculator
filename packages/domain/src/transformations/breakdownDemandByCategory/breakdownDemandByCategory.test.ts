@@ -37,6 +37,21 @@ describe("breakdownDemandByCategory", () => {
     })
   })
 
+  it("orders the items of each category by size", () => {
+    const result = breakdownDemandByCategory(
+      [
+        { id: "shelf-100-47", quantity: 1 },
+        { id: "shelf-80-37", quantity: 1 },
+      ],
+      componentCatalogMock,
+    )
+
+    expect(result.shelf?.map(({ id }) => id)).toEqual([
+      "shelf-80-37",
+      "shelf-100-47",
+    ])
+  })
+
   it("throws an error when a component id is not found in the inventory", () => {
     expect(() =>
       breakdownDemandByCategory(

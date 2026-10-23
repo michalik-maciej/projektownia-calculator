@@ -31,8 +31,8 @@ describe("createOfferPreview", () => {
     const expectedResult = {
       breakdown: {
         back: [
-          { id: "back-40-100", quantity: 4, label: "Plecy 40/100" },
           { id: "back-10-100", quantity: 1, label: "Plecy 10/100" },
+          { id: "back-40-100", quantity: 4, label: "Plecy 40/100" },
         ],
         shelf: [{ id: "shelf-100-47", quantity: 1, label: "Półka 100/47" }],
         leg: [{ id: "leg-180-8-3", quantity: 2, label: "Noga 180/8/3" }],
@@ -47,8 +47,8 @@ describe("createOfferPreview", () => {
           description: "H180 · B47 · 1×100",
           breakdown: {
             back: [
-              { id: "back-40-100", quantity: 4, label: "Plecy 40/100" },
               { id: "back-10-100", quantity: 1, label: "Plecy 10/100" },
+              { id: "back-40-100", quantity: 4, label: "Plecy 40/100" },
             ],
             shelf: [{ id: "shelf-100-47", quantity: 1, label: "Półka 100/47" }],
             leg: [{ id: "leg-180-8-3", quantity: 2, label: "Noga 180/8/3" }],

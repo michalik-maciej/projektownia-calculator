@@ -2,6 +2,7 @@ import { CopyPlusIcon } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useParams } from "@tanstack/react-router"
 
+import { compareComponents } from "@/schemas/inventory/compareComponents"
 import { COMPONENT_CATEGORIES } from "@/schemas/inventory/Component.schema"
 
 import { InventoryItemPriceField } from "./InventoryItemPriceField"
@@ -15,7 +16,6 @@ import { Button } from "../../core/ui/button"
 import { textSection } from "../../core/ui/typography"
 import { CATEGORY_LABELS } from "../../offer/helpers/categoryLabels"
 import { useIsAdmin } from "../../user/hooks/useIsAdmin"
-import { sortInventoryItemsBySize } from "../helpers/sortInventoryItemsBySize"
 import { inventoryQueries } from "../inventory.api"
 
 export function InventoryPage() {
@@ -24,13 +24,13 @@ export function InventoryPage() {
   const { data, isPending, error } = useQuery({
     ...inventoryQueries.list(),
     select: (components) =>
-      sortInventoryItemsBySize(components).reduce<
-        Record<string, typeof components>
-      >((acc, component) => {
-        acc[component.category] ??= []
-        acc[component.category]?.push(component)
-        return acc
-      }, {}),
+      [...components]
+        .sort(compareComponents)
+        .reduce<Record<string, typeof components>>((acc, component) => {
+          acc[component.category] ??= []
+          acc[component.category]?.push(component)
+          return acc
+        }, {}),
   })
 
   if (error) {

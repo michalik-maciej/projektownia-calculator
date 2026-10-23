@@ -50,7 +50,7 @@ export function LayoutPlanHeader({
           <Badge variant="outline">PDF ({layout.drawingRunNumber})</Badge>
         )}
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <Label
           className="cursor-pointer text-sm text-muted-foreground"
           htmlFor={inOfferId}
@@ -95,13 +95,14 @@ export function LayoutPlanHeader({
         >
           <Copy className="h-4 w-4" />
         </Button>
+        <ActionDivider />
         <Button
           aria-label="Usuń ciąg"
           className="text-destructive hover:text-destructive"
           onClick={onRemove}
           size="icon"
           type="button"
-          variant="ghost"
+          variant="outline"
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -111,5 +112,5 @@ export function LayoutPlanHeader({
 }
 
 function ActionDivider() {
-  return <div aria-hidden className="h-1 w-1 bg-foreground/80" />
+  return <div aria-hidden className="h-1 w-1 mx-1 bg-foreground/80" />
 }
