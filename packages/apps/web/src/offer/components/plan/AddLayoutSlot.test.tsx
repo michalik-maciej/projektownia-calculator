@@ -31,6 +31,22 @@ describe("AddLayoutSlot", () => {
     expect(imported).toEqual([drawing])
   })
 
+  it("opens the guide to preparing the PDF without starting the import", () => {
+    const imported: File[] = []
+    renderSlot((file) => imported.push(file))
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Jak przygotować plik PDF" }),
+    )
+
+    expect(
+      screen.getByRole("dialog", {
+        name: "Jak przygotować plik PDF do importu",
+      }),
+    ).toBeInTheDocument()
+    expect(imported).toEqual([])
+  })
+
   it("offers no PDF import to an account without it", () => {
     renderSlot(null)
 

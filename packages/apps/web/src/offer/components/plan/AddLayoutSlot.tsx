@@ -1,5 +1,7 @@
 import { FileUp, ListPlus, RectangleHorizontal, Rows2 } from "lucide-react"
 
+import { PdfImportHelp } from "./PdfImportHelp"
+
 const optionClassName =
   "flex flex-1 cursor-pointer flex-col items-center justify-center gap-1 text-[13px] font-semibold text-muted-foreground transition-colors hover:bg-highlight-soft hover:text-foreground"
 
@@ -57,24 +59,27 @@ export function AddLayoutSlot({
           </button>
         ))}
         {onImportPdf && (
-          <label
-            className={`${optionClassName} focus-within:bg-highlight-soft has-disabled:pointer-events-none has-disabled:opacity-40`}
-          >
-            <FileUp className="size-5.5" strokeWidth={1.75} />
-            {isImportingPdf ? "Importowanie…" : "Import z PDF"}
-            <input
-              accept="application/pdf"
-              aria-label="Importuj ciągi z PDF"
-              className="sr-only"
-              disabled={isImportingPdf}
-              onChange={(event) => {
-                const [file] = event.target.files ?? []
-                event.target.value = ""
-                if (file) onImportPdf(file)
-              }}
-              type="file"
-            />
-          </label>
+          <div className="relative flex flex-1">
+            <label
+              className={`${optionClassName} p-2 focus-within:bg-highlight-soft has-disabled:pointer-events-none has-disabled:opacity-40`}
+            >
+              <FileUp className="size-5.5" strokeWidth={1.75} />
+              {isImportingPdf ? "Importowanie…" : "Import z PDF"}
+              <input
+                accept="application/pdf"
+                aria-label="Importuj ciągi z PDF"
+                className="sr-only"
+                disabled={isImportingPdf}
+                onChange={(event) => {
+                  const [file] = event.target.files ?? []
+                  event.target.value = ""
+                  if (file) onImportPdf(file)
+                }}
+                type="file"
+              />
+            </label>
+            <PdfImportHelp />
+          </div>
         )}
       </div>
       {!onAddWall && (

@@ -249,7 +249,7 @@ Limits that remain:
   out of the bill of materials, the price strips and the total, and still gives each one an entry
   in `output.layouts` (price 0, no parts) so that prices keep matching runs by position.
 - **Editor**: "Import z PDF" in the add slot appends the runs read. Each run header has a
-  "W ofercie" switch and, for imported runs, a "PDF (n)" badge that stays after switching. The offer
+  "Wliczaj do oferty" switch and, for imported runs, a "PDF (n)" badge that stays after switching. The offer
   table hides excluded runs; the remaining codes keep their numbers.
 
 ## Not done yet
