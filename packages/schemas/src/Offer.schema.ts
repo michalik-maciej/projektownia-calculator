@@ -30,6 +30,10 @@ export const OfferInputSchema = v.object({
   ),
   metalColor: v.optional(v.picklist(METAL_COLORS)),
   priceStripColor: v.optional(v.picklist(PRICE_STRIP_COLORS)),
+  shelfStopPercentage: v.optional(
+    v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(100)),
+    0,
+  ),
   title: v.string(),
 })
 
@@ -72,6 +76,12 @@ export const OfferOutputSchema = v.object({
     }),
   ),
   priceStrips: v.nullable(
+    v.object({
+      basePrice: v.pipe(v.number(), v.minValue(0)),
+      quantity: v.number(),
+    }),
+  ),
+  shelfStops: v.nullable(
     v.object({
       basePrice: v.pipe(v.number(), v.minValue(0)),
       quantity: v.number(),

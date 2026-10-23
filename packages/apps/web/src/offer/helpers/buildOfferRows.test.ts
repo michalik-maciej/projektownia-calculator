@@ -39,6 +39,8 @@ describe("buildOfferRows", () => {
         },
       ],
       priceStrips: null,
+      shelfStopPercentage: 0,
+      shelfStops: null,
     })
 
     expect(rows).toEqual([
@@ -76,6 +78,8 @@ describe("buildOfferRows", () => {
         layoutOutputs: undefined,
         layouts: [wallLayout],
         priceStrips: undefined,
+        shelfStopPercentage: 0,
+        shelfStops: undefined,
       }),
     ).toEqual([
       {
@@ -95,6 +99,8 @@ describe("buildOfferRows", () => {
       layoutOutputs: undefined,
       layouts: [{ ...wallLayout, isExcludedFromOffer: true }, wallLayout],
       priceStrips: null,
+      shelfStopPercentage: 0,
+      shelfStops: null,
     })
 
     expect(rows).toEqual([
@@ -115,6 +121,8 @@ describe("buildOfferRows", () => {
       layoutOutputs: undefined,
       layouts: [wallLayout],
       priceStrips: { basePrice: 40, quantity: 4.2 },
+      shelfStopPercentage: 0,
+      shelfStops: null,
     })
 
     expect(rows.at(-1)).toEqual({
@@ -124,6 +132,26 @@ describe("buildOfferRows", () => {
       key: "price-strips",
       name: "Listwy cenowe",
       quantity: 4.2,
+      unit: "mb",
+    })
+  })
+  it("lists shelf stops as one row, in running metres, with the share of shelves", () => {
+    const rows = buildOfferRows({
+      keys: ["wall"],
+      layoutOutputs: undefined,
+      layouts: [wallLayout],
+      priceStrips: { basePrice: 40, quantity: 4.2 },
+      shelfStopPercentage: 20,
+      shelfStops: { basePrice: 12, quantity: 1.6 },
+    })
+
+    expect(rows.at(-1)).toEqual({
+      basePrice: 12,
+      code: null,
+      description: "do 20% półek",
+      key: "shelf-stops",
+      name: "Ograniczniki",
+      quantity: 1.6,
       unit: "mb",
     })
   })

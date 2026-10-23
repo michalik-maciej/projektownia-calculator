@@ -4,6 +4,7 @@ export const validOfferInput: OfferInput = {
   title: "Offer test",
   discountPercentage: 10,
   hasPriceStrips: true,
+  shelfStopPercentage: 0,
   layouts: [
     {
       depth: 47,

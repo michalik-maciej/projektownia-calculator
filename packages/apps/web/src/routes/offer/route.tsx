@@ -38,6 +38,10 @@ function OfferPage() {
   } = useFormContext<OfferInput>()
   const { fields } = useFieldArray({ control, name: "layouts" })
   const layouts = useWatch({ control, name: "layouts" })
+  const shelfStopPercentage = useWatch({
+    control,
+    name: "shelfStopPercentage",
+  })
 
   const { isMissing, offer, offerId } = useOffer({ keepFresh: true })
   const createOffer = useCreateOffer()
@@ -168,6 +172,8 @@ function OfferPage() {
                   layoutOutputs: output?.layouts,
                   layouts,
                   priceStrips: output?.priceStrips,
+                  shelfStopPercentage,
+                  shelfStops: output?.shelfStops,
                 }).map(
                   ({
                     basePrice,

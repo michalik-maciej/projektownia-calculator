@@ -5,12 +5,19 @@ import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculat
 import { Component } from "../../models/component"
 import { breakdownDemandByCategory } from "../../transformations/breakdownDemandByCategory/breakdownDemandByCategory"
 import { mapLayoutsToOfferOutput } from "../../transformations/mapLayoutsToOfferOutput/mapLayoutsToOfferOutput"
-import { summarizePriceStrips } from "../../transformations/summarizePriceStrips/summarizePriceStrips"
+import { summarizeRunningMetres } from "../../transformations/summarizeRunningMetres/summarizeRunningMetres"
 import { calculateOfferDemand } from "../calculateOfferDemand/calculateOfferDemand"
 import { calculatePriceStripDemand } from "../calculatePriceStripDemand/calculatePriceStripDemand"
+import { calculateShelfStopDemand } from "../calculateShelfStopDemand/calculateShelfStopDemand"
 
 export function createOfferPreview(
-  { discountPercentage, hasPriceStrips, layouts, title }: OfferInput,
+  {
+    discountPercentage,
+    hasPriceStrips,
+    layouts,
+    shelfStopPercentage,
+    title,
+  }: OfferInput,
   inventory: Component[],
 ): OfferOutput {
   const offeredLayouts = layouts.filter(
@@ -19,15 +26,22 @@ export function createOfferPreview(
   const priceStripDemand = hasPriceStrips
     ? calculatePriceStripDemand(offeredLayouts, inventory)
     : []
+  const shelfStopDemand = calculateShelfStopDemand(
+    offeredLayouts,
+    shelfStopPercentage,
+    inventory,
+  )
   const bom = [
     ...calculateOfferDemand(offeredLayouts, inventory),
     ...priceStripDemand,
+    ...shelfStopDemand,
   ]
 
   return {
     breakdown: breakdownDemandByCategory(bom, inventory),
     layouts: mapLayoutsToOfferOutput(layouts, inventory),
-    priceStrips: summarizePriceStrips(priceStripDemand, inventory),
+    priceStrips: summarizeRunningMetres(priceStripDemand, inventory),
+    shelfStops: summarizeRunningMetres(shelfStopDemand, inventory),
     pricing: {
       ...calculateBomPrice({ bom, discountPercentage }, inventory),
       discountPercentage,

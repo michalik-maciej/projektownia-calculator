@@ -11,6 +11,7 @@ export const demoExampleOffer: OfferInput = {
   title: "Przykładowa konfiguracja",
   discountPercentage: 10,
   hasPriceStrips: true,
+  shelfStopPercentage: 20,
   layouts: [
     {
       depth: 47,

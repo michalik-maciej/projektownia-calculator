@@ -19,11 +19,15 @@ export function buildOfferRows({
   layoutOutputs,
   layouts,
   priceStrips,
+  shelfStopPercentage,
+  shelfStops,
 }: {
   keys: string[]
   layoutOutputs: OfferOutput["layouts"] | undefined
   layouts: OfferInput["layouts"]
   priceStrips: OfferOutput["priceStrips"] | undefined
+  shelfStopPercentage: number
+  shelfStops: OfferOutput["shelfStops"] | undefined
 }): OfferRow[] {
   const layoutRows = keys.flatMap((key, index): OfferRow[] => {
     const layout = layouts[index]
@@ -55,19 +59,31 @@ export function buildOfferRows({
     ]
   })
 
-  if (!priceStrips) {
-    return layoutRows
-  }
-
   return [
     ...layoutRows,
-    {
-      ...priceStrips,
-      code: null,
-      description: "do wszystkich półek",
-      key: "price-strips",
-      name: "Listwy cenowe",
-      unit: "mb",
-    },
+    ...(priceStrips
+      ? [
+          {
+            ...priceStrips,
+            code: null,
+            description: "do wszystkich półek",
+            key: "price-strips",
+            name: "Listwy cenowe",
+            unit: "mb",
+          },
+        ]
+      : []),
+    ...(shelfStops
+      ? [
+          {
+            ...shelfStops,
+            code: null,
+            description: `do ${shelfStopPercentage}% półek`,
+            key: "shelf-stops",
+            name: "Ograniczniki",
+            unit: "mb",
+          },
+        ]
+      : []),
   ]
 }

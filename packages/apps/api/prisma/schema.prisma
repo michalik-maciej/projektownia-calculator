@@ -48,6 +48,7 @@ enum ComponentCategory {
   misc
   priceStrip
   shelf
+  shelfStop
   support
   topCover
 }

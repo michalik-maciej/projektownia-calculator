@@ -25,6 +25,7 @@ export function getDimensionOptions({ dimension, inventoryItems }: Params) {
     misc: [],
     priceStrip: [],
     shelf: [],
+    shelfStop: [],
     support: [],
     topCover: [],
   }

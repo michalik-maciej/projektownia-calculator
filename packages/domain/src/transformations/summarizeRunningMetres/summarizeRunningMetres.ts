@@ -5,22 +5,21 @@ import { Component, ComponentDemand } from "../../models/component"
 
 const CENTIMETRES_PER_METRE = 100
 
-export function summarizePriceStrips(
-  priceStripDemand: ComponentDemand,
+export function summarizeRunningMetres(
+  demand: ComponentDemand,
   inventory: Component[],
 ) {
-  if (priceStripDemand.length === 0) {
+  if (demand.length === 0) {
     return null
   }
 
   const lengthInCentimetres = sumBy(
     ({ id, quantity }) => quantity * (find({ id }, inventory)?.width ?? 0),
-    priceStripDemand,
+    demand,
   )
 
   return {
-    basePrice: calculateBomPrice({ bom: priceStripDemand }, inventory)
-      .basePrice,
+    basePrice: calculateBomPrice({ bom: demand }, inventory).basePrice,
     quantity: lengthInCentimetres / CENTIMETRES_PER_METRE,
   }
 }

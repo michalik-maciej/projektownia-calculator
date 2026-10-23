@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../core/ui/select"
+import { Slider } from "../../core/ui/slider"
 import { textEyebrow } from "../../core/ui/typography"
 import {
   DEFAULT_METAL_COLOR,
@@ -34,6 +35,7 @@ export function OfferSettings() {
   const priceStripsId = useId()
   const priceStripColorId = useId()
   const metalColorId = useId()
+  const shelfStopPercentageId = useId()
 
   return (
     <Popover>
@@ -88,6 +90,29 @@ export function OfferSettings() {
             )}
           />
         </div>
+        <Controller
+          control={control}
+          name="shelfStopPercentage"
+          render={({ field }) => (
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-baseline justify-between">
+                <Label className={textEyebrow} id={shelfStopPercentageId}>
+                  Ograniczniki do półek
+                </Label>
+                <span className="font-mono text-xs">{field.value ?? 0}%</span>
+              </div>
+              <Slider
+                aria-labelledby={shelfStopPercentageId}
+                max={100}
+                min={0}
+                onBlur={field.onBlur}
+                onValueChange={([value]) => field.onChange(value)}
+                step={5}
+                value={[field.value ?? 0]}
+              />
+            </div>
+          )}
+        />
         <div className="flex flex-col gap-1.5">
           <Label className={textEyebrow} htmlFor={metalColorId}>
             Kolor metalu

@@ -9,6 +9,7 @@ describe("createOfferPreview", () => {
       {
         discountPercentage: 10,
         hasPriceStrips: true,
+        shelfStopPercentage: 0,
         layouts: [
           {
             height: 180,
@@ -57,6 +58,7 @@ describe("createOfferPreview", () => {
         },
       ],
       priceStrips: { basePrice: 2.2, quantity: 1 },
+      shelfStops: null,
       pricing: {
         basePrice: 556.05,
         discountPrice: 500.45,
@@ -78,6 +80,7 @@ describe("createOfferPreview", () => {
     const offer = {
       discountPercentage: 10,
       hasPriceStrips: true,
+      shelfStopPercentage: 0,
       title: "Test Offer",
     }
     const offeredOnly = createOfferPreview(
