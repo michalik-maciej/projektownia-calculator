@@ -13,7 +13,10 @@ export function useImportPdf(
   onImported: (layouts: PdfImportOutput["layouts"]) => void,
 ) {
   return useMutation({
-    mutationFn: (file: File) => offerApi.importPdf({ data: file }),
+    mutationFn: (file: File) =>
+      offerApi.importPdf({
+        data: new File([file], file.name, { type: "application/pdf" }),
+      }),
     onSuccess: ({ layouts }) => {
       if (layouts.length === 0) {
         toast.error("Nie znaleziono w pliku żadnego ciągu.", {

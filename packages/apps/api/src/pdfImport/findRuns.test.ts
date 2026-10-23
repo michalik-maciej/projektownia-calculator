@@ -109,6 +109,28 @@ describe("findRuns", () => {
     ])
   })
 
+  it("reads a run once when its number is repeated along the line", () => {
+    const runs = findRuns({
+      segments: [line(194.4, 604.8, 194.4, 550)],
+      texts: [
+        text("(5)", 196.6, 600, { height: NUMBER_HEIGHT }),
+        text("(5)", 196.6, 560, { height: NUMBER_HEIGHT }),
+        text("100/37/210", 175.3, 593.2),
+        text("6x37", 170.3, 585.3),
+      ],
+    })
+
+    expect(runs).toEqual([
+      wallRun(5, { depth: 37, height: 210 }, [
+        {
+          numberOfShelfUnits: 1,
+          shelves: [{ depth: 37, numberOfShelves: 6 }],
+          width: 100,
+        },
+      ]),
+    ])
+  })
+
   it("ignores labels on the far side of the run line", () => {
     const horizontal = { angle: 0, height: 2.7197 }
     const runs = findRuns({

@@ -34,40 +34,42 @@ export async function readDrawing(data: Uint8Array): Promise<Drawing> {
   const { OPS, VerbosityLevel, getDocument } =
     await import("pdfjs-dist/legacy/build/pdf.mjs")
   const loadingTask = getDocument({ data, verbosity: VerbosityLevel.ERRORS })
-  const pdf = await loadingTask.promise
-  const page = await pdf.getPage(1)
+  try {
+    const pdf = await loadingTask.promise
+    const page = await pdf.getPage(1)
 
-  const { items } = await page.getTextContent()
-  const texts = items.flatMap((item) =>
-    "str" in item && item.str.trim() ? [readText(item)] : [],
-  )
+    const { items } = await page.getTextContent()
+    const texts = items.flatMap((item) =>
+      "str" in item && item.str.trim() ? [readText(item)] : [],
+    )
 
-  const { argsArray, fnArray } = await page.getOperatorList()
-  const segments: DrawingSegment[] = []
-  const stack: GraphicsState[] = []
-  let state: GraphicsState = { color: "", matrix: IDENTITY }
+    const { argsArray, fnArray } = await page.getOperatorList()
+    const segments: DrawingSegment[] = []
+    const stack: GraphicsState[] = []
+    let state: GraphicsState = { color: "", matrix: IDENTITY }
 
-  fnArray.forEach((operation, index) => {
-    const args = argsArray[index]
+    fnArray.forEach((operation, index) => {
+      const args = argsArray[index]
 
-    if (operation === OPS.save) stack.push(state)
-    if (operation === OPS.restore) state = stack.pop() ?? state
-    if (operation === OPS.transform) {
-      state = { ...state, matrix: multiply(args, state.matrix) }
-    }
-    if (operation === OPS.setStrokeRGBColor) {
-      state = { ...state, color: String(args[0]) }
-    }
-    if (operation === OPS.constructPath) {
-      for (const path of args[1]) {
-        segments.push(...readSegments(path, state))
+      if (operation === OPS.save) stack.push(state)
+      if (operation === OPS.restore) state = stack.pop() ?? state
+      if (operation === OPS.transform) {
+        state = { ...state, matrix: multiply(args, state.matrix) }
       }
-    }
-  })
+      if (operation === OPS.setStrokeRGBColor) {
+        state = { ...state, color: String(args[0]) }
+      }
+      if (operation === OPS.constructPath) {
+        for (const path of args[1]) {
+          if (path) segments.push(...readSegments(path, state))
+        }
+      }
+    })
 
-  await loadingTask.destroy()
-
-  return { segments, texts }
+    return { segments, texts }
+  } finally {
+    await loadingTask.destroy()
+  }
 }
 
 function readText({

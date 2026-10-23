@@ -233,13 +233,16 @@ function findNumberedShafts(
   texts: DrawingText[],
   shafts: Shaft[],
 ): NumberedShaft[] {
-  return flatMap((text) => {
-    const match = RUN_NUMBER.exec(text.text)
-    const shaft = match && nearestShaft(text, shafts, MAX_NUMBER_DISTANCE_PT)
-    return match && shaft
-      ? [{ number: Number(match[1]), numberText: text, shaft }]
-      : []
-  }, texts)
+  return uniqBy(
+    "shaft",
+    flatMap((text) => {
+      const match = RUN_NUMBER.exec(text.text)
+      const shaft = match && nearestShaft(text, shafts, MAX_NUMBER_DISTANCE_PT)
+      return match && shaft
+        ? [{ number: Number(match[1]), numberText: text, shaft }]
+        : []
+    }, texts),
+  )
 }
 
 function findUnitLabels(texts: DrawingText[]): UnitLabel[] {
