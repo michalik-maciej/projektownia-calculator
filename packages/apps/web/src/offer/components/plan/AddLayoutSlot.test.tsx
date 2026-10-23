@@ -7,6 +7,7 @@ function renderSlot(onImportPdf: ((file: File) => void) | null) {
   render(
     <AddLayoutSlot
       onAddGondola={() => {}}
+      onAddImpulse={() => {}}
       onAddItemSet={() => {}}
       onAddWall={() => {}}
       onImportPdf={onImportPdf}

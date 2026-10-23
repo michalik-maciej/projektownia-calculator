@@ -2,6 +2,7 @@ import { Plus } from "lucide-react"
 import { useFormContext, useWatch } from "react-hook-form"
 
 import { OfferInput } from "@/schemas/Offer.schema"
+import { DEFAULT_SHELF_COUNT_BY_HEIGHT } from "@/schemas/ShelfDefaults"
 
 import { CountStepper } from "./CountStepper"
 import { OptionsFields } from "./OptionsFields"
@@ -50,6 +51,7 @@ export function ShelfUnitEditor({
     control,
     name: `${unitsPath}.shelfUnits.${unitIndex}`,
   })
+  const height = useWatch({ control, name: `layouts.${layoutIndex}.height` })
 
   if (!unit) return null
 
@@ -110,12 +112,11 @@ export function ShelfUnitEditor({
         </div>
       )}
       <ShelvesFields
-        layoutIndex={layoutIndex}
+        newShelfCount={DEFAULT_SHELF_COUNT_BY_HEIGHT[height] ?? 1}
         onSelectShelf={onSelectShelf}
         selectedShelfIndex={selectedShelfIndex}
         shelfDepthOptions={shelfDepths}
-        unitIndex={unitIndex}
-        unitsPath={unitsPath}
+        shelvesPath={`${unitsPath}.shelfUnits.${unitIndex}.shelves`}
       />
       <OptionsFields
         areGondolaSidesUnlinked={areGondolaSidesUnlinked}

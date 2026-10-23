@@ -7,12 +7,15 @@ import { EditorPanel, PanelTab } from "./editor/EditorPanel"
 import { OfferSettings } from "./OfferSettings"
 import { AddLayoutSlot } from "./plan/AddLayoutSlot"
 import { GondolaLayoutPlan } from "./plan/GondolaLayoutPlan"
+import { ImpulseLayoutPlan } from "./plan/ImpulseLayoutPlan"
 import { ItemSetPlan } from "./plan/ItemSetPlan"
 import { WallLayoutPlan } from "./plan/WallLayoutPlan"
 import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { createDefaultGondolaLayout } from "../helpers/createDefaultGondolaLayout"
+import { createDefaultImpulseLayout } from "../helpers/createDefaultImpulseLayout"
 import { createDefaultWallLayout } from "../helpers/createDefaultWallLayout"
 import { isGondolaLayout } from "../helpers/isGondolaLayout"
+import { isImpulseLayout } from "../helpers/isImpulseLayout"
 import { isItemSetLayout } from "../helpers/isItemSetLayout"
 import { useImportPdf } from "../hooks/useImportPdf"
 import { useInventoryDimensions } from "../hooks/useInventoryDimensions"
@@ -37,6 +40,7 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
   const dimensions = useInventoryDimensions()
   const defaultWallLayout = createDefaultWallLayout(dimensions)
   const defaultGondolaLayout = createDefaultGondolaLayout(dimensions)
+  const defaultImpulseLayout = createDefaultImpulseLayout(dimensions)
   const isDemo = useIsDemo()
   const importPdf = useImportPdf(append)
 
@@ -90,6 +94,16 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
           )
         }
 
+        if (layout && isImpulseLayout(layout)) {
+          return (
+            <ImpulseLayoutPlan
+              key={field.id}
+              {...planProps}
+              onSelectUnit={(unitIndex) => selectUnit(index, unitIndex)}
+            />
+          )
+        }
+
         return layout && isGondolaLayout(layout) ? (
           <GondolaLayoutPlan
             key={field.id}
@@ -113,6 +127,9 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
           isImportingPdf={importPdf.isPending}
           onAddGondola={
             defaultGondolaLayout && (() => append(defaultGondolaLayout))
+          }
+          onAddImpulse={
+            defaultImpulseLayout && (() => append(defaultImpulseLayout))
           }
           onAddItemSet={() => append({ items: [] })}
           onAddWall={defaultWallLayout && (() => append(defaultWallLayout))}

@@ -1,4 +1,10 @@
-import { FileUp, ListPlus, RectangleHorizontal, Rows2 } from "lucide-react"
+import {
+  Activity,
+  FileUp,
+  ListPlus,
+  RectangleHorizontal,
+  Rows2,
+} from "lucide-react"
 
 import { PdfImportHelp } from "./PdfImportHelp"
 
@@ -8,12 +14,14 @@ const optionClassName =
 export function AddLayoutSlot({
   isImportingPdf = false,
   onAddGondola,
+  onAddImpulse,
   onAddItemSet,
   onAddWall,
   onImportPdf,
 }: {
   isImportingPdf?: boolean
   onAddGondola: (() => void) | null
+  onAddImpulse: (() => void) | null
   onAddItemSet: () => void
   onAddWall: (() => void) | null
   onImportPdf: ((file: File) => void) | null
@@ -32,6 +40,12 @@ export function AddLayoutSlot({
       onAdd: onAddGondola,
     },
     {
+      Icon: Activity,
+      label: "Impuls",
+      name: "Dodaj impuls",
+      onAdd: onAddImpulse,
+    },
+    {
       Icon: ListPlus,
       label: "Zestaw elementów",
       name: "Dodaj zestaw elementów",
@@ -42,7 +56,7 @@ export function AddLayoutSlot({
   return (
     <div
       aria-label="Dodaj do planu"
-      className="flex w-132 flex-col rounded-sm border-[1.5px] border-dashed border-muted-foreground/70 bg-card/60"
+      className="flex w-164 flex-col rounded-sm border-[1.5px] border-dashed border-muted-foreground/70 bg-card/60"
       role="group"
     >
       <div className="flex divide-x-[1.5px] divide-dashed divide-input">

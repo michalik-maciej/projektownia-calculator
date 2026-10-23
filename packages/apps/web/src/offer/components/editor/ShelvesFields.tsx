@@ -1,47 +1,41 @@
 import { Plus } from "lucide-react"
-import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
+import { useFieldArray, useFormContext } from "react-hook-form"
 
 import { OfferInput } from "@/schemas/Offer.schema"
-import { DEFAULT_SHELF_COUNT_BY_HEIGHT } from "@/schemas/ShelfDefaults"
 
 import { CountStepper } from "./CountStepper"
 import { OptionStepper } from "./OptionStepper"
 import { SectionLabel } from "./SectionLabel"
 import { SectionNavigator } from "./SectionNavigator"
 import { Button } from "../../../core/ui/button"
-import { RunOptionsPath } from "../../offer.types"
+import { ShelvesPath } from "../../offer.types"
 
 export function ShelvesFields({
-  layoutIndex,
+  label = "Półki",
+  newShelfCount,
   onSelectShelf,
   selectedShelfIndex,
   shelfDepthOptions,
-  unitIndex,
-  unitsPath,
+  shelvesPath,
 }: {
-  layoutIndex: number
+  label?: string
+  newShelfCount: number
   onSelectShelf: (shelfIndex: number) => void
   selectedShelfIndex: number
   shelfDepthOptions: number[]
-  unitIndex: number
-  unitsPath: RunOptionsPath
+  shelvesPath: ShelvesPath
 }) {
   const { control } = useFormContext<OfferInput>()
-  const height = useWatch({ control, name: `layouts.${layoutIndex}.height` })
-  const shelves = useFieldArray({
-    control,
-    name: `${unitsPath}.shelfUnits.${unitIndex}.shelves`,
-  })
+  const shelves = useFieldArray({ control, name: shelvesPath })
 
   const shelfCount = shelves.fields.length
   const shelfIndex = Math.min(selectedShelfIndex, Math.max(shelfCount - 1, 0))
-  const shelfPath =
-    `${unitsPath}.shelfUnits.${unitIndex}.shelves.${shelfIndex}` as const
+  const shelfPath = `${shelvesPath}.${shelfIndex}` as const
 
   const handleAppend = () => {
     shelves.append({
       depth: shelfDepthOptions[0] ?? 0,
-      numberOfShelves: DEFAULT_SHELF_COUNT_BY_HEIGHT[height] ?? 1,
+      numberOfShelves: newShelfCount,
     })
     onSelectShelf(shelfCount)
   }
@@ -56,7 +50,7 @@ export function ShelvesFields({
   return (
     <div className="flex flex-col gap-2 rounded-lg border bg-background p-4">
       <div className="flex items-center justify-between gap-2">
-        <SectionLabel>Półki</SectionLabel>
+        <SectionLabel>{label}</SectionLabel>
         {shelfCount > 0 && (
           <SectionNavigator
             count={shelfCount}
