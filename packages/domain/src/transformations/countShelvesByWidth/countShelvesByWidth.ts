@@ -1,11 +1,13 @@
 import { compact, sumBy } from "lodash/fp"
 
 import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
+import { isLayoutImpulse } from "@/schemas/LayoutImpulse.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 import { OfferInput } from "@/schemas/Offer.schema"
 
 import { END_CAP_RUN_COUNT } from "../../models/endCap"
 import { ShelfUnit } from "../../models/shelfUnit"
+import { listImpulseSideShelfUnits } from "../listImpulseSideShelfUnits/listImpulseSideShelfUnits"
 
 const BASE_SHELVES_PER_UNIT = 1
 
@@ -34,6 +36,13 @@ function listShelfRuns(layout: OfferInput["layouts"][number]): ShelfRun[] {
         shelfUnits,
       })),
     ]
+  }
+
+  if (isLayoutImpulse(layout)) {
+    return listImpulseSideShelfUnits(layout.bays).map((shelfUnits) => ({
+      numberOfRuns: layout.numberOfLayouts,
+      shelfUnits,
+    }))
   }
 
   return []

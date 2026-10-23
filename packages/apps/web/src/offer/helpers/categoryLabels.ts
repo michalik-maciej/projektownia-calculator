@@ -3,6 +3,7 @@ import type { ComponentCategory } from "@/schemas/inventory/Component.schema"
 export const CATEGORY_LABELS: Record<ComponentCategory, string> = {
   back: "Plecy",
   baseCover: "Osłony dolne",
+  bentSupport: "Wsporniki gięte",
   foot: "Stopy",
   leg: "Nogi",
   misc: "Inne",
@@ -16,6 +17,7 @@ export const CATEGORY_LABELS: Record<ComponentCategory, string> = {
 export const CATEGORY_LABELS_GENITIVE: Record<string, string> = {
   back: "pleców",
   baseCover: "osłony dolnej",
+  bentSupport: "wspornika giętego",
   foot: "stopy",
   leg: "nogi",
   misc: "elementu",

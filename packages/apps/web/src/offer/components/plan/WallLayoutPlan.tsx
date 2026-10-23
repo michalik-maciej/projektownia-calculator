@@ -9,6 +9,7 @@ import { ShelvesSummary } from "./ShelvesSummary"
 import { formatLayoutCode } from "../../helpers/formatLayoutCode"
 import { getLayoutName } from "../../helpers/getLayoutName"
 import { isGondolaLayout } from "../../helpers/isGondolaLayout"
+import { isImpulseLayout } from "../../helpers/isImpulseLayout"
 import { isItemSetLayout } from "../../helpers/isItemSetLayout"
 import { BreakdownList } from "../BreakdownList"
 import { EditorPanel, PanelTab } from "../editor/EditorPanel"
@@ -66,7 +67,12 @@ export function WallLayoutPlan({
     onSelectUnit(wasLast ? unitIndex - 1 : unitIndex)
   }
 
-  if (!layout || isGondolaLayout(layout) || isItemSetLayout(layout)) {
+  if (
+    !layout ||
+    isGondolaLayout(layout) ||
+    isImpulseLayout(layout) ||
+    isItemSetLayout(layout)
+  ) {
     return null
   }
 

@@ -1,11 +1,16 @@
 import { compact, uniq } from "lodash/fp"
 
 import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
+import {
+  IMPULSE_FRONT_DEPTH,
+  isLayoutImpulse,
+} from "@/schemas/LayoutImpulse.schema"
 import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 
 import { Component } from "../../models/component"
 import { ShelfUnit } from "../../models/shelfUnit"
+import { countShelfUnitsByWidth } from "../countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { describeComponent } from "../describeComponent/describeComponent"
 import { describeFirstShelf } from "../describeFirstShelf/describeFirstShelf"
 
@@ -58,6 +63,21 @@ export function buildLayoutDescription(
       ...(firstEndCap && firstEndCap === secondEndCap
         ? [`2× ${firstEndCap}`]
         : endCaps),
+    ]).join(SEPARATOR)
+  }
+
+  if (isLayoutImpulse(layout)) {
+    const { backDepth, bays } = layout
+    const heights = uniq(bays.map(({ height }) => height))
+    const bayWidths = countShelfUnitsByWidth(
+      bays.map(({ width }) => ({ numberOfShelfUnits: 1, width })),
+      1,
+    )
+
+    return compact([
+      `H${heights.join("/")}`,
+      `B${backDepth}/${IMPULSE_FRONT_DEPTH}`,
+      describeUnitWidths(bayWidths),
     ]).join(SEPARATOR)
   }
 

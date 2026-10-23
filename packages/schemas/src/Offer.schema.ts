@@ -2,6 +2,7 @@ import * as v from "valibot"
 
 import { ComponentCategorySchema } from "./inventory/Component.schema"
 import { LayoutGondolaValue } from "./LayoutGondola.schema"
+import { LayoutImpulseValue } from "./LayoutImpulse.schema"
 import { LayoutItemSetValue } from "./LayoutItemSet.schema"
 import { LayoutWallValue } from "./LayoutWall.schema"
 import { MissingComponentSchema } from "./OfferError.schema"
@@ -26,7 +27,12 @@ export const OfferInputSchema = v.object({
   discountPercentage: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
   hasPriceStrips: v.optional(v.boolean(), true),
   layouts: v.array(
-    v.union([LayoutGondolaValue, LayoutWallValue, LayoutItemSetValue]),
+    v.union([
+      LayoutGondolaValue,
+      LayoutWallValue,
+      LayoutImpulseValue,
+      LayoutItemSetValue,
+    ]),
   ),
   metalColor: v.optional(v.picklist(METAL_COLORS)),
   priceStripColor: v.optional(v.picklist(PRICE_STRIP_COLORS)),

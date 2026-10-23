@@ -1,4 +1,5 @@
 import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
+import { isLayoutImpulse } from "@/schemas/LayoutImpulse.schema"
 import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
 import { isExcludedFromOffer, isLayoutWall } from "@/schemas/LayoutWall.schema"
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
@@ -6,6 +7,7 @@ import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculateBomPrice"
 import { Component, ComponentDemand } from "../../models/component"
 import { calculateGondolaLayoutDemand } from "../../orchestrations/calculateGondolaLayoutDemand/calculateGondolaLayoutDemand"
+import { calculateImpulseLayoutDemand } from "../../orchestrations/calculateImpulseLayoutDemand/calculateImpulseLayoutDemand"
 import { calculateWallLayoutDemand } from "../../orchestrations/calculateWallLayoutDemand/calculateWallLayoutDemand"
 import { breakdownDemandByCategory } from "../../transformations/breakdownDemandByCategory/breakdownDemandByCategory"
 import { buildItemSetLines } from "../buildItemSetLines/buildItemSetLines"
@@ -26,6 +28,9 @@ export const mapLayoutsToOfferOutput = (
         break
       case isLayoutGondola(layout):
         bom = calculateGondolaLayoutDemand(layout, inventory)
+        break
+      case isLayoutImpulse(layout):
+        bom = calculateImpulseLayoutDemand(layout, inventory)
         break
       case isLayoutItemSet(layout):
         bom = layout.items

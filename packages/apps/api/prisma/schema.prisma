@@ -43,6 +43,7 @@ model Component {
 enum ComponentCategory {
   back
   baseCover
+  bentSupport
   foot
   leg
   misc

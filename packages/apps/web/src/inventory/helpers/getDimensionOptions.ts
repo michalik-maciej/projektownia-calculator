@@ -20,6 +20,7 @@ export function getDimensionOptions({ dimension, inventoryItems }: Params) {
   const optionsByCategory: Record<ComponentCategory, number[]> = {
     back: [],
     baseCover: [],
+    bentSupport: [],
     foot: [],
     leg: [],
     misc: [],

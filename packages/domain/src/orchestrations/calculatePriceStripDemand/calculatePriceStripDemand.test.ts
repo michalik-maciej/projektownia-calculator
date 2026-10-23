@@ -29,4 +29,28 @@ describe("calculatePriceStripDemand", () => {
       { id: "price-strip-125", quantity: 2 },
     ])
   })
+
+  it("counts the base shelves and hanging shelves of both impulse sides", () => {
+    const result = calculatePriceStripDemand(
+      [
+        {
+          backDepth: 47,
+          backVariant: 2,
+          baseCoverVariant: 1,
+          bays: [
+            {
+              backShelves: [{ depth: 47, numberOfShelves: 1 }],
+              frontShelves: 2,
+              height: 90,
+              width: 80,
+            },
+          ],
+          numberOfLayouts: 1,
+        },
+      ],
+      componentCatalogMock,
+    )
+
+    expect(result).toEqual([{ id: "price-strip-80", quantity: 5 }])
+  })
 })
