@@ -1,6 +1,6 @@
 import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
 import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
-import { isLayoutWall } from "@/schemas/LayoutWall.schema"
+import { isExcludedFromOffer, isLayoutWall } from "@/schemas/LayoutWall.schema"
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculateBomPrice"
@@ -19,6 +19,8 @@ export const mapLayoutsToOfferOutput = (
     let bom: ComponentDemand = []
 
     switch (true) {
+      case isExcludedFromOffer(layout):
+        break
       case isLayoutWall(layout):
         bom = calculateWallLayoutDemand(layout, inventory)
         break

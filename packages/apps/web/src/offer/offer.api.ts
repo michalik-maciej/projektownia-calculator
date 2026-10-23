@@ -8,6 +8,7 @@ import {
   OfferUpdate,
   SavedOfferSchema,
 } from "@/schemas/Offer.schema"
+import { PdfImportOutputSchema } from "@/schemas/PdfImport.schema"
 
 import {
   apiType,
@@ -24,6 +25,12 @@ if (!apiUrl) {
 }
 
 export const offerApi = {
+  importPdf: createApiMethod({
+    method: "POST",
+    path: `${apiUrl}/pdf-imports`,
+    response: PdfImportOutputSchema,
+    data: apiType<File>(),
+  }),
   list: createApiMethod({
     method: "GET",
     path: `${apiUrl}/offers`,

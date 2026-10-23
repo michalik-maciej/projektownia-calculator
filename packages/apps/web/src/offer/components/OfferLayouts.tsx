@@ -9,10 +9,12 @@ import { AddLayoutSlot } from "./plan/AddLayoutSlot"
 import { GondolaLayoutPlan } from "./plan/GondolaLayoutPlan"
 import { ItemSetPlan } from "./plan/ItemSetPlan"
 import { WallLayoutPlan } from "./plan/WallLayoutPlan"
+import { useIsDemo } from "../../user/hooks/useIsDemo"
 import { createDefaultGondolaLayout } from "../helpers/createDefaultGondolaLayout"
 import { createDefaultWallLayout } from "../helpers/createDefaultWallLayout"
 import { isGondolaLayout } from "../helpers/isGondolaLayout"
 import { isItemSetLayout } from "../helpers/isItemSetLayout"
+import { useImportPdf } from "../hooks/useImportPdf"
 import { useInventoryDimensions } from "../hooks/useInventoryDimensions"
 import { LayoutPart } from "../offer.types"
 
@@ -35,6 +37,8 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
   const dimensions = useInventoryDimensions()
   const defaultWallLayout = createDefaultWallLayout(dimensions)
   const defaultGondolaLayout = createDefaultGondolaLayout(dimensions)
+  const isDemo = useIsDemo()
+  const importPdf = useImportPdf(append)
 
   const selectUnit = (
     layoutIndex: number,
@@ -106,11 +110,13 @@ export function OfferLayouts({ output }: { output: OfferOutput | undefined }) {
 
       <div className="flex flex-col gap-3">
         <AddLayoutSlot
+          isImportingPdf={importPdf.isPending}
           onAddGondola={
             defaultGondolaLayout && (() => append(defaultGondolaLayout))
           }
           onAddItemSet={() => append({ items: [] })}
           onAddWall={defaultWallLayout && (() => append(defaultWallLayout))}
+          onImportPdf={isDemo ? null : importPdf.mutate}
         />
         <OfferSettings />
       </div>

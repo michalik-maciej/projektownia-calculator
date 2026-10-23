@@ -133,6 +133,10 @@ function withQuery(url: string, query: QueryParams) {
   return urlObj.toString()
 }
 
+function toJsonBody(data: unknown) {
+  return data === undefined ? undefined : JSON.stringify(data)
+}
+
 export function createApiMethod<
   TPath extends string,
   TData = undefined,
@@ -146,10 +150,12 @@ export function createApiMethod<
   return async (
     input: Input<TPath, TData, TQuery> = {} as Input<TPath, TData, TQuery>,
   ): Promise<TOutput> => {
-    const body =
+    const data =
       input && typeof input === "object" && "data" in input
-        ? JSON.stringify((input as { data: unknown }).data)
+        ? (input as { data: unknown }).data
         : undefined
+    const isFile = data instanceof Blob
+    const body = isFile ? data : toJsonBody(data)
 
     const pathParams =
       input && typeof input === "object" && "params" in input
@@ -171,7 +177,7 @@ export function createApiMethod<
       method: contract.method,
       credentials: "include",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": isFile ? data.type : "application/json",
         Accept: "application/json",
       },
       body,

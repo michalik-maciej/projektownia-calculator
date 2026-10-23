@@ -16,6 +16,7 @@ import { createAuthRouter } from "./routes/auth.routes"
 import healthRoutes from "./routes/health.routes"
 import { createInventoryRouter } from "./routes/inventory.routes"
 import { createOffersRouter } from "./routes/offers.routes"
+import { createPdfImportsRouter } from "./routes/pdfImports.routes"
 import { createUsersRouter } from "./routes/users.routes"
 
 type AppDependencies = {
@@ -56,6 +57,7 @@ export function createApp({
   app.use("/api/auth", createAuthRouter({ offers, users }))
   app.use("/api/inventory", createInventoryRouter({ components, getInventory }))
   app.use("/api/offers", createOffersRouter({ getInventory, offers }))
+  app.use("/api/pdf-imports", createPdfImportsRouter())
   app.use("/api/users", createUsersRouter({ users }))
 
   return app

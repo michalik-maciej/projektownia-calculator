@@ -67,4 +67,38 @@ describe("createOfferPreview", () => {
 
     expect(response).toEqual(expectedResult)
   })
+
+  it("leaves runs excluded from the offer out of the price, keeping their place in the list", () => {
+    const wall = {
+      height: 180,
+      depth: 47,
+      numberOfLayouts: 1,
+      shelfUnits: [{ width: 100, numberOfShelfUnits: 1, shelves: [] }],
+    }
+    const offer = {
+      discountPercentage: 10,
+      hasPriceStrips: true,
+      title: "Test Offer",
+    }
+    const offeredOnly = createOfferPreview(
+      { ...offer, layouts: [wall] },
+      componentCatalogMock,
+    )
+
+    const response = createOfferPreview(
+      {
+        ...offer,
+        layouts: [{ ...wall, isExcludedFromOffer: true }, wall],
+      },
+      componentCatalogMock,
+    )
+
+    expect(response).toEqual({
+      ...offeredOnly,
+      layouts: [
+        { basePrice: 0, breakdown: {}, description: "H180 · B47 · 1×100" },
+        ...offeredOnly.layouts,
+      ],
+    })
+  })
 })

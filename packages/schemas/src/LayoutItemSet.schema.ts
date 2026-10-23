@@ -1,5 +1,7 @@
 import * as v from "valibot"
 
+import { OfferInclusionEntries } from "./LayoutWall.schema"
+
 export const LayoutItemSetValue = v.object({
   items: v.array(
     v.object({
@@ -7,6 +9,7 @@ export const LayoutItemSetValue = v.object({
       quantity: v.pipe(v.number(), v.minValue(1)),
     }),
   ),
+  ...OfferInclusionEntries,
 })
 
 export type LayoutItemSet = v.InferOutput<typeof LayoutItemSetValue>

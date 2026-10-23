@@ -1,11 +1,14 @@
 import { Copy, Trash2 } from "lucide-react"
-import { useFormContext, useWatch } from "react-hook-form"
+import { useId } from "react"
+import { Controller, useFormContext, useWatch } from "react-hook-form"
 
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
+import { Badge } from "../../../core/ui/badge"
 import { Button } from "../../../core/ui/button"
 import { Input } from "../../../core/ui/input"
 import { Label } from "../../../core/ui/label"
+import { Switch } from "../../../core/ui/switch"
 import { textFigure, textName } from "../../../core/ui/typography"
 import { formatLayoutCode } from "../../helpers/formatLayoutCode"
 import { getLayoutName } from "../../helpers/getLayoutName"
@@ -27,6 +30,7 @@ export function LayoutPlanHeader({
   preview: OfferOutput["layouts"][number] | undefined
 }) {
   const { control, register } = useFormContext<OfferInput>()
+  const inOfferId = useId()
   const layout = useWatch({ control, name: `layouts.${layoutIndex}` })
 
   if (!layout) return null
@@ -42,10 +46,32 @@ export function LayoutPlanHeader({
         <p className="font-mono text-xs text-muted-foreground">
           {preview?.description ?? "liczenie…"}
         </p>
+        {layout.drawingRunNumber !== undefined && (
+          <Badge variant="outline">PDF ({layout.drawingRunNumber})</Badge>
+        )}
       </div>
       <div className="flex items-center gap-3">
+        <Label
+          className="cursor-pointer text-sm text-muted-foreground"
+          htmlFor={inOfferId}
+        >
+          Wliczaj do oferty
+        </Label>
+        <Controller
+          control={control}
+          name={`layouts.${layoutIndex}.isExcludedFromOffer`}
+          render={({ field }) => (
+            <Switch
+              checked={!field.value}
+              id={inOfferId}
+              onBlur={field.onBlur}
+              onCheckedChange={(isInOffer) => field.onChange(!isInOffer)}
+            />
+          )}
+        />
         {hasLayoutCount && (
           <>
+            <ActionDivider />
             <Label className="text-sm text-muted-foreground">
               Liczba ciągów
             </Label>
@@ -59,6 +85,7 @@ export function LayoutPlanHeader({
             />
           </>
         )}
+        <ActionDivider />
         <Button
           aria-label="Powiel ciąg"
           onClick={onDuplicate}
@@ -81,4 +108,8 @@ export function LayoutPlanHeader({
       </div>
     </header>
   )
+}
+
+function ActionDivider() {
+  return <div aria-hidden className="h-1 w-1 bg-foreground/80" />
 }

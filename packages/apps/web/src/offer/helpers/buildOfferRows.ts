@@ -1,3 +1,4 @@
+import { isExcludedFromOffer } from "@/schemas/LayoutWall.schema"
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { formatLayoutCode } from "./formatLayoutCode"
@@ -24,8 +25,10 @@ export function buildOfferRows({
   layouts: OfferInput["layouts"]
   priceStrips: OfferOutput["priceStrips"] | undefined
 }): OfferRow[] {
-  const layoutRows = keys.flatMap((key, index) => {
+  const layoutRows = keys.flatMap((key, index): OfferRow[] => {
     const layout = layouts[index]
+    if (layout && isExcludedFromOffer(layout)) return []
+
     const layoutOutput = layoutOutputs?.[index]
     const code = layout ? formatLayoutCode(index, layout) : null
     const name = layout ? getLayoutName(layout) : null

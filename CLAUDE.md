@@ -83,6 +83,9 @@ whenever an offer is created, read or updated, since pricing is not stored.
 - `DELETE /api/offers/:id`: Delete offer
 - `GET /api/offers/:id/shares`: Users an offer is shared with (ADMIN only)
 - `PUT /api/offers/:id/shares`: Replace the list of users an offer is shared with (ADMIN only)
+- `POST /api/pdf-imports`: Read wall runs and gondolas off an uploaded PDF drawing (body
+  `application/pdf`, up to 5 MB; not for DEMO), returned left out of the offer; see
+  `docs/pdf-import.md`
 - `POST /api/auth/register`: Create a user account (ADMIN only; this is how the user management
   dialog adds accounts, there is no public sign-up)
 - `GET /api/users`: List accounts (ADMIN only; excludes role DEMO)

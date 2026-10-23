@@ -7,4 +7,5 @@ tsconfig.tsbuildinfo
 coverage
 .playwright-mcp
 test-results
+examples
 playwright-report

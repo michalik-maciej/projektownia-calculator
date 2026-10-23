@@ -12,6 +12,14 @@ export const ExtrasValue = v.optional(
   ),
 )
 
+export const OfferInclusionEntries = {
+  drawingRunNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0))),
+  isExcludedFromOffer: v.optional(v.boolean()),
+}
+
+export const isExcludedFromOffer = (layout: object) =>
+  "isExcludedFromOffer" in layout && layout.isExcludedFromOffer === true
+
 export const LayoutWallValue = v.object({
   depth: v.number(),
   height: v.number(),
@@ -32,6 +40,7 @@ export const LayoutWallValue = v.object({
   hasBaseCover: v.optional(v.boolean()),
   hasTopCover: v.optional(v.boolean()),
   extras: ExtrasValue,
+  ...OfferInclusionEntries,
 })
 
 export type LayoutWall = v.InferOutput<typeof LayoutWallValue>

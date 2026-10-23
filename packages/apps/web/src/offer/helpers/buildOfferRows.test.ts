@@ -89,6 +89,26 @@ describe("buildOfferRows", () => {
     ])
   })
 
+  it("leaves runs excluded from the offer out of the rows", () => {
+    const rows = buildOfferRows({
+      keys: ["excluded", "wall"],
+      layoutOutputs: undefined,
+      layouts: [{ ...wallLayout, isExcludedFromOffer: true }, wallLayout],
+      priceStrips: null,
+    })
+
+    expect(rows).toEqual([
+      {
+        basePrice: null,
+        code: "P-02",
+        description: null,
+        key: "wall",
+        name: "Ciąg przyścienny",
+        quantity: 3,
+      },
+    ])
+  })
+
   it("lists all price strips as one row, in running metres, after the runs", () => {
     const rows = buildOfferRows({
       keys: ["wall"],

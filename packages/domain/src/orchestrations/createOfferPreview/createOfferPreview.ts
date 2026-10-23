@@ -1,3 +1,4 @@
+import { isExcludedFromOffer } from "@/schemas/LayoutWall.schema"
 import type { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
 import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculateBomPrice"
@@ -12,10 +13,16 @@ export function createOfferPreview(
   { discountPercentage, hasPriceStrips, layouts, title }: OfferInput,
   inventory: Component[],
 ): OfferOutput {
+  const offeredLayouts = layouts.filter(
+    (layout) => !isExcludedFromOffer(layout),
+  )
   const priceStripDemand = hasPriceStrips
-    ? calculatePriceStripDemand(layouts, inventory)
+    ? calculatePriceStripDemand(offeredLayouts, inventory)
     : []
-  const bom = [...calculateOfferDemand(layouts, inventory), ...priceStripDemand]
+  const bom = [
+    ...calculateOfferDemand(offeredLayouts, inventory),
+    ...priceStripDemand,
+  ]
 
   return {
     breakdown: breakdownDemandByCategory(bom, inventory),

@@ -1,6 +1,10 @@
 import * as v from "valibot"
 
-import { BACK_VARIANTS, ExtrasValue } from "./LayoutWall.schema"
+import {
+  BACK_VARIANTS,
+  ExtrasValue,
+  OfferInclusionEntries,
+} from "./LayoutWall.schema"
 
 const ShelfUnitValue = v.object({
   numberOfShelfUnits: v.pipe(v.number(), v.minValue(0)),
@@ -30,6 +34,7 @@ const CurrentLayoutGondolaValue = v.object({
   leftEndCap: v.optional(GondolaSideValue),
   rightEndCap: v.optional(GondolaSideValue),
   extras: ExtrasValue,
+  ...OfferInclusionEntries,
 })
 
 export type LayoutGondola = v.InferOutput<typeof CurrentLayoutGondolaValue>

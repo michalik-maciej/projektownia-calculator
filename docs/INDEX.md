@@ -167,6 +167,11 @@ One concern per step, problems reported rather than quietly fixed, verification 
 
 The backlog both reviews write to: one row per finding with its source and status, rejected findings kept with their reason, and each fix landing as its own commit that updates the row.
 
+### PDF Import
+
+- `docs/pdf-import.md`: reading wall runs and gondolas off a PDF drawing from its vector content: the drawing convention, what the sample exports contain, the geometric rule, requests to the designer, the alternatives considered, and how the import works in the API and the editor (endpoint, access, the "W ofercie" switch).
+- `docs/pdf-drawing-convention.md`: the PDF drawing convention the run import reads, written in Polish for the shop designer: export, run lines and numbers, unit labels, gondolas and end caps, and the cases the import skips.
+
 ---
 
 ## How to Use This Documentation
