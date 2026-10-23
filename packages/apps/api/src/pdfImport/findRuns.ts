@@ -9,16 +9,28 @@ import {
   minBy,
   partition,
   sortBy,
+  sumBy,
   uniqBy,
   uniqWith,
+  zip,
 } from "lodash/fp"
 
 import { GondolaSide, LayoutGondola } from "@/schemas/LayoutGondola.schema"
+import {
+  IMPULSE_BACK_DEPTHS,
+  IMPULSE_HIGH_HEIGHT,
+  IMPULSE_LOW_HEIGHT,
+  ImpulseBay,
+  LayoutImpulse,
+} from "@/schemas/LayoutImpulse.schema"
 import { DEFAULT_BACK_VARIANT, LayoutWall } from "@/schemas/LayoutWall.schema"
 
 import { Drawing, DrawingSegment, DrawingText, Point } from "./readDrawing"
 
-export type Run = { layout: LayoutGondola | LayoutWall; number: number }
+export type Run = {
+  layout: LayoutGondola | LayoutImpulse | LayoutWall
+  number: number
+}
 
 type Shaft = {
   angle: number
@@ -38,13 +50,23 @@ type EndCaps = { left: UnitLabel[]; right: UnitLabel[] }
 
 type Shelf = LayoutWall["shelfUnits"][number]["shelves"][number]
 
-type UnitLabel = {
+type PlacedLabel = {
   angle: number
+  position: Point
+  textHeight: number
+}
+
+type UnitLabel = PlacedLabel & {
   depth: number
   height: number
-  position: Point
   shelves: Shelf[]
-  textHeight: number
+  width: number
+}
+
+type ImpulseLabel = PlacedLabel & {
+  depth: number
+  height?: ImpulseBay["height"]
+  shelves: Shelf[]
   width: number
 }
 
@@ -67,13 +89,20 @@ const LAYOUTS_PER_RUN = 1
 const RUN_NUMBER = /^\((\d+)\)$/
 const UNIT_DIMENSIONS = /^(\d+)\/(\d+)\/(\d+)$/
 const UNIT_SHELVES = /^(\d+)x(\d+)(?:\s*\+\s*PERF)?$/
+const IMPULSE_UNIT = /^(?:h-(\d+)\s+)?(\d+)\/(\d+)(?:\/(\d+)x(\d+))?$/
+const IMPULSE_HEIGHT_NOTE = /^h-(\d+)$/
+const IMPULSE_HEIGHTS = [IMPULSE_LOW_HEIGHT, IMPULSE_HIGH_HEIGHT] as const
+const IMPULSE_BACK_ROW_IN_TEXT_HEIGHTS = 5
+const IMPULSE_BACK_VARIANT = 2
+const IMPULSE_BASE_COVER_VARIANT = 1
 
 export function findRuns({ segments, texts }: Drawing): Run[] {
   const labels = findUnitLabels(texts)
+  const impulseLabels = findImpulseLabels(texts)
   const sidedShafts = map(
     (numbered: NumberedShaft) => ({
       ...numbered,
-      side: labelSideOf(numbered.shaft, labels),
+      side: labelSideOf(numbered.shaft, [...labels, ...impulseLabels]),
     }),
     findNumberedShafts(texts, findShafts(segments)),
   )
@@ -100,13 +129,101 @@ export function findRuns({ segments, texts }: Drawing): Run[] {
     filter(({ rows }) => rows.length === GONDOLA_ROWS, labelledRuns),
   )
   const wallRuns = filter(({ rows }) => rows.length === 1, labelledRuns)
+  const impulseRuns = flatMap((sided: SidedShaft) => {
+    const front = filter(
+      (label) =>
+        label.height !== undefined &&
+        findShaftOfLabel(label, sidedShafts) === sided.shaft,
+      impulseLabels,
+    )
+    return toImpulseRun(
+      sided,
+      front,
+      findImpulseBackRow(sided, front, impulseLabels),
+    )
+  }, sidedShafts)
 
   return mergeIdenticalRuns(
     sortBy("number", [
       ...flatMap(toGondolaRun, gondolas),
       ...flatMap(toWallRun, wallRuns),
+      ...impulseRuns,
     ]),
   )
+}
+
+function findImpulseBackRow(
+  { shaft, side }: SidedShaft,
+  front: ImpulseLabel[],
+  labels: ImpulseLabel[],
+) {
+  const frontDistance = Math.max(
+    ...front.map(({ position }) => distanceToShaft(position, shaft)),
+  )
+
+  return filter((label: ImpulseLabel) => {
+    const distance = distanceToShaft(label.position, shaft)
+    return (
+      label.height === undefined &&
+      isParallel(label.angle, shaft.angle) &&
+      Math.sign(offsetFromShaft(label.position, shaft)) === side &&
+      distance > frontDistance &&
+      distance <=
+        frontDistance + label.textHeight * IMPULSE_BACK_ROW_IN_TEXT_HEIGHTS
+    )
+  }, labels)
+}
+
+function toImpulseRun(
+  { number, numberText }: SidedShaft,
+  front: ImpulseLabel[],
+  back: ImpulseLabel[],
+): Run[] {
+  const byPosition = sortBy(({ position }: ImpulseLabel) =>
+    readingPosition(position, numberText),
+  )
+  const bays = zip(byPosition(front), byPosition(back))
+  const backDepth = IMPULSE_BACK_DEPTHS.find(
+    (depth) => depth === back[0]?.depth,
+  )
+  const isImpulseRun =
+    front.length > 0 &&
+    front.length === back.length &&
+    backDepth !== undefined &&
+    every(
+      ([frontLabel, backLabel]) =>
+        frontLabel?.width === backLabel?.width &&
+        backLabel?.depth === backDepth,
+      bays,
+    )
+
+  if (!isImpulseRun) return []
+
+  return [
+    {
+      layout: {
+        backDepth,
+        backVariant: IMPULSE_BACK_VARIANT,
+        baseCoverVariant: IMPULSE_BASE_COVER_VARIANT,
+        bays: flatMap(
+          ([frontLabel, backLabel]) =>
+            frontLabel?.height && backLabel
+              ? [
+                  {
+                    backShelves: backLabel.shelves,
+                    frontShelves: sumBy("numberOfShelves", frontLabel.shelves),
+                    height: frontLabel.height,
+                    width: frontLabel.width,
+                  },
+                ]
+              : [],
+          bays,
+        ),
+        numberOfLayouts: LAYOUTS_PER_RUN,
+      },
+      number,
+    },
+  ]
 }
 
 function mergeIdenticalRuns(runs: Run[]): Run[] {
@@ -271,6 +388,37 @@ function findUnitLabels(texts: DrawingText[]): UnitLabel[] {
   }, texts)
 }
 
+function findImpulseLabels(texts: DrawingText[]): ImpulseLabel[] {
+  return flatMap((text) => {
+    const unit = IMPULSE_UNIT.exec(text.text)
+    if (!unit) return []
+
+    const heightNote =
+      unit[1] ??
+      findOtherLabelLines(text, texts)
+        .map((line) => IMPULSE_HEIGHT_NOTE.exec(line.text)?.[1])
+        .find(Boolean)
+    const height = IMPULSE_HEIGHTS.find(
+      (impulseHeight) => impulseHeight === Number(heightNote),
+    )
+    if (heightNote && !height) return []
+
+    return [
+      {
+        angle: text.angle,
+        depth: Number(unit[3]),
+        height,
+        position: { x: text.x, y: text.y },
+        shelves: unit[4]
+          ? [{ depth: Number(unit[5]), numberOfShelves: Number(unit[4]) }]
+          : [],
+        textHeight: text.height,
+        width: Number(unit[2]),
+      },
+    ]
+  }, texts)
+}
+
 function findOtherLabelLines(label: DrawingText, texts: DrawingText[]) {
   const reach = label.height * LABEL_REACH_IN_TEXT_HEIGHTS
   return filter(
@@ -284,9 +432,9 @@ function findOtherLabelLines(label: DrawingText, texts: DrawingText[]) {
   )
 }
 
-function labelSideOf(shaft: Shaft, labels: UnitLabel[]) {
+function labelSideOf(shaft: Shaft, labels: PlacedLabel[]) {
   const inReach = filter(
-    (label: UnitLabel) =>
+    (label: PlacedLabel) =>
       isParallel(label.angle, shaft.angle) &&
       distanceToShaft(label.position, shaft) <= labelReach(label),
     labels,
@@ -298,7 +446,7 @@ function labelSideOf(shaft: Shaft, labels: UnitLabel[]) {
   return nearest ? Math.sign(offsetFromShaft(nearest.position, shaft)) : 0
 }
 
-function findShaftOfLabel(label: UnitLabel, sidedShafts: SidedShaft[]) {
+function findShaftOfLabel(label: PlacedLabel, sidedShafts: SidedShaft[]) {
   const shaftsFacingLabel = filter(
     ({ shaft, side }: SidedShaft) =>
       isParallel(shaft.angle, label.angle) &&
@@ -312,7 +460,7 @@ function findShaftOfLabel(label: UnitLabel, sidedShafts: SidedShaft[]) {
   )
 }
 
-function labelReach({ textHeight }: UnitLabel) {
+function labelReach({ textHeight }: PlacedLabel) {
   return textHeight * LABEL_DISTANCE_IN_TEXT_HEIGHTS
 }
 

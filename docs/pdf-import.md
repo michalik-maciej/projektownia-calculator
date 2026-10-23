@@ -10,8 +10,8 @@ A designer marks shelf runs on a PDF floor plan. Today those runs are retyped by
 editor. The proof of technology answers one question: can the runs be read off the drawing's own
 vector content (text and lines) deterministically, without a model and without OCR?
 
-It started with wall runs only and now covers gondolas with their end caps, still under one
-convention and without edge cases.
+It started with wall runs only and now covers gondolas with their end caps and impulse runs, still
+under one convention and without edge cases.
 
 ## Drawing convention
 
@@ -30,6 +30,13 @@ convention and without edge cases.
 - An end cap is part of its gondola: the gondola's line runs on past the sides and covers both end
   caps, whose labels lie across the line near its ends. An end cap has no line or number of its
   own.
+- An impulse run has one line and one number for all its bays, and two rows of labels on one side
+  of the line, in the format `W/D/shelves` instead of `W/D/H`:
+  - customer side: `h-90 66/30/2x30`, or `h-130` on its own line above `66/30/5x30`; the `h-` note
+    sets the height (90 or 130), and words such as `impuls niski` are ignored, since they may be in
+    another language,
+  - seller side: `66/47/1x47`, or `66/47` for a bay without shelves at the back, without an `h-`
+    note; a word such as `lada` above it is ignored.
 - Older drawings marked each end cap as a separate short run with its own number, beyond the end
   of the gondola's line. That marking is no longer read: such end caps come out as wall runs and
   their gondolas without end caps.
@@ -64,6 +71,20 @@ Mapping onto `LayoutGondolaValue` (`packages/schemas/src/LayoutGondola.schema.ts
 - a gondola with one end cap or none is valid; the missing end cap stays `undefined`,
 - identical gondolas with the same number come out as one entry whose `numberOfLayouts` counts
   them, as for wall runs. Runs that share a number but differ stay separate entries.
+
+Mapping onto `LayoutImpulseValue` (`packages/schemas/src/LayoutImpulse.schema.ts`):
+
+- a run is an impulse when it has `W/D/shelves` labels with an `h-90` or `h-130` note; they are the
+  customer side, and the `W/D` labels without a note behind them, farther from the line, are the
+  seller side. A label with any other `h-` value is dropped, which leaves its run unmatched,
+- bays follow the number's reading direction, and each customer label is paired with the seller
+  label in the same position,
+- `backDepth` is the seller side's depth (47 or 37), the customer side's shelf count becomes
+  `frontShelves` and the seller side's shelves `backShelves`,
+- back panels on both sides and the front base cover are assumed (`backVariant: 2`,
+  `baseCoverVariant: 1`),
+- a run is skipped when its sides have different numbers of bays, a bay's two labels differ in
+  width, or the seller side's depth is not one depth of 47 or 37.
 
 ## What the sample PDFs contain
 
@@ -123,7 +144,10 @@ Distances in "text heights" are multiples of the height of the label being place
    form the left end cap, the rest the right one.
 9. **Skip** a wall run whose units differ in depth or height, a gondola side whose units differ in
    depth, and a gondola whose units and end caps differ in height (its end caps go with it).
-10. **Map** each run to `LayoutWallValue` or `LayoutGondolaValue`, and merge runs with the same
+10. **Impulse runs**: customer labels are taken like any label (steps 5 and 6). Seller labels are
+    taken up to 5 text heights behind the farthest customer label, outside the general reach: on
+    the second drawing they lie 14 text heights from the line (32.2 pt at 2.3 pt).
+11. **Map** each run to `LayoutWallValue`, `LayoutGondolaValue` or `LayoutImpulseValue`, and merge runs with the same
     number and the same reading into one entry whose `numberOfLayouts` counts them.
 
 The thresholds are fitted to the sample drawings, which is acceptable for now and is the first
@@ -208,6 +232,13 @@ Gondolas (height: side 1 / side 2, end caps):
 | first   | (7) × 2 | 170: 2×100 5x37 / 2×100 5x37, no caps        |
 | second  | (4)     | 150: 2×100 2x37 / 2×100 2x37, no caps        |
 | second  | (5) × 4 | 170: 2×100 5x37 / 2×100 5x37, no caps        |
+
+Impulse runs: run (8) on the second drawing, the first drawn under the current convention, gives
+six 66 bays with 5x30, 2x30, 2x30, 2x30, 2x30, 5x30 at the front and 1x47, 1x47, none, none, 1x47,
+1x47 at the back on a 47 base. All six come out low: the two outer bays are labelled `impuls
+wysoki` but carry `h-90`, and the note decides, so the drawing needs `h-130` there. Runs (9) and (10) on the first and third drawings are
+gondolas drawn to stand in for impulses before the calculator had them, and give nothing; the
+designer marks impulses with one number per run from now on.
 
 On the first two drawings the old end cap runs come out as wall runs: (8) eight times as
 37/170 1×80 5x37 on the first, (6) twice as 37/150 1×80 2x37 and (7) eight times as 37/170 1×80

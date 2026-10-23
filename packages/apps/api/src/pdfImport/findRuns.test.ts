@@ -8,6 +8,7 @@ import { DrawingSegment, DrawingText } from "./readDrawing"
 const RUN_BLUE = "#007fff"
 const LABEL_HEIGHT = 4.5
 const NUMBER_HEIGHT = 7.6
+const IMPULSE_LABEL_HEIGHT = 2.3
 
 function line(x1: number, y1: number, x2: number, y2: number): DrawingSegment {
   return { color: RUN_BLUE, from: { x: x1, y: y1 }, to: { x: x2, y: y2 } }
@@ -334,5 +335,63 @@ describe("findRuns", () => {
     })
 
     expect(runs).toEqual([])
+  })
+
+  it("reads an impulse run as bays in the number's reading order, pairing both sides", () => {
+    const runs = findRuns({
+      segments: [line(217, 439.3, 217, 309.4)],
+      texts: [
+        text("(8)", 218.3, 377.2, { height: NUMBER_HEIGHT }),
+        text("impuls niski", 196.7, 327.1, { height: IMPULSE_LABEL_HEIGHT }),
+        text("h-90 66/30/2x30", 193.9, 328.4, {
+          height: IMPULSE_LABEL_HEIGHT,
+        }),
+        text("lada", 187.6, 321.7, { height: IMPULSE_LABEL_HEIGHT }),
+        text("66/47/1x47", 184.8, 325.2, { height: IMPULSE_LABEL_HEIGHT }),
+        text("impuls wysoki", 196.7, 413.4, { height: IMPULSE_LABEL_HEIGHT }),
+        text("h-130", 194.6, 413.4, { height: IMPULSE_LABEL_HEIGHT }),
+        text("100/30/5x30", 192.5, 415.8, { height: IMPULSE_LABEL_HEIGHT }),
+        text("lada", 187.6, 408.8, { height: IMPULSE_LABEL_HEIGHT }),
+        text("100/47", 184.8, 412.2, { height: IMPULSE_LABEL_HEIGHT }),
+      ],
+    })
+
+    expect(runs).toEqual([
+      {
+        layout: {
+          backDepth: 47,
+          backVariant: 2,
+          baseCoverVariant: 1,
+          bays: [
+            { backShelves: [], frontShelves: 5, height: 130, width: 100 },
+            {
+              backShelves: [{ depth: 47, numberOfShelves: 1 }],
+              frontShelves: 2,
+              height: 90,
+              width: 66,
+            },
+          ],
+          numberOfLayouts: 1,
+        },
+        number: 8,
+      },
+    ])
+  })
+
+  it("takes an impulse bay's height from its h- note, whatever the label's words", () => {
+    const runs = findRuns({
+      segments: [line(217, 439.3, 217, 309.4)],
+      texts: [
+        text("(8)", 218.3, 377.2, { height: NUMBER_HEIGHT }),
+        text("impuls wysoki", 196.7, 327.1, { height: IMPULSE_LABEL_HEIGHT }),
+        text("h-90 66/30/5x30", 193.9, 328.4, {
+          height: IMPULSE_LABEL_HEIGHT,
+        }),
+        text("lada", 187.6, 321.7, { height: IMPULSE_LABEL_HEIGHT }),
+        text("66/47", 184.8, 325.2, { height: IMPULSE_LABEL_HEIGHT }),
+      ],
+    })
+
+    expect(runs[0]?.layout).toMatchObject({ bays: [{ height: 90 }] })
   })
 })

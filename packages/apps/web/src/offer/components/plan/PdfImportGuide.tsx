@@ -49,6 +49,18 @@ const GUIDE_SECTIONS = [
     ],
     title: "Gondola i szczyty",
   },
+  {
+    rules: [
+      "Jedna niebieska linia i jeden numer dla całego ciągu impulsów, także gdy łączy impulsy niskie i wysokie.",
+      "Opisy obu stron po tej samej stronie linii, w dwóch rzędach: bliżej linii strona klienta, za nią strona sprzedawcy, najwyżej 5 wysokości liter dalej.",
+      "Strona klienta: h-90 66/30/2x30, czyli wysokość, szerokość / głębokość / liczba półek wiszących x głębokość półki. Wysokość może też stać w osobnej linii nad opisem (h-130).",
+      "Wysokość wynika tylko z dopisku h-90 (niski) albo h-130 (wysoki). Słowa takie jak impuls niski czy lada są pomijane, mogą być w dowolnym języku.",
+      "Strona sprzedawcy: 66/47/1x47 albo 66/47, gdy z tyłu nie ma półek, bez dopisku h-. Głębokość 47 lub 37, ta sama w całym ciągu.",
+      "Każdy regał ma opis po obu stronach, o tej samej szerokości.",
+      "Zawsze przyjmowane są plecy z obu stron i osłona dolna od frontu; inny wariant ustawiasz po imporcie.",
+    ],
+    title: "Impuls",
+  },
 ]
 
 const SKIPPED_CASES = [
@@ -81,6 +93,26 @@ const SKIPPED_CASES = [
     effect: "gondola pominięta",
     fix: "osobne gondole z osobnymi numerami",
     situation: "Gondola z regałami lub szczytami różnej wysokości",
+  },
+  {
+    effect: "impuls pominięty",
+    fix: "h-90 albo h-130 przy każdym opisie strony klienta",
+    situation: "Opis strony klienta bez dopisku h- albo z inną wysokością",
+  },
+  {
+    effect: "osobne impulsy, wspólna noga liczona dwa razy",
+    fix: "jeden numer dla całego ciągu impulsów",
+    situation: "Sąsiednie impulsy z osobnymi numerami",
+  },
+  {
+    effect: "impuls pominięty",
+    fix: "opis po obu stronach każdego regału, ta sama szerokość",
+    situation: "Regał impulsu opisany tylko z jednej strony",
+  },
+  {
+    effect: "impuls pominięty",
+    fix: "jedna głębokość 47 lub 37 w całym ciągu",
+    situation: "Strona sprzedawcy z inną albo różną głębokością",
   },
   {
     effect: "nic nie jest czytane",
