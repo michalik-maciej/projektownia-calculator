@@ -52,3 +52,16 @@ export function createDefaultImpulseLayout({
     numberOfLayouts: 1,
   }
 }
+
+export function limitBackShelvesToDepth(
+  bays: ImpulseBay[],
+  backDepth: LayoutImpulse["backDepth"],
+): ImpulseBay[] {
+  return bays.map((bay) => ({
+    ...bay,
+    backShelves: bay.backShelves.map((shelf) => ({
+      ...shelf,
+      depth: Math.min(shelf.depth, backDepth),
+    })),
+  }))
+}

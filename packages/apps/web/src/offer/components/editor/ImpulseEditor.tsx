@@ -16,7 +16,10 @@ import { SectionLabel } from "./SectionLabel"
 import { SectionNavigator } from "./SectionNavigator"
 import { ShelvesFields } from "./ShelvesFields"
 import { Button } from "../../../core/ui/button"
-import { createDefaultImpulseShelves } from "../../helpers/createDefaultImpulseLayout"
+import {
+  createDefaultImpulseShelves,
+  limitBackShelvesToDepth,
+} from "../../helpers/createDefaultImpulseLayout"
 import { isImpulseLayout } from "../../helpers/isImpulseLayout"
 import { useInventoryDimensions } from "../../hooks/useInventoryDimensions"
 
@@ -74,7 +77,13 @@ export function ImpulseEditor({
         <SectionLabel>Ciąg</SectionLabel>
         <ChoiceField
           label="Baza tyłu"
-          onChange={(depth) => setOption(`${layoutPath}.backDepth`, depth)}
+          onChange={(depth) =>
+            setOption(layoutPath, {
+              ...layout,
+              backDepth: depth,
+              bays: limitBackShelvesToDepth(layout.bays, depth),
+            })
+          }
           options={IMPULSE_BACK_DEPTHS.map((depth) => ({
             label: String(depth),
             value: depth,
