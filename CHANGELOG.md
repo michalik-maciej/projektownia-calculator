@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.6.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.5.0...v1.6.0) (2026-10-25)
+
+
+### Features
+
+* add and edit impulse layouts in the configurator ([03a3b66](https://github.com/michalik-maciej/projektownia-calculator/commit/03a3b664ab482abd425c4f986179bf0f1400e094))
+* add shelf stops for a share of shelves ([07e9cd2](https://github.com/michalik-maciej/projektownia-calculator/commit/07e9cd2db7da223767c9185511fa35c974ba8bb4))
+* import impulse runs from a PDF drawing ([731f866](https://github.com/michalik-maciej/projektownia-calculator/commit/731f8663fd1cc75300c4b9b2243430c9c3b0c494))
+* price impulse layouts with shared legs and bent supports ([801356e](https://github.com/michalik-maciej/projektownia-calculator/commit/801356e693deca896d9a7e8a73074a381e6914fb))
+
+
+### Bug Fixes
+
+* sync seed catalogue with dev and fit impulse back shelves to back depth ([84a7452](https://github.com/michalik-maciej/projektownia-calculator/commit/84a745224802766512fac0d3596d83a9f1476750))
+
 ## [1.5.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.4.0...v1.5.0) (2026-10-23)
 
 
