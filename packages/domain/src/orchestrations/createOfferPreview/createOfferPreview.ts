@@ -4,11 +4,11 @@ import type { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 import { calculateBomPrice } from "../../calculations/calculateBomPrice/calculateBomPrice"
 import { Component } from "../../models/component"
 import { breakdownDemandByCategory } from "../../transformations/breakdownDemandByCategory/breakdownDemandByCategory"
-import { mapLayoutsToOfferOutput } from "../../transformations/mapLayoutsToOfferOutput/mapLayoutsToOfferOutput"
 import { summarizeRunningMetres } from "../../transformations/summarizeRunningMetres/summarizeRunningMetres"
 import { calculateOfferDemand } from "../calculateOfferDemand/calculateOfferDemand"
 import { calculatePriceStripDemand } from "../calculatePriceStripDemand/calculatePriceStripDemand"
 import { calculateShelfStopDemand } from "../calculateShelfStopDemand/calculateShelfStopDemand"
+import { mapLayoutsToOfferOutput } from "../mapLayoutsToOfferOutput/mapLayoutsToOfferOutput"
 
 export function createOfferPreview(
   {

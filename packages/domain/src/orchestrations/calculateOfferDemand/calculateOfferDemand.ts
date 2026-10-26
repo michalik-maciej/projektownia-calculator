@@ -1,33 +1,14 @@
-import { compact } from "lodash/fp"
-
-import { isLayoutGondola } from "@/schemas/LayoutGondola.schema"
-import { isLayoutImpulse } from "@/schemas/LayoutImpulse.schema"
-import { isLayoutItemSet } from "@/schemas/LayoutItemSet.schema"
-import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 import { OfferInput } from "@/schemas/Offer.schema"
 
 import { Component, ComponentDemand } from "../../models/component"
-import { calculateGondolaLayoutDemand } from "../calculateGondolaLayoutDemand/calculateGondolaLayoutDemand"
-import { calculateImpulseLayoutDemand } from "../calculateImpulseLayoutDemand/calculateImpulseLayoutDemand"
-import { calculateWallLayoutDemand } from "../calculateWallLayoutDemand/calculateWallLayoutDemand"
+import { calculateLayoutDemand } from "../calculateLayoutDemand/calculateLayoutDemand"
 
 export const calculateOfferDemand = (
   layouts: OfferInput["layouts"],
   inventory: Component[],
 ) => {
-  const rawDemand = compact(
-    layouts.flatMap((layout) => {
-      switch (true) {
-        case isLayoutWall(layout):
-          return calculateWallLayoutDemand(layout, inventory)
-        case isLayoutGondola(layout):
-          return calculateGondolaLayoutDemand(layout, inventory)
-        case isLayoutImpulse(layout):
-          return calculateImpulseLayoutDemand(layout, inventory)
-        case isLayoutItemSet(layout):
-          return layout.items
-      }
-    }),
+  const rawDemand = layouts.flatMap((layout) =>
+    calculateLayoutDemand(layout, inventory),
   )
 
   const map = new Map<string, ComponentDemand[number]>()
