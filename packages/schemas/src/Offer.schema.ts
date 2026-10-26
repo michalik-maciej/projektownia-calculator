@@ -56,6 +56,7 @@ const BreakdownSchema = v.record(
   ComponentCategorySchema,
   v.array(
     v.object({
+      basePrice: v.pipe(v.number(), v.minValue(0)),
       id: v.string(),
       label: v.string(),
       quantity: v.number(),

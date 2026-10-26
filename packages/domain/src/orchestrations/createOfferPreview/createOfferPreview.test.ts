@@ -32,14 +32,50 @@ describe("createOfferPreview", () => {
     const expectedResult = {
       breakdown: {
         back: [
-          { id: "back-10-100", quantity: 1, label: "Plecy 10/100" },
-          { id: "back-40-100", quantity: 4, label: "Plecy 40/100" },
+          {
+            basePrice: 16,
+            id: "back-10-100",
+            quantity: 1,
+            label: "Plecy 10/100",
+          },
+          {
+            basePrice: 136.28,
+            id: "back-40-100",
+            quantity: 4,
+            label: "Plecy 40/100",
+          },
         ],
-        shelf: [{ id: "shelf-100-47", quantity: 1, label: "Półka 100/47" }],
-        leg: [{ id: "leg-180-8-3", quantity: 2, label: "Noga 180/8/3" }],
-        foot: [{ id: "foot-47", quantity: 2, label: "Stopa 47" }],
+        shelf: [
+          {
+            basePrice: 66.07,
+            id: "shelf-100-47",
+            quantity: 1,
+            label: "Półka 100/47",
+          },
+        ],
+        leg: [
+          {
+            basePrice: 231.24,
+            id: "leg-180-8-3",
+            quantity: 2,
+            label: "Noga 180/8/3",
+          },
+        ],
+        foot: [
+          {
+            basePrice: 104.26,
+            id: "foot-47",
+            quantity: 2,
+            label: "Stopa 47",
+          },
+        ],
         priceStrip: [
-          { id: "price-strip-100", quantity: 1, label: "Listwa cenowa 100" },
+          {
+            basePrice: 2.2,
+            id: "price-strip-100",
+            quantity: 1,
+            label: "Listwa cenowa 100",
+          },
         ],
       },
       layouts: [
@@ -48,12 +84,43 @@ describe("createOfferPreview", () => {
           description: "H180 · B47 · 1×100",
           breakdown: {
             back: [
-              { id: "back-10-100", quantity: 1, label: "Plecy 10/100" },
-              { id: "back-40-100", quantity: 4, label: "Plecy 40/100" },
+              {
+                basePrice: 16,
+                id: "back-10-100",
+                quantity: 1,
+                label: "Plecy 10/100",
+              },
+              {
+                basePrice: 136.28,
+                id: "back-40-100",
+                quantity: 4,
+                label: "Plecy 40/100",
+              },
             ],
-            shelf: [{ id: "shelf-100-47", quantity: 1, label: "Półka 100/47" }],
-            leg: [{ id: "leg-180-8-3", quantity: 2, label: "Noga 180/8/3" }],
-            foot: [{ id: "foot-47", quantity: 2, label: "Stopa 47" }],
+            shelf: [
+              {
+                basePrice: 66.07,
+                id: "shelf-100-47",
+                quantity: 1,
+                label: "Półka 100/47",
+              },
+            ],
+            leg: [
+              {
+                basePrice: 231.24,
+                id: "leg-180-8-3",
+                quantity: 2,
+                label: "Noga 180/8/3",
+              },
+            ],
+            foot: [
+              {
+                basePrice: 104.26,
+                id: "foot-47",
+                quantity: 2,
+                label: "Stopa 47",
+              },
+            ],
           },
         },
       ],

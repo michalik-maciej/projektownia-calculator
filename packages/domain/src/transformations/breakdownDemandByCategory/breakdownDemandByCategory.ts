@@ -8,9 +8,11 @@ import { MissingComponentError } from "../../models/missingComponentError"
 type DemandByCategory = Partial<
   Record<
     Component["category"],
-    Array<ComponentDemand[number] & { label: string }>
+    Array<ComponentDemand[number] & { basePrice: number; label: string }>
   >
 >
+
+const toPrice = (value: number) => Number(value.toFixed(2))
 
 export function breakdownDemandByCategory(
   rawDemand: ComponentDemand,
@@ -39,8 +41,10 @@ export function breakdownDemandByCategory(
 
     if (existing) {
       existing.quantity += quantity
+      existing.basePrice = toPrice(existing.quantity * component.price)
     } else {
       bucket.push({
+        basePrice: toPrice(quantity * component.price),
         id,
         quantity,
         label: component.label,

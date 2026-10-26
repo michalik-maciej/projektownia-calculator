@@ -8,7 +8,7 @@ const tabClassName =
 
 export function TopBar() {
   return (
-    <header className="fixed inset-x-0 top-0 z-40 flex h-15 items-center border-b bg-card px-6">
+    <header className="fixed inset-x-0 top-0 z-40 flex h-15 items-center border-b bg-card px-6 print:hidden">
       <nav
         className="flex w-full items-center justify-between gap-4"
         aria-label="Primary"

@@ -17,6 +17,7 @@ describe("breakdownDemandByCategory", () => {
     expect(result).toEqual({
       back: [
         {
+          basePrice: 99.09,
           id: "back-40-80",
           label: "Plecy 40/80",
           quantity: 3,
@@ -24,11 +25,13 @@ describe("breakdownDemandByCategory", () => {
       ],
       shelf: [
         {
+          basePrice: 49.55,
           id: "shelf-80-37",
           label: "Półka 80/37",
           quantity: 1,
         },
         {
+          basePrice: 66.07,
           id: "shelf-100-47",
           label: "Półka 100/47",
           quantity: 1,

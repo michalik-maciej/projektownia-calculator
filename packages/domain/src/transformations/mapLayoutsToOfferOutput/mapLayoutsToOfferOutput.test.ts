@@ -58,9 +58,16 @@ describe("mapLayoutsToOfferOutput", () => {
       {
         basePrice: 388.78,
         breakdown: {
-          foot: [{ id: "foot-37", label: "Stopa 37", quantity: 2 }],
+          foot: [
+            { basePrice: 88.78, id: "foot-37", label: "Stopa 37", quantity: 2 },
+          ],
           misc: [
-            { id: "misc-inne-3-240-3", label: "Inne 3/240/3", quantity: 1 },
+            {
+              basePrice: 300,
+              id: "misc-inne-3-240-3",
+              label: "Inne 3/240/3",
+              quantity: 1,
+            },
           ],
         },
         description: "stopa 37, inne 3/240/3",

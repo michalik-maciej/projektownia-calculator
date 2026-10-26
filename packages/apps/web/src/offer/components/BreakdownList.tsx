@@ -5,11 +5,16 @@ import { OfferOutput } from "@/schemas/Offer.schema"
 
 import { textFigure, textSection } from "../../core/ui/typography"
 import { CATEGORY_LABELS } from "../helpers/categoryLabels"
+import { formatPrice } from "../helpers/formatPrice"
+
+const priceCell = `px-3 text-right print:hidden ${textFigure}`
 
 export function BreakdownList({
   breakdown,
+  pricing,
 }: {
   breakdown: OfferOutput["breakdown"] | undefined
+  pricing?: OfferOutput["pricing"]
 }) {
   if (!breakdown) {
     return <p className="text-sm text-muted-foreground">liczenie…</p>
@@ -28,6 +33,9 @@ export function BreakdownList({
     )
   }
 
+  const columnCount = pricing ? 4 : 2
+  const discountFactor = pricing ? 1 - pricing.discountPercentage / 100 : 1
+
   return (
     <table className="w-full border bg-card text-sm">
       <thead
@@ -35,26 +43,56 @@ export function BreakdownList({
       >
         <tr>
           <th className="px-3 py-2">Element</th>
-          <th className="w-20 px-3 py-2 text-right">Ilość</th>
+          <th className="px-3 py-2 text-right">Ilość</th>
+          {pricing && (
+            <>
+              <th className="px-3 py-2 text-right print:hidden">Wg cennika</th>
+              <th className="px-3 py-2 text-right print:hidden">
+                Po rabacie {pricing.discountPercentage}%
+              </th>
+            </>
+          )}
         </tr>
       </thead>
       <tbody className="divide-y divide-border">
         {groups.map(({ category, items }) => (
           <Fragment key={category}>
             <tr className="bg-muted">
-              <th className={`px-3 py-1 text-left ${textSection}`} colSpan={2}>
+              <th
+                className={`px-3 py-1 text-left ${textSection}`}
+                colSpan={columnCount}
+              >
                 {CATEGORY_LABELS[category]}
               </th>
             </tr>
-            {items.map(({ id, label, quantity }) => (
+            {items.map(({ basePrice, id, label, quantity }) => (
               <tr key={id}>
                 <td className="truncate px-3 py-1.5">{label}</td>
                 <td className={`px-3 text-right ${textFigure}`}>{quantity}</td>
+                {pricing && (
+                  <>
+                    <td className={priceCell}>{formatPrice(basePrice)}</td>
+                    <td className={priceCell}>
+                      {formatPrice(basePrice * discountFactor)}
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
           </Fragment>
         ))}
       </tbody>
+      {pricing && (
+        <tfoot className="border-t-[1.5px] border-foreground print:hidden">
+          <tr>
+            <th className={`px-3 py-2 text-left ${textSection}`} colSpan={2}>
+              Razem
+            </th>
+            <td className={priceCell}>{formatPrice(pricing.basePrice)}</td>
+            <td className={priceCell}>{formatPrice(pricing.discountPrice)}</td>
+          </tr>
+        </tfoot>
+      )}
     </table>
   )
 }

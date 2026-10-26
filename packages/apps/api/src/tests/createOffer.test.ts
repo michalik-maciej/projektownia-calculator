@@ -97,7 +97,9 @@ describe("POST /api/offers", () => {
     expect(res.status).toBe(201)
     expect(res.body.output).toMatchObject({
       breakdown: {
-        foot: [{ id: "foot-37", label: "Stopa 37", quantity: 2 }],
+        foot: [
+          { basePrice: 88.78, id: "foot-37", label: "Stopa 37", quantity: 2 },
+        ],
       },
       pricing: { basePrice: 88.78, discountPrice: 88.78 },
     })
