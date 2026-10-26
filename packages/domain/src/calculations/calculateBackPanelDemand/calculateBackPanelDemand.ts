@@ -45,7 +45,6 @@ export function calculateBackPanelDemand(
       if (!panelHeight || remainder < panelHeight) continue
 
       const countPerShelfUnit = Math.floor(remainder / panelHeight)
-      if (countPerShelfUnit === 0) continue
 
       demand.push({
         id,

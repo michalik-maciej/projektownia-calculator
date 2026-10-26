@@ -41,10 +41,7 @@ export function createOfferPreview(
     layouts: mapLayoutsToOfferOutput({ layouts }, inventory),
     priceStrips: summarizeRunningMetres(priceStripDemand, inventory),
     shelfStops: summarizeRunningMetres(shelfStopDemand, inventory),
-    pricing: {
-      ...calculateBomPrice({ bom, discountPercentage }, inventory),
-      discountPercentage,
-    },
+    pricing: calculateBomPrice({ bom, discountPercentage }, inventory),
     title,
   }
 }

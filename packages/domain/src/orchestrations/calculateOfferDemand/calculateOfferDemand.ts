@@ -7,10 +7,10 @@ type OfferDemandCalculationContext = {
   layouts: OfferInput["layouts"]
 }
 
-export const calculateOfferDemand = (
+export function calculateOfferDemand(
   { layouts }: OfferDemandCalculationContext,
   inventory: Component[],
-) => {
+) {
   const rawDemand = layouts.flatMap((layout) =>
     calculateLayoutDemand(layout, inventory),
   )

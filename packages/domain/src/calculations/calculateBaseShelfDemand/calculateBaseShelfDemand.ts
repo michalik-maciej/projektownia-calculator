@@ -1,9 +1,8 @@
 import { find, map } from "lodash/fp"
 
-import { ShelfUnit } from "@/domain/models/shelfUnit"
-
 import { Component } from "../../models/component"
 import { MissingComponentError } from "../../models/missingComponentError"
+import { ShelfUnit } from "../../models/shelfUnit"
 
 type BaseShelfCalculationContext = {
   depth: number
@@ -19,7 +18,7 @@ export function calculateBaseShelfDemand(
 
     if (!availableShelf) {
       throw new MissingComponentError(
-        `No base shelf found for depth ${depth}cm`,
+        `No base shelf found for width ${width}cm and depth ${depth}cm`,
         { category: "shelf", depth, width },
       )
     }

@@ -8,10 +8,10 @@ type BomPriceCalculationContext = {
   discountPercentage?: number
 }
 
-export const calculateBomPrice = (
+export function calculateBomPrice(
   { bom, discountPercentage = 0 }: BomPriceCalculationContext,
   inventory: Component[],
-) => {
+) {
   const basePrice = reduce(
     (total, { id, quantity }) => {
       const component = find({ id }, inventory)

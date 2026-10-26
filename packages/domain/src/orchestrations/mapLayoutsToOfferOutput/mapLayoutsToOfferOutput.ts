@@ -13,11 +13,11 @@ type LayoutOutputCalculationContext = {
   layouts: OfferInput["layouts"]
 }
 
-export const mapLayoutsToOfferOutput = (
+export function mapLayoutsToOfferOutput(
   { layouts }: LayoutOutputCalculationContext,
   inventory: Component[],
-): OfferOutput["layouts"] =>
-  layouts.map((layout) => {
+): OfferOutput["layouts"] {
+  return layouts.map((layout) => {
     const bom = isExcludedFromOffer(layout)
       ? []
       : calculateLayoutDemand(layout, inventory)
@@ -34,3 +34,4 @@ export const mapLayoutsToOfferOutput = (
       }),
     }
   })
+}
