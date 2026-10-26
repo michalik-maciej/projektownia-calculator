@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.6.0...v1.7.0) (2026-10-26)
+
+
+### Features
+
+* show catalogue and discounted line prices in the breakdown, hidden in print ([264714a](https://github.com/michalik-maciej/projektownia-calculator/commit/264714a7c9eca5db75e807fae9d73cfb63df0b7c))
+
 ## [1.6.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.5.0...v1.6.0) (2026-10-25)
 
 
