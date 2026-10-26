@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.7.0...v1.7.1) (2026-10-26)
+
+
+### Bug Fixes
+
+* count gondola end caps once per gondola ([76410db](https://github.com/michalik-maciej/projektownia-calculator/commit/76410db42488cd3c6a9f5679da2e9fdfd2177be2))
+
 ## [1.7.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.6.0...v1.7.0) (2026-10-26)
 
 
