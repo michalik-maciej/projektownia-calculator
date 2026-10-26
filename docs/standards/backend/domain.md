@@ -15,7 +15,8 @@ no database, no server and no mocks.
 - `models/` holds domain types (constants the browser also needs live in `packages/schemas`)
 - `calculations/` holds single mathematical formulas
 - `transformations/` holds pure data mapping
-- `orchestrations/` is the public API: it takes user input and returns an `OfferOutput`
+- `orchestrations/` is the public API: it takes user input and combines the layers below into demand
+  per layout or per offer, which `createOfferPreview` assembles into an `OfferOutput`
 - `fixtures/` holds test data
 
 Calls go downwards only. `createOfferPreview` is the entry point the API calls.

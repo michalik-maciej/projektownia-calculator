@@ -9,8 +9,12 @@ import { buildItemSetLines } from "../../transformations/buildItemSetLines/build
 import { buildLayoutDescription } from "../../transformations/buildLayoutDescription/buildLayoutDescription"
 import { calculateLayoutDemand } from "../calculateLayoutDemand/calculateLayoutDemand"
 
+type LayoutOutputCalculationContext = {
+  layouts: OfferInput["layouts"]
+}
+
 export const mapLayoutsToOfferOutput = (
-  layouts: OfferInput["layouts"],
+  { layouts }: LayoutOutputCalculationContext,
   inventory: Component[],
 ): OfferOutput["layouts"] =>
   layouts.map((layout) => {

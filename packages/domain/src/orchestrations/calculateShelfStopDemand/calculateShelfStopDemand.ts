@@ -6,9 +6,13 @@ import { matchComponentsByWidth } from "../../transformations/matchComponentsByW
 
 const FULL_PERCENTAGE = 100
 
+type ShelfStopDemandCalculationContext = {
+  layouts: OfferInput["layouts"]
+  shelfStopPercentage: number
+}
+
 export function calculateShelfStopDemand(
-  layouts: OfferInput["layouts"],
-  shelfStopPercentage: number,
+  { layouts, shelfStopPercentage }: ShelfStopDemandCalculationContext,
   inventory: Component[],
 ): ComponentDemand {
   if (shelfStopPercentage === 0) {

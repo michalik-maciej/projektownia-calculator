@@ -24,22 +24,21 @@ export function createOfferPreview(
     (layout) => !isExcludedFromOffer(layout),
   )
   const priceStripDemand = hasPriceStrips
-    ? calculatePriceStripDemand(offeredLayouts, inventory)
+    ? calculatePriceStripDemand({ layouts: offeredLayouts }, inventory)
     : []
   const shelfStopDemand = calculateShelfStopDemand(
-    offeredLayouts,
-    shelfStopPercentage,
+    { layouts: offeredLayouts, shelfStopPercentage },
     inventory,
   )
   const bom = [
-    ...calculateOfferDemand(offeredLayouts, inventory),
+    ...calculateOfferDemand({ layouts: offeredLayouts }, inventory),
     ...priceStripDemand,
     ...shelfStopDemand,
   ]
 
   return {
     breakdown: breakdownDemandByCategory(bom, inventory),
-    layouts: mapLayoutsToOfferOutput(layouts, inventory),
+    layouts: mapLayoutsToOfferOutput({ layouts }, inventory),
     priceStrips: summarizeRunningMetres(priceStripDemand, inventory),
     shelfStops: summarizeRunningMetres(shelfStopDemand, inventory),
     pricing: {

@@ -6,46 +6,48 @@ import { componentCatalogMock } from "../../fixtures/componentCatalog"
 describe("calculateOfferDemand", () => {
   it("returns complete demand", () => {
     const result = calculateOfferDemand(
-      [
-        {
-          height: 130,
-          numberOfLayouts: 1,
-          sides: [
-            {
-              depth: 37,
-              shelfUnits: [
-                {
-                  numberOfShelfUnits: 1,
-                  shelves: [],
-                  width: 80,
-                },
-              ],
-            },
-            {
-              depth: 37,
-              shelfUnits: [
-                {
-                  numberOfShelfUnits: 1,
-                  shelves: [],
-                  width: 80,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          depth: 47,
-          height: 210,
-          numberOfLayouts: 1,
-          shelfUnits: [
-            {
-              width: 100,
-              numberOfShelfUnits: 1,
-              shelves: [],
-            },
-          ],
-        },
-      ],
+      {
+        layouts: [
+          {
+            height: 130,
+            numberOfLayouts: 1,
+            sides: [
+              {
+                depth: 37,
+                shelfUnits: [
+                  {
+                    numberOfShelfUnits: 1,
+                    shelves: [],
+                    width: 80,
+                  },
+                ],
+              },
+              {
+                depth: 37,
+                shelfUnits: [
+                  {
+                    numberOfShelfUnits: 1,
+                    shelves: [],
+                    width: 80,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            depth: 47,
+            height: 210,
+            numberOfLayouts: 1,
+            shelfUnits: [
+              {
+                width: 100,
+                numberOfShelfUnits: 1,
+                shelves: [],
+              },
+            ],
+          },
+        ],
+      },
       componentCatalogMock,
     )
 
@@ -66,26 +68,28 @@ describe("calculateOfferDemand", () => {
 
   it("adds the items of an item set to the demand of the other layouts", () => {
     const result = calculateOfferDemand(
-      [
-        {
-          depth: 47,
-          height: 210,
-          numberOfLayouts: 1,
-          shelfUnits: [
-            {
-              width: 100,
-              numberOfShelfUnits: 1,
-              shelves: [],
-            },
-          ],
-        },
-        {
-          items: [
-            { id: "foot-47", quantity: 3 },
-            { id: "misc-inne-3-240-3", quantity: 2 },
-          ],
-        },
-      ],
+      {
+        layouts: [
+          {
+            depth: 47,
+            height: 210,
+            numberOfLayouts: 1,
+            shelfUnits: [
+              {
+                width: 100,
+                numberOfShelfUnits: 1,
+                shelves: [],
+              },
+            ],
+          },
+          {
+            items: [
+              { id: "foot-47", quantity: 3 },
+              { id: "misc-inne-3-240-3", quantity: 2 },
+            ],
+          },
+        ],
+      },
       componentCatalogMock,
     )
 

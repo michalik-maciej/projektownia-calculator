@@ -3,8 +3,12 @@ import { OfferInput } from "@/schemas/Offer.schema"
 import { Component, ComponentDemand } from "../../models/component"
 import { calculateLayoutDemand } from "../calculateLayoutDemand/calculateLayoutDemand"
 
+type OfferDemandCalculationContext = {
+  layouts: OfferInput["layouts"]
+}
+
 export const calculateOfferDemand = (
-  layouts: OfferInput["layouts"],
+  { layouts }: OfferDemandCalculationContext,
   inventory: Component[],
 ) => {
   const rawDemand = layouts.flatMap((layout) =>

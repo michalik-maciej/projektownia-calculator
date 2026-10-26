@@ -45,7 +45,8 @@ root `package.json`; `pnpm test:e2e` needs a database and installed browsers.
 
 **Key Abstraction**:
 
-- **Orchestrations** (public API): Accept user input, call domain functions, return `OfferOutput`
+- **Orchestrations** (public API): Accept user input and combine calculations and transformations into
+  demand per layout or per offer; `createOfferPreview` assembles them into an `OfferOutput`
 - **Transformations**: Pure data mapping (e.g., group demand by category, format descriptions)
 - **Calculations**: Specific mathematical formulas (back panel area, foot quantity, etc.)
 - **Models**: TypeScript types defining domain concepts

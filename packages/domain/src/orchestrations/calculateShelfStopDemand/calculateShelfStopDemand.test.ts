@@ -6,22 +6,24 @@ import { componentCatalogMock } from "../../fixtures/componentCatalog"
 describe("calculateShelfStopDemand", () => {
   it("orders stops for the given share of shelves of each width, rounded up", () => {
     const result = calculateShelfStopDemand(
-      [
-        {
-          depth: 47,
-          height: 210,
-          numberOfLayouts: 1,
-          shelfUnits: [
-            { numberOfShelfUnits: 10, shelves: [], width: 80 },
-            {
-              numberOfShelfUnits: 4,
-              shelves: [{ depth: 37, numberOfShelves: 3 }],
-              width: 100,
-            },
-          ],
-        },
-      ],
-      20,
+      {
+        layouts: [
+          {
+            depth: 47,
+            height: 210,
+            numberOfLayouts: 1,
+            shelfUnits: [
+              { numberOfShelfUnits: 10, shelves: [], width: 80 },
+              {
+                numberOfShelfUnits: 4,
+                shelves: [{ depth: 37, numberOfShelves: 3 }],
+                width: 100,
+              },
+            ],
+          },
+        ],
+        shelfStopPercentage: 20,
+      },
       componentCatalogMock,
     )
 

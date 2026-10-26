@@ -4,8 +4,12 @@ import { Component, ComponentDemand } from "../../models/component"
 import { countShelvesByWidth } from "../../transformations/countShelvesByWidth/countShelvesByWidth"
 import { matchComponentsByWidth } from "../../transformations/matchComponentsByWidth/matchComponentsByWidth"
 
+type PriceStripDemandCalculationContext = {
+  layouts: OfferInput["layouts"]
+}
+
 export function calculatePriceStripDemand(
-  layouts: OfferInput["layouts"],
+  { layouts }: PriceStripDemandCalculationContext,
   inventory: Component[],
 ): ComponentDemand {
   return matchComponentsByWidth(

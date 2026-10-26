@@ -6,28 +6,30 @@ import { componentCatalogMock } from "../../fixtures/componentCatalog"
 describe("mapLayoutsToOfferOutput", () => {
   it("builds description of wall layout", () => {
     const output = mapLayoutsToOfferOutput(
-      [
-        {
-          depth: 47,
-          height: 130,
-          numberOfLayouts: 3,
-          shelfUnits: [
-            {
-              width: 80,
-              numberOfShelfUnits: 4,
-              shelves: [{ depth: 37, numberOfShelves: 5 }],
-            },
-            {
-              width: 100,
-              numberOfShelfUnits: 1,
-              shelves: [
-                { depth: 37, numberOfShelves: 1 },
-                { depth: 47, numberOfShelves: 1 },
-              ],
-            },
-          ],
-        },
-      ],
+      {
+        layouts: [
+          {
+            depth: 47,
+            height: 130,
+            numberOfLayouts: 3,
+            shelfUnits: [
+              {
+                width: 80,
+                numberOfShelfUnits: 4,
+                shelves: [{ depth: 37, numberOfShelves: 5 }],
+              },
+              {
+                width: 100,
+                numberOfShelfUnits: 1,
+                shelves: [
+                  { depth: 37, numberOfShelves: 1 },
+                  { depth: 47, numberOfShelves: 1 },
+                ],
+              },
+            ],
+          },
+        ],
+      },
       componentCatalogMock,
     )
 
@@ -43,14 +45,16 @@ describe("mapLayoutsToOfferOutput", () => {
 
   it("prices an item set by its items alone", () => {
     const output = mapLayoutsToOfferOutput(
-      [
-        {
-          items: [
-            { id: "foot-37", quantity: 2 },
-            { id: "misc-inne-3-240-3", quantity: 1 },
-          ],
-        },
-      ],
+      {
+        layouts: [
+          {
+            items: [
+              { id: "foot-37", quantity: 2 },
+              { id: "misc-inne-3-240-3", quantity: 1 },
+            ],
+          },
+        ],
+      },
       componentCatalogMock,
     )
 
