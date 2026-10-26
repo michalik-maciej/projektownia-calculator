@@ -234,7 +234,7 @@ describe("calculateGondolaLayoutDemand", () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it("charges each end cap as a run of its own", () => {
+  it("charges each end cap as a run of its own, once per gondola", () => {
     const side = {
       depth: 47,
       shelfUnits: [
@@ -285,14 +285,14 @@ describe("calculateGondolaLayoutDemand", () => {
       { id: "shelf-80-47", quantity: 4 },
       { id: "foot-47", quantity: 6 },
       { id: "leg-130-8-3", quantity: 6 },
-      { id: "base-cover-100", quantity: 1 },
-      { id: "shelf-100-37", quantity: 1 },
-      { id: "foot-37", quantity: 2 },
-      { id: "leg-130-8-3", quantity: 2 },
-      { id: "back-40-100", quantity: 3 },
-      { id: "shelf-100-37", quantity: 1 },
-      { id: "foot-37", quantity: 2 },
-      { id: "leg-130-8-3", quantity: 2 },
+      { id: "base-cover-100", quantity: 2 },
+      { id: "shelf-100-37", quantity: 2 },
+      { id: "foot-37", quantity: 4 },
+      { id: "leg-130-8-3", quantity: 4 },
+      { id: "back-40-100", quantity: 6 },
+      { id: "shelf-100-37", quantity: 2 },
+      { id: "foot-37", quantity: 4 },
+      { id: "leg-130-8-3", quantity: 4 },
     ]
 
     expect(result).toEqual(expectedResult)

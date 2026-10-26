@@ -5,7 +5,6 @@ import { isLayoutImpulse } from "@/schemas/LayoutImpulse.schema"
 import { isLayoutWall } from "@/schemas/LayoutWall.schema"
 import { OfferInput } from "@/schemas/Offer.schema"
 
-import { END_CAP_RUN_COUNT } from "../../models/endCap"
 import { ShelfUnit } from "../../models/shelfUnit"
 import { listImpulseSideShelfUnits } from "../listImpulseSideShelfUnits/listImpulseSideShelfUnits"
 
@@ -32,7 +31,7 @@ function listShelfRuns(layout: OfferInput["layouts"][number]): ShelfRun[] {
         shelfUnits,
       })),
       ...compact([leftEndCap, rightEndCap]).map(({ shelfUnits }) => ({
-        numberOfRuns: END_CAP_RUN_COUNT,
+        numberOfRuns: numberOfLayouts,
         shelfUnits,
       })),
     ]

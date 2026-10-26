@@ -5,7 +5,6 @@ import { LayoutGondola } from "@/schemas/LayoutGondola.schema"
 import { calculateCoverDemand } from "../../calculations/calculateCoverDemand/calculateCoverDemand"
 import { calculateLegDemand } from "../../calculations/calculateLegDemand/calculateLegDemand"
 import { Component } from "../../models/component"
-import { END_CAP_RUN_COUNT } from "../../models/endCap"
 import { countShelfUnitsByWidth } from "../../transformations/countShelfUnitsByWidth/countShelfUnitsByWidth"
 import { calculateRunSideDemand } from "../calculateRunSideDemand/calculateRunSideDemand"
 import { calculateWallLayoutDemand } from "../calculateWallLayoutDemand/calculateWallLayoutDemand"
@@ -48,7 +47,7 @@ export function calculateGondolaLayoutDemand(
     ),
     ...compact([leftEndCap, rightEndCap]).flatMap((endCap) =>
       calculateWallLayoutDemand(
-        { ...endCap, height, numberOfLayouts: END_CAP_RUN_COUNT },
+        { ...endCap, height, numberOfLayouts },
         inventory,
       ),
     ),
