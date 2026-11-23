@@ -41,9 +41,12 @@ export function useAutoSaveOffer({
       !isUnauthorized(error) &&
       !isConflict(error) &&
       failureCount < AUTOSAVE_RETRIES,
-    onSuccess: (saved: SavedOffer, sentValues: OfferInput) => {
+    onSuccess: async (saved: SavedOffer, sentValues: OfferInput) => {
+      const detailsKey = offerQueries.details(saved.id).queryKey
+      // A poll sent before this save would otherwise land after it and restore the older version.
+      await queryClient.cancelQueries({ queryKey: detailsKey })
       hydrate(saved)
-      queryClient.setQueryData(offerQueries.details(saved.id).queryKey, saved)
+      queryClient.setQueryData(detailsKey, saved)
       reset(sentValues, { keepValues: true })
     },
     onError: async (error) => {
