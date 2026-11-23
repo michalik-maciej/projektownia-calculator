@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.10.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.9.0...v1.10.0) (2026-11-23)
+
+
+### Features
+
+* show the discounted unit price in the breakdown table ([8957a0f](https://github.com/michalik-maciej/projektownia-calculator/commit/8957a0f98a2ec12a98e341972d9464208318f8c4))
+
+
+### Bug Fixes
+
+* hide offer actions when printing ([95f52ce](https://github.com/michalik-maciej/projektownia-calculator/commit/95f52ceefe5f24a8590b87bb46058c8e9f755834))
+* keep impulse shelves when the current height is picked again ([64025be](https://github.com/michalik-maciej/projektownia-calculator/commit/64025bea3c75eb18b556b14c943d1e9df8c65db0))
+* report failed catalogue saves and keep the dialog open ([8666482](https://github.com/michalik-maciej/projektownia-calculator/commit/866648229563009b760a78042d61ff4715a3d8aa))
+* show no unit price for a zero-quantity breakdown line ([8c60900](https://github.com/michalik-maciej/projektownia-calculator/commit/8c609005b7de7a48e5b1db57ac67524182f63e88))
+* stop an in-flight offer poll from undoing a save ([8f5c04c](https://github.com/michalik-maciej/projektownia-calculator/commit/8f5c04cfd54e118644ebc72ca80f837b8580fd06))
+* validate the run count and skip autosave while the form is invalid ([9ef2883](https://github.com/michalik-maciej/projektownia-calculator/commit/9ef288355d4efa4e3ace8f520fe21e29ac46b284))
+
 ## [1.9.0](https://github.com/michalik-maciej/projektownia-calculator/compare/v1.8.0...v1.9.0) (2026-11-12)
 
 
