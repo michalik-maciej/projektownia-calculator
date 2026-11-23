@@ -94,7 +94,7 @@ function OfferPage() {
             </>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 print:hidden">
           <Button
             disabled={createOffer.isPending}
             onClick={() =>
