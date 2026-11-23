@@ -46,10 +46,8 @@ export function BreakdownList({
           <th className="px-3 py-2 text-right">Ilość</th>
           {pricing && (
             <>
-              <th className="px-3 py-2 text-right print:hidden">Wg cennika</th>
-              <th className="px-3 py-2 text-right print:hidden">
-                Po rabacie {pricing.discountPercentage}%
-              </th>
+              <th className="px-3 py-2 text-right print:hidden">Cena jedn.</th>
+              <th className="px-3 py-2 text-right print:hidden">Wartość</th>
             </>
           )}
         </tr>
@@ -71,7 +69,9 @@ export function BreakdownList({
                 <td className={`px-3 text-right ${textFigure}`}>{quantity}</td>
                 {pricing && (
                   <>
-                    <td className={priceCell}>{formatPrice(basePrice)}</td>
+                    <td className={priceCell}>
+                      {formatPrice((basePrice * discountFactor) / quantity)}
+                    </td>
                     <td className={priceCell}>
                       {formatPrice(basePrice * discountFactor)}
                     </td>
@@ -88,7 +88,7 @@ export function BreakdownList({
             <th className={`px-3 py-2 text-left ${textSection}`} colSpan={2}>
               Razem
             </th>
-            <td className={priceCell}>{formatPrice(pricing.basePrice)}</td>
+            <td className={priceCell} />
             <td className={priceCell}>{formatPrice(pricing.discountPrice)}</td>
           </tr>
         </tfoot>

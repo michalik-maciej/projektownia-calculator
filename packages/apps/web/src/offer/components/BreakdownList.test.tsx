@@ -37,7 +37,7 @@ describe("BreakdownList", () => {
     ])
   })
 
-  it("shows each line at catalogue price and after the offer discount", () => {
+  it("shows each line's discounted unit price and discounted value", () => {
     const { container } = render(
       <BreakdownList
         breakdown={{
@@ -52,6 +52,6 @@ describe("BreakdownList", () => {
         .getAllByRole("cell")
         .slice(0, 4)
         .map((cell) => cell.textContent),
-    ).toEqual(["Noga", "10", formatPrice(90), formatPrice(81)])
+    ).toEqual(["Noga", "10", formatPrice(8.1), formatPrice(81)])
   })
 })
