@@ -22,7 +22,9 @@ export function ChoiceField<Value extends number>({
             aria-pressed={option.value === value}
             className="h-8 px-2.5"
             key={option.value}
-            onClick={() => onChange(option.value)}
+            onClick={() => {
+              if (option.value !== value) onChange(option.value)
+            }}
             size="sm"
             type="button"
             variant={option.value === value ? "default" : "outline"}

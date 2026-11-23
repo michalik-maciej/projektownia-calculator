@@ -73,4 +73,15 @@ describe("ImpulseLayoutPlan", () => {
       screen.getByRole("button", { name: /^80\/47\/130\s*1×47$/ }),
     ).toBeInTheDocument()
   })
+
+  it("keeps a bay's shelves when its current height is picked again", () => {
+    render(<Harness />)
+
+    fireEvent.click(screen.getByRole("button", { name: /^80\/30\/90/ }))
+    fireEvent.click(screen.getByRole("button", { name: "Niski 90" }))
+
+    expect(
+      screen.getByRole("button", { name: /^80\/30\/90\s*3×30$/ }),
+    ).toBeInTheDocument()
+  })
 })
