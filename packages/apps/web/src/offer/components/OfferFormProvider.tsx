@@ -29,7 +29,7 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
 
   const autoSave = useAutoSaveOffer({ hydratedRef, offerId, reset })
 
-  const { isDirty } = useFormState({ control })
+  const { isDirty, isValid } = useFormState({ control })
   const { isPending: isSaving, mutate: saveNow } = autoSave
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
   const watchedValues = useWatch({ control })
 
   useEffect(() => {
-    if (!offerId || !isDirty || isSaving || offer?.id !== offerId) {
+    if (!offerId || !isDirty || !isValid || isSaving || offer?.id !== offerId) {
       return
     }
 
@@ -64,7 +64,16 @@ export function OfferFormProvider({ children }: { children: ReactNode }) {
     )
 
     return () => window.clearTimeout(timeoutId)
-  }, [getValues, isDirty, isSaving, offer?.id, offerId, saveNow, watchedValues])
+  }, [
+    getValues,
+    isDirty,
+    isSaving,
+    isValid,
+    offer?.id,
+    offerId,
+    saveNow,
+    watchedValues,
+  ])
 
   const missingComponent = offer?.missingComponent
   const errorMessage = missingComponent

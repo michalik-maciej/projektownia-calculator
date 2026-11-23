@@ -8,6 +8,7 @@ import { LayoutPlanHeader } from "./LayoutPlanHeader"
 
 function Harness() {
   const form = useForm<OfferInput>({
+    mode: "onChange",
     defaultValues: {
       discountPercentage: 0,
       layouts: [
@@ -51,5 +52,13 @@ describe("LayoutPlanHeader", () => {
 
     expect(inOffer).toBeChecked()
     expect(screen.getByText("PDF (5)")).toBeInTheDocument()
+  })
+
+  it("asks for at least one run when the run count is cleared", async () => {
+    render(<Harness />)
+
+    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "" } })
+
+    expect(await screen.findByText("Minimum 1")).toBeInTheDocument()
   })
 })

@@ -1,6 +1,11 @@
 import { Copy, Trash2 } from "lucide-react"
 import { useId } from "react"
-import { Controller, useFormContext, useWatch } from "react-hook-form"
+import {
+  Controller,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from "react-hook-form"
 
 import { OfferInput, OfferOutput } from "@/schemas/Offer.schema"
 
@@ -13,6 +18,8 @@ import { textFigure, textName } from "../../../core/ui/typography"
 import { formatLayoutCode } from "../../helpers/formatLayoutCode"
 import { getLayoutName } from "../../helpers/getLayoutName"
 import { LayoutCode } from "../LayoutCode"
+
+const MIN_LAYOUT_COUNT = 1
 
 export function LayoutPlanHeader({
   hasLayoutCount = true,
@@ -29,9 +36,13 @@ export function LayoutPlanHeader({
   onRemove: () => void
   preview: OfferOutput["layouts"][number] | undefined
 }) {
-  const { control, register } = useFormContext<OfferInput>()
+  const { control, getFieldState, register } = useFormContext<OfferInput>()
   const inOfferId = useId()
   const layout = useWatch({ control, name: `layouts.${layoutIndex}` })
+  const layoutCountName = `layouts.${layoutIndex}.numberOfLayouts` as const
+  const formState = useFormState({ control, name: layoutCountName })
+  const layoutCountError = getFieldState(layoutCountName, formState).error
+    ?.message
 
   if (!layout) return null
 
@@ -75,14 +86,25 @@ export function LayoutPlanHeader({
             <Label className="text-sm text-muted-foreground">
               Liczba ciągów
             </Label>
-            <Input
-              {...register(`layouts.${layoutIndex}.numberOfLayouts`, {
-                valueAsNumber: true,
-              })}
-              className={`h-8 w-14 text-center ${textFigure} md:text-[15px]`}
-              min={1}
-              type="number"
-            />
+            <div className="relative">
+              <Input
+                {...register(layoutCountName, {
+                  valueAsNumber: true,
+                  validate: (value) =>
+                    (Number.isInteger(value) && value >= MIN_LAYOUT_COUNT) ||
+                    `Minimum ${MIN_LAYOUT_COUNT}`,
+                })}
+                aria-invalid={!!layoutCountError}
+                className={`h-8 w-14 text-center ${textFigure} md:text-[15px]`}
+                min={MIN_LAYOUT_COUNT}
+                type="number"
+              />
+              {layoutCountError && (
+                <span className="absolute top-full left-1/2 mt-1 -translate-x-1/2 text-xs whitespace-nowrap text-destructive">
+                  {layoutCountError}
+                </span>
+              )}
+            </div>
           </>
         )}
         <ActionDivider />
