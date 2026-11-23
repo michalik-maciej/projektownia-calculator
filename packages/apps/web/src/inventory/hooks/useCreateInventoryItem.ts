@@ -17,5 +17,11 @@ export function useCreateInventoryItem() {
       })
       await queryClient.invalidateQueries({ queryKey: ["offer", "details"] })
     },
+    onError: (error) => {
+      console.error("Creating the component failed:", error)
+      toast.error("Nie udało się utworzyć elementu.", {
+        position: "top-center",
+      })
+    },
   })
 }

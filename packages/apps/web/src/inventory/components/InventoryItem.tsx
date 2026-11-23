@@ -57,7 +57,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
 
   const { control, register, handleSubmit, formState } = form
 
-  const submit = async (formValues: InventoryItemFormValues) => {
+  const submit = (formValues: InventoryItemFormValues) => {
     const normalizedValues: InventoryItemFormValues = {
       ...formValues,
       width: formValues.width ?? null,
@@ -66,20 +66,18 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
     }
 
     if (componentId) {
-      await updateMutation.mutateAsync({
-        id: componentId,
-        data: normalizedValues,
-      })
+      updateMutation.mutate(
+        { id: componentId, data: normalizedValues },
+        { onSuccess: onClose },
+      )
     } else {
-      await createMutation.mutateAsync(normalizedValues)
+      createMutation.mutate(normalizedValues, { onSuccess: onClose })
     }
-    onClose()
   }
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!componentId) return
-    await deleteMutation.mutateAsync(componentId)
-    onClose()
+    deleteMutation.mutate(componentId, { onSuccess: onClose })
   }
 
   return (

@@ -24,5 +24,11 @@ export function useUpdateInventoryItem() {
       })
       await queryClient.invalidateQueries({ queryKey: ["offer", "details"] })
     },
+    onError: (error) => {
+      console.error("Updating the component failed:", error)
+      toast.error("Nie udało się zaktualizować elementu.", {
+        position: "top-center",
+      })
+    },
   })
 }

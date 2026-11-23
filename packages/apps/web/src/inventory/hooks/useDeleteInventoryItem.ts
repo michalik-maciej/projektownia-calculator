@@ -17,5 +17,9 @@ export function useDeleteInventoryItem() {
       })
       await queryClient.invalidateQueries({ queryKey: ["offer", "details"] })
     },
+    onError: (error) => {
+      console.error("Deleting the component failed:", error)
+      toast.error("Nie udało się usunąć elementu.", { position: "top-center" })
+    },
   })
 }
