@@ -70,7 +70,9 @@ export function BreakdownList({
                 {pricing && (
                   <>
                     <td className={priceCell}>
-                      {formatPrice((basePrice * discountFactor) / quantity)}
+                      {quantity === 0
+                        ? "—"
+                        : formatPrice((basePrice * discountFactor) / quantity)}
                     </td>
                     <td className={priceCell}>
                       {formatPrice(basePrice * discountFactor)}

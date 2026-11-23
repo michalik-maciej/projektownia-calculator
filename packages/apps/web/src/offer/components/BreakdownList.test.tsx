@@ -54,4 +54,22 @@ describe("BreakdownList", () => {
         .map((cell) => cell.textContent),
     ).toEqual(["Noga", "10", formatPrice(8.1), formatPrice(81)])
   })
+
+  it("shows no unit price for a line whose quantity cancels out to zero", () => {
+    const { container } = render(
+      <BreakdownList
+        breakdown={{
+          leg: [{ basePrice: 0, id: "leg", label: "Noga", quantity: 0 }],
+        }}
+        pricing={{ basePrice: 0, discountPercentage: 10, discountPrice: 0 }}
+      />,
+    )
+
+    expect(
+      within(container)
+        .getAllByRole("cell")
+        .slice(0, 4)
+        .map((cell) => cell.textContent),
+    ).toEqual(["Noga", "0", "—", formatPrice(0)])
+  })
 })
