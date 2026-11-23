@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
 
+import { MIN_PASSWORD_LENGTH } from "@/schemas/auth/Login.schema"
 import type { User } from "@/schemas/user/User.schema"
 
 import { ROLE_LABELS } from "./labels.role"
@@ -70,8 +71,8 @@ function CreateUserForm() {
           {...form.register("password", {
             required: "Podaj hasło",
             minLength: {
-              value: 8,
-              message: "Hasło ma co najmniej 8 znaków",
+              value: MIN_PASSWORD_LENGTH,
+              message: `Hasło ma co najmniej ${MIN_PASSWORD_LENGTH} znaków`,
             },
           })}
         />

@@ -11,12 +11,13 @@ function uniqueNumbers(values: Array<number | null | undefined>) {
   )
 }
 
-interface Params {
+export function getDimensionOptions({
+  dimension,
+  inventoryItems,
+}: {
   dimension: "width" | "height" | "depth"
   inventoryItems: InventoryItem[]
-}
-
-export function getDimensionOptions({ dimension, inventoryItems }: Params) {
+}) {
   const optionsByCategory: Record<ComponentCategory, number[]> = {
     back: [],
     baseCover: [],

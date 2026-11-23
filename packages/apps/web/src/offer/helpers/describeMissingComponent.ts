@@ -1,3 +1,6 @@
+import * as v from "valibot"
+
+import { ComponentCategorySchema } from "@/schemas/inventory/Component.schema"
 import { MissingComponent } from "@/schemas/OfferError.schema"
 
 import { CATEGORY_LABELS_GENITIVE } from "./categoryLabels"
@@ -13,8 +16,8 @@ export function describeMissingComponent(missing: MissingComponent): string {
     return `Brak w katalogu komponentu o identyfikatorze ${missing.id}`
   }
 
-  const what = missing.category
-    ? (CATEGORY_LABELS_GENITIVE[missing.category] ?? "elementu")
+  const what = v.is(ComponentCategorySchema, missing.category)
+    ? CATEGORY_LABELS_GENITIVE[missing.category]
     : "elementu"
 
   const dimensions = DIMENSION_LABELS.flatMap(([key, label]) => {

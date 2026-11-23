@@ -16,7 +16,7 @@ export function useLogoutUser() {
       toast.success("Pomyślnie wylogowano.", { position: "top-center" })
     },
     onError: (error) => {
-      console.error("Error logging out:", error)
+      console.error("Logging out failed:", error)
       toast.error("Nie udało się wylogować.", {
         position: "top-center",
       })

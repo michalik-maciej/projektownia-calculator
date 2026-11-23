@@ -42,6 +42,7 @@ export function OptionStepper({
             <>
               <Button
                 className="h-8 w-8 shrink-0"
+                aria-label={`Zmniejsz: ${label}`}
                 disabled={currentIndex <= 0}
                 onClick={() => field.onChange(options[currentIndex - 1])}
                 size="icon"
@@ -53,6 +54,7 @@ export function OptionStepper({
               <ValueDisplay value={field.value} />
               <Button
                 className="h-8 w-8 shrink-0"
+                aria-label={`Zwiększ: ${label}`}
                 disabled={
                   options.length === 0 || currentIndex >= options.length - 1
                 }

@@ -9,11 +9,7 @@ import { parseInventoryPriceInput } from "../helpers/parseInventoryPriceInput"
 import { useUpdateInventoryItem } from "../hooks/useUpdateInventoryItem"
 import type { InventoryItem } from "../inventory.api"
 
-type Props = {
-  item: InventoryItem
-}
-
-export function InventoryItemPriceField({ item }: Props) {
+export function InventoryItemPriceField({ item }: { item: InventoryItem }) {
   const isAdmin = useIsAdmin()
   const updateMutation = useUpdateInventoryItem()
   const [syncedPrice, setSyncedPrice] = useState(item.price)

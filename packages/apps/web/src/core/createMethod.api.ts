@@ -1,10 +1,8 @@
 import { type GenericSchema } from "valibot"
 
-type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE"
 
 export const apiType = <T>() => "" as unknown as T
-
-type QueryParams = Record<string, unknown>
 
 export class ApiError extends Error {
   name = "ApiError" as const
@@ -44,17 +42,11 @@ export function isUnauthorized(error: unknown): boolean {
   return error instanceof ApiError && error.status === 401
 }
 
-type ApiContract<
-  TPath extends string,
-  TData,
-  TQuery extends QueryParams | undefined,
-  TResponse,
-> = {
+type ApiContract<TPath extends string, TData, TResponse> = {
   method: HttpMethod
   path: TPath
   response?: GenericSchema<unknown, TResponse>
   data?: TData
-  query?: TQuery
 }
 
 type Simplify<T> = { [K in keyof T]: T[K] } & {}
@@ -66,11 +58,7 @@ type ParamsFromUrl<TPath extends string> =
       ? { [K in Param]: string }
       : object
 
-type Input<
-  TPath extends string,
-  TData,
-  TQuery extends QueryParams | undefined,
-> = Simplify<
+type Input<TPath extends string, TData> = Simplify<
   (keyof ParamsFromUrl<TPath> extends never
     ? object
     : {
@@ -80,11 +68,6 @@ type Input<
       ? object
       : {
           data: TData
-        }) &
-    (TQuery extends undefined
-      ? object
-      : {
-          query: TQuery
         })
 >
 
@@ -104,35 +87,6 @@ function insertParamsIntoPath({
   return result
 }
 
-function withQuery(url: string, query: QueryParams) {
-  const base =
-    typeof window !== "undefined" && window.location
-      ? window.location.origin
-      : "http://localhost"
-
-  const urlObj =
-    url.startsWith("http://") || url.startsWith("https://")
-      ? new URL(url)
-      : new URL(url, base)
-
-  for (const [key, value] of Object.entries(query)) {
-    if (value === undefined || value === null) continue
-
-    if (Array.isArray(value)) {
-      urlObj.searchParams.delete(key)
-      for (const item of value) {
-        if (item === undefined || item === null) continue
-        urlObj.searchParams.append(key, String(item))
-      }
-      continue
-    }
-
-    urlObj.searchParams.set(key, String(value))
-  }
-
-  return urlObj.toString()
-}
-
 function toJsonBody(data: unknown) {
   return data === undefined ? undefined : JSON.stringify(data)
 }
@@ -140,15 +94,14 @@ function toJsonBody(data: unknown) {
 export function createApiMethod<
   TPath extends string,
   TData = undefined,
-  TQuery extends QueryParams | undefined = undefined,
   TOutput = unknown,
 >(
-  contract: ApiContract<TPath, TData, TQuery, TOutput>,
-): keyof Input<TPath, TData, TQuery> extends never
+  contract: ApiContract<TPath, TData, TOutput>,
+): keyof Input<TPath, TData> extends never
   ? (input?: never) => Promise<TOutput>
-  : (input: Input<TPath, TData, TQuery>) => Promise<TOutput> {
+  : (input: Input<TPath, TData>) => Promise<TOutput> {
   return async (
-    input: Input<TPath, TData, TQuery> = {} as Input<TPath, TData, TQuery>,
+    input: Input<TPath, TData> = {} as Input<TPath, TData>,
   ): Promise<TOutput> => {
     const data =
       input && typeof input === "object" && "data" in input
@@ -162,18 +115,11 @@ export function createApiMethod<
         ? ((input as { params: Record<string, string> }).params ?? undefined)
         : undefined
 
-    const queryParams =
-      input && typeof input === "object" && "query" in input
-        ? ((input as { query: QueryParams }).query ?? undefined)
-        : undefined
-
     const url = pathParams
       ? insertParamsIntoPath({ path: contract.path, params: pathParams })
       : contract.path
 
-    const finalUrl = queryParams ? withQuery(url, queryParams) : url
-
-    const res = await fetch(finalUrl, {
+    const res = await fetch(url, {
       method: contract.method,
       credentials: "include",
       headers: {
@@ -188,7 +134,7 @@ export function createApiMethod<
         status: res.status,
         statusText: res.statusText,
         method: contract.method,
-        url: finalUrl,
+        url,
         bodyText: await res.text(),
       })
     }

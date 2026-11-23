@@ -8,6 +8,9 @@ import {
 
 import { InventoryDimensions } from "../hooks/useInventoryDimensions"
 
+const DEFAULT_IMPULSE_BACK_VARIANT = 2
+const DEFAULT_IMPULSE_BASE_COVER_VARIANT = 1
+
 const DEFAULT_SHELF_COUNTS: Record<
   ImpulseBay["height"],
   { back: number; front: number }
@@ -39,8 +42,8 @@ export function createDefaultImpulseLayout({
 
   return {
     backDepth,
-    backVariant: 2,
-    baseCoverVariant: 1,
+    backVariant: DEFAULT_IMPULSE_BACK_VARIANT,
+    baseCoverVariant: DEFAULT_IMPULSE_BASE_COVER_VARIANT,
     bays: [
       {
         ...createDefaultImpulseShelves(IMPULSE_LOW_HEIGHT, backDepth),

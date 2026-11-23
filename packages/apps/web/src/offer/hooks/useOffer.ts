@@ -9,15 +9,11 @@ const OFFER_REFRESH_MS = 5000
 export function useOffer({ keepFresh = false }: { keepFresh?: boolean } = {}) {
   const { offerId } = useSearch({ strict: false })
 
-  const {
-    data: offer,
-    error,
-    isFetching,
-  } = useQuery({
+  const { data: offer, error } = useQuery({
     ...offerQueries.details(offerId ?? ""),
     enabled: !!offerId,
     refetchInterval: keepFresh ? OFFER_REFRESH_MS : false,
   })
 
-  return { isFetching, isMissing: isNotFound(error), offer, offerId }
+  return { isMissing: isNotFound(error), offer, offerId }
 }

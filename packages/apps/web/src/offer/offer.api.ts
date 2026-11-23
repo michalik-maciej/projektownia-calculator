@@ -17,6 +17,8 @@ import {
   isUnauthorized,
 } from "../core/createMethod.api"
 
+const MAX_DETAILS_RETRIES = 3
+
 const OfferListSchema = v.array(OfferSummarySchema)
 
 const apiUrl = import.meta.env.VITE_API_URL
@@ -84,7 +86,9 @@ export const offerQueries = {
     queryKey: ["offer", "details", id] as const,
     queryFn: () => offerApi.details({ params: { id } }),
     retry: (failureCount: number, error: Error) =>
-      !isNotFound(error) && !isUnauthorized(error) && failureCount < 3,
+      !isNotFound(error) &&
+      !isUnauthorized(error) &&
+      failureCount < MAX_DETAILS_RETRIES,
   }),
   shares: (id: string) => ({
     queryKey: ["offer", "shares", id] as const,

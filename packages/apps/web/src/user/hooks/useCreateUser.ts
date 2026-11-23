@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import type { LoginInput } from "@/schemas/auth/Login.schema"
 
-import { ApiError } from "../../core/createMethod.api"
+import { isConflict } from "../../core/createMethod.api"
 import { authApi } from "../auth.api"
 import { usersQueries } from "../users.api"
 
@@ -21,11 +21,10 @@ export function useCreateUser() {
       })
     },
     onError: (error) => {
-      console.error("Error creating user:", error)
-      const message =
-        error instanceof ApiError && error.status === 409
-          ? "Użytkownik o tym adresie e-mail już istnieje."
-          : "Nie udało się utworzyć użytkownika."
+      console.error("Creating the user failed:", error)
+      const message = isConflict(error)
+        ? "Użytkownik o tym adresie e-mail już istnieje."
+        : "Nie udało się utworzyć użytkownika."
       toast.error(message, { position: "top-center" })
     },
   })

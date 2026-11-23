@@ -1,6 +1,8 @@
 import { KeyRound, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 
+import { MIN_PASSWORD_LENGTH } from "@/schemas/auth/Login.schema"
+
 import { Button } from "../../core/ui/button"
 import {
   Dialog,
@@ -17,13 +19,15 @@ type FormValues = {
   password: string
 }
 
-type Props = {
+export function SetUserPasswordDialog({
+  email,
+  onOpenChange,
+  userId,
+}: {
   email: string
   onOpenChange: (open: boolean) => void
   userId: string
-}
-
-export function SetUserPasswordDialog({ email, onOpenChange, userId }: Props) {
+}) {
   const { mutateAsync, isPending } = useSetUserPassword()
   const form = useForm<FormValues>({ defaultValues: { password: "" } })
   const { errors } = form.formState
@@ -52,8 +56,8 @@ export function SetUserPasswordDialog({ email, onOpenChange, userId }: Props) {
             {...form.register("password", {
               required: "Podaj hasło",
               minLength: {
-                value: 8,
-                message: "Hasło ma co najmniej 8 znaków",
+                value: MIN_PASSWORD_LENGTH,
+                message: `Hasło ma co najmniej ${MIN_PASSWORD_LENGTH} znaków`,
               },
             })}
           />

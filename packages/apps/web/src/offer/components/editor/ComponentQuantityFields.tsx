@@ -17,11 +17,9 @@ import { ComponentQuantitiesPath } from "../../offer.types"
 
 export function ComponentQuantityFields({
   label,
-  min,
   name,
 }: {
   label: string
-  min?: number
   name: ComponentQuantitiesPath
 }) {
   const { control } = useFormContext<OfferInput>()
@@ -80,7 +78,6 @@ export function ComponentQuantityFields({
               <li key={field.id}>
                 <CountStepper
                   label={item?.label ?? componentId ?? ""}
-                  min={min}
                   name={`${name}.${entryIndex}.quantity`}
                   onRemove={() => entries.remove(entryIndex)}
                 />

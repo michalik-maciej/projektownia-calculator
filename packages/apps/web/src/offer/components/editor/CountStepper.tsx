@@ -43,6 +43,7 @@ export function CountStepper({
           return (
             <>
               <Button
+                aria-label={`Zmniejsz: ${label}`}
                 className="h-8 w-8 shrink-0"
                 disabled={min != null && value <= min}
                 onClick={() => field.onChange(value - 1)}
@@ -59,6 +60,7 @@ export function CountStepper({
               </span>
               <Button
                 className="h-8 w-8 shrink-0"
+                aria-label={`Zwiększ: ${label}`}
                 onClick={() => field.onChange(value + 1)}
                 size="icon"
                 type="button"
@@ -73,6 +75,7 @@ export function CountStepper({
       {onRemove && (
         <Button
           className="h-8 w-8 shrink-0 text-destructive hover:text-destructive"
+          aria-label={`Usuń: ${label}`}
           onClick={onRemove}
           size="icon"
           type="button"

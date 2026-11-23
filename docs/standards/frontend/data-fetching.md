@@ -46,9 +46,9 @@ onError: (error) => {
 ### Errors Arrive as ApiError
 
 The fetch wrapper throws a typed `ApiError` carrying status, statusText, method, url and body text,
-mirroring the domain's `MissingComponentError`. Callers branch on
-`error instanceof ApiError && error.status === n` rather than inspecting a `Response`, and the
-recurring 404 case has a name: `isNotFound(error)`.
+mirroring the domain's `MissingComponentError`. Callers branch on the named checks
+`isNotFound(error)`, `isConflict(error)` and `isUnauthorized(error)` rather than inspecting a
+`Response`.
 
 A 404 is an answer, not a failure to retry: `offerQueries.details` turns retries off for it, and
 `useOffer` reports it as `isMissing` so a route can say that the offer is gone or not the caller's

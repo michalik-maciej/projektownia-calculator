@@ -17,7 +17,7 @@ type RouterContext = {
   queryClient: QueryClient
 }
 
-export type OfferSearch = {
+type OfferSearch = {
   offerId?: string
 }
 

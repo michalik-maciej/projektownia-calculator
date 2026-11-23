@@ -15,7 +15,7 @@ export function useLoginUser() {
       navigate({ to: "/" })
     },
     onError: (error) => {
-      console.error("Error logging in:", error)
+      console.error("Logging in failed:", error)
       toast.error("Nie udało się zalogować.", {
         position: "top-center",
       })

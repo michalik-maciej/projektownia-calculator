@@ -1,7 +1,7 @@
 import { toast } from "sonner"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { ApiError } from "../../core/createMethod.api"
+import { isConflict } from "../../core/createMethod.api"
 import { usersApi, usersQueries } from "../users.api"
 
 export function useDeleteUser() {
@@ -16,11 +16,10 @@ export function useDeleteUser() {
       })
     },
     onError: (error) => {
-      console.error("Error deleting user:", error)
-      const message =
-        error instanceof ApiError && error.status === 409
-          ? "Nie można usunąć użytkownika, który ma zapisane oferty."
-          : "Nie udało się usunąć użytkownika."
+      console.error("Deleting the user failed:", error)
+      const message = isConflict(error)
+        ? "Nie można usunąć użytkownika, który ma zapisane oferty."
+        : "Nie udało się usunąć użytkownika."
       toast.error(message, { position: "top-center" })
     },
   })

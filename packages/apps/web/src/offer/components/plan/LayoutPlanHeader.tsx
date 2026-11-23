@@ -38,6 +38,7 @@ export function LayoutPlanHeader({
 }) {
   const { control, getFieldState, register } = useFormContext<OfferInput>()
   const inOfferId = useId()
+  const layoutCountId = useId()
   const layout = useWatch({ control, name: `layouts.${layoutIndex}` })
   const layoutCountName = `layouts.${layoutIndex}.numberOfLayouts` as const
   const formState = useFormState({ control, name: layoutCountName })
@@ -83,7 +84,10 @@ export function LayoutPlanHeader({
         {hasLayoutCount && (
           <>
             <ActionDivider />
-            <Label className="text-sm text-muted-foreground">
+            <Label
+              className="text-sm text-muted-foreground"
+              htmlFor={layoutCountId}
+            >
               Liczba ciągów
             </Label>
             <div className="relative">
@@ -96,6 +100,7 @@ export function LayoutPlanHeader({
                 })}
                 aria-invalid={!!layoutCountError}
                 className={`h-8 w-14 text-center ${textFigure} md:text-[15px]`}
+                id={layoutCountId}
                 min={MIN_LAYOUT_COUNT}
                 type="number"
               />

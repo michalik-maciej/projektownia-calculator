@@ -5,7 +5,7 @@ import { formatLayoutCode } from "./formatLayoutCode"
 import { getLayoutName } from "./getLayoutName"
 import { isItemSetLayout } from "./isItemSetLayout"
 
-export type OfferRow = {
+type OfferRow = {
   basePrice: number | null
   code: string | null
   description: string | null

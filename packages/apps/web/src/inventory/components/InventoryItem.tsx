@@ -1,4 +1,5 @@
 import { Loader2, RefreshCwOff, SaveIcon, Trash2Icon } from "lucide-react"
+import { useId } from "react"
 import { Controller, FormProvider, useForm } from "react-hook-form"
 import { useParams } from "@tanstack/react-router"
 
@@ -31,12 +32,15 @@ export type InventoryItemFormValues = {
   depth: number | null
 }
 
-type Props = {
+export function InventoryItem({
+  defaultValues,
+  onClose,
+}: {
   defaultValues?: InventoryItemFormValues
   onClose: () => void
-}
-
-export function InventoryItem({ defaultValues, onClose }: Props) {
+}) {
+  const labelId = useId()
+  const priceId = useId()
   const { componentId } = useParams({ strict: false })
   const createMutation = useCreateInventoryItem()
   const isAdmin = useIsAdmin()
@@ -56,6 +60,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
   })
 
   const { control, register, handleSubmit, formState } = form
+  const isSaving = createMutation.isPending || updateMutation.isPending
 
   const submit = (formValues: InventoryItemFormValues) => {
     const normalizedValues: InventoryItemFormValues = {
@@ -85,10 +90,12 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
       <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5">
         <fieldset className="contents" disabled={!isAdmin}>
           <div className="flex gap-4">
-            {/* Label */}
             <div className="flex flex-col grow space-y-1 gap-2">
-              <Label className={textEyebrow}>Nazwa</Label>
+              <Label className={textEyebrow} htmlFor={labelId}>
+                Nazwa
+              </Label>
               <Input
+                id={labelId}
                 {...passwordManagerIgnore}
                 {...register("label", {
                   required: "Nazwa jest wymagana",
@@ -104,9 +111,10 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
                 {formState.errors.label?.message}
               </p>
             </div>
-            {/* Price */}
             <div className="flex flex-col w-36 space-y-1 gap-2">
-              <Label className={textEyebrow}>Cena</Label>
+              <Label className={textEyebrow} htmlFor={priceId}>
+                Cena
+              </Label>
               <Controller
                 control={control}
                 name="price"
@@ -120,6 +128,7 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
                 render={({ field }) => (
                   <PriceInput
                     defaultValue={field.value.toFixed(2)}
+                    id={priceId}
                     name={field.name}
                     onBlur={field.onBlur}
                     onChange={(event) =>
@@ -139,7 +148,6 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
             </div>
           </div>
 
-          {/* Category */}
           <div className="space-y-1">
             <Label className={textEyebrow}>Kategoria</Label>
 
@@ -189,7 +197,6 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
             </p>
           </div>
 
-          {/* Dimensions */}
           <div className="grid grid-cols-3 gap-4">
             <InventoryItemDimensionField dimension="width" label="Szerokość" />
             <InventoryItemDimensionField dimension="height" label="Wysokość" />
@@ -197,7 +204,6 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
           </div>
         </fieldset>
 
-        {/* Actions */}
         <div className="flex justify-between gap-4 pt-4">
           <Button
             aria-label="Usuń element"
@@ -219,14 +225,10 @@ export function InventoryItem({ defaultValues, onClose }: Props) {
             <Button
               variant="secondary"
               type="submit"
-              disabled={formState.isSubmitting}
+              disabled={isSaving}
               hidden={!isAdmin}
             >
-              {formState.isSubmitting ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <SaveIcon />
-              )}
+              {isSaving ? <Loader2 className="animate-spin" /> : <SaveIcon />}
               Zapisz
             </Button>
             <Button type="button" variant="ghost" onClick={onClose}>

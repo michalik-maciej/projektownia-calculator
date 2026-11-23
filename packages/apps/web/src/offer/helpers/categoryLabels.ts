@@ -14,7 +14,7 @@ export const CATEGORY_LABELS: Record<ComponentCategory, string> = {
   topCover: "Maskownice",
 }
 
-export const CATEGORY_LABELS_GENITIVE: Record<string, string> = {
+export const CATEGORY_LABELS_GENITIVE: Record<ComponentCategory, string> = {
   back: "pleców",
   baseCover: "osłony dolnej",
   bentSupport: "wspornika giętego",

@@ -15,6 +15,7 @@ export function SectionNavigator({
     <div className="flex items-center gap-1">
       <Button
         className="h-7 w-7"
+        aria-label="Poprzedni"
         disabled={index <= 0}
         onClick={() => onSelect(index - 1)}
         size="icon"
@@ -28,6 +29,7 @@ export function SectionNavigator({
       </span>
       <Button
         className="h-7 w-7"
+        aria-label="Następny"
         disabled={index >= count - 1}
         onClick={() => onSelect(index + 1)}
         size="icon"

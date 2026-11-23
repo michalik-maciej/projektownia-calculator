@@ -16,7 +16,7 @@ export function useSetUserPassword() {
       toast.success("Hasło zostało zmienione.", { position: "top-center" })
     },
     onError: (error) => {
-      console.error("Error setting user password:", error)
+      console.error("Setting the user password failed:", error)
       toast.error("Nie udało się zmienić hasła.", { position: "top-center" })
     },
   })

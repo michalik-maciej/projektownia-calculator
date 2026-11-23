@@ -1,3 +1,4 @@
+import { useId } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
 
@@ -12,12 +13,14 @@ import { getDimensionOptions } from "../../inventory/helpers/getDimensionOptions
 import { passwordManagerIgnore } from "../helpers/passwordManagerIgnore"
 import { inventoryQueries } from "../inventory.api"
 
-interface Props {
+export function InventoryItemDimensionField({
+  dimension,
+  label,
+}: {
   dimension: "width" | "height" | "depth"
   label: string
-}
-
-export const InventoryItemDimensionField = ({ dimension, label }: Props) => {
+}) {
+  const inputId = useId()
   const { data: optionsByCategory } = useQuery({
     ...inventoryQueries.list(),
     select: (data) =>
@@ -37,6 +40,7 @@ export const InventoryItemDimensionField = ({ dimension, label }: Props) => {
   return (
     <div className="flex flex-col space-y-1 gap-2">
       <Label
+        htmlFor={inputId}
         className={cn(
           textEyebrow,
           isRequired && "font-semibold text-foreground",
@@ -64,6 +68,7 @@ export const InventoryItemDimensionField = ({ dimension, label }: Props) => {
           <>
             <Input
               {...passwordManagerIgnore}
+              id={inputId}
               list={suggestionsId}
               min={0}
               name={field.name}

@@ -1,5 +1,5 @@
 import { FilePlus2, Loader2, Share2, Trash2 } from "lucide-react"
-import { useState } from "react"
+import { useId, useState } from "react"
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import { createFileRoute } from "@tanstack/react-router"
 
@@ -26,6 +26,8 @@ import { useDeleteOffer } from "../../offer/hooks/useDeleteOffer"
 import { useOffer } from "../../offer/hooks/useOffer"
 import { useIsAdmin } from "../../user/hooks/useIsAdmin"
 
+const quantityFormatter = new Intl.NumberFormat("pl-PL")
+
 export const Route = createFileRoute("/offer")({
   component: OfferPage,
 })
@@ -48,6 +50,8 @@ function OfferPage() {
   const deleteOffer = useDeleteOffer()
   const isAdmin = useIsAdmin()
   const [confirming, setConfirming] = useState<"delete" | "new" | null>(null)
+  const titleId = useId()
+  const discountId = useId()
 
   const hasOpenOffer = !!offerId && !isMissing
   const output = offer?.output
@@ -59,8 +63,11 @@ function OfferPage() {
           {hasOpenOffer && (
             <>
               <div className="flex w-80 flex-col gap-1.5">
-                <Label className={textEyebrow}>Opis oferty</Label>
+                <Label className={textEyebrow} htmlFor={titleId}>
+                  Opis oferty
+                </Label>
                 <Input
+                  id={titleId}
                   className={`${textFigure} md:text-[15px]`}
                   {...register("title", {
                     required: "Opis jest wymagany",
@@ -71,8 +78,11 @@ function OfferPage() {
                 />
               </div>
               <div className="flex w-24 flex-col gap-1.5">
-                <Label className={textEyebrow}>Rabat (%)</Label>
+                <Label className={textEyebrow} htmlFor={discountId}>
+                  Rabat (%)
+                </Label>
                 <Input
+                  id={discountId}
                   className={`${textFigure} text-center md:text-[15px]`}
                   {...register("discountPercentage", {
                     setValueAs: (value) =>
@@ -197,7 +207,9 @@ function OfferPage() {
                         </div>
                       </td>
                       <td className={`px-3 py-2 text-right ${textFigure}`}>
-                        {quantity?.toLocaleString("pl-PL") ?? "—"}
+                        {quantity == null
+                          ? "—"
+                          : quantityFormatter.format(quantity)}
                         {unit && ` ${unit}`}
                       </td>
                       <td className={`px-3 py-2 text-right ${textFigure}`}>

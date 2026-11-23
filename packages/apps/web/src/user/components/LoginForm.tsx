@@ -1,6 +1,8 @@
 import { Loader2, PlayCircle, UserPen } from "lucide-react"
 import { useForm } from "react-hook-form"
 
+import { MIN_PASSWORD_LENGTH } from "@/schemas/auth/Login.schema"
+
 import { Button } from "../../core/ui/button"
 import {
   Dialog,
@@ -14,7 +16,7 @@ import { textEyebrow } from "../../core/ui/typography"
 import { useDemoLogin } from "../hooks/useDemoLogin"
 import { useLoginUser } from "../hooks/useLoginUser"
 
-export const LoginForm = () => {
+export function LoginForm() {
   const { mutate: login, isPending } = useLoginUser()
   const { mutate: openDemo, isPending: isDemoPending } = useDemoLogin()
   const form = useForm({
@@ -72,8 +74,8 @@ export const LoginForm = () => {
               {...form.register("password", {
                 required: "Podaj hasło",
                 minLength: {
-                  value: 8,
-                  message: "Hasło ma co najmniej 8 znaków",
+                  value: MIN_PASSWORD_LENGTH,
+                  message: `Hasło ma co najmniej ${MIN_PASSWORD_LENGTH} znaków`,
                 },
               })}
             />

@@ -1,35 +1,22 @@
 import * as v from "valibot"
 
-import type { ComponentCategory } from "@/schemas/inventory/Component.schema"
+import { ComponentBaseSchema } from "@/schemas/inventory/Component.schema"
+import { CreateComponentSchema } from "@/schemas/inventory/ComponentCreate.schema"
+import { UpdateComponentSchema } from "@/schemas/inventory/ComponentUpdate.schema"
 
 import { apiType, createApiMethod } from "../core/createMethod.api"
 
-const InventoryItemBaseShape = {
-  category: v.custom<ComponentCategory>(
-    (val) => typeof val === "string",
-    "Invalid category",
-  ),
-  width: v.nullable(v.number()),
-  depth: v.nullable(v.number()),
-  height: v.nullable(v.number()),
-  price: v.number(),
-  label: v.string(),
-} as const
-
-const InventoryItemCreateSchema = v.object(InventoryItemBaseShape)
-const _InventoryItemUpdateSchema = v.partial(InventoryItemCreateSchema)
-
 const InventoryItemSchema = v.object({
   id: v.string(),
-  ...InventoryItemBaseShape,
+  ...ComponentBaseSchema.entries,
 })
 
 export type InventoryItem = v.InferOutput<typeof InventoryItemSchema>
 export type InventoryItemCreateInput = v.InferOutput<
-  typeof InventoryItemCreateSchema
+  typeof CreateComponentSchema
 >
 export type InventoryItemUpdateInput = v.InferOutput<
-  typeof _InventoryItemUpdateSchema
+  typeof UpdateComponentSchema
 >
 
 const InventoryItemListSchema = v.array(InventoryItemSchema)

@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-import { ApiError } from "../core/createMethod.api"
+import { isUnauthorized } from "../core/createMethod.api"
 import { authQueries } from "../user/auth.api"
 import { LoginForm } from "../user/components/LoginForm"
 
@@ -10,9 +10,8 @@ export const Route = createFileRoute("/login")({
       .ensureQueryData(authQueries.user())
       .then((data) => data.user)
       .catch((error: unknown) => {
-        const isSignedOut = error instanceof ApiError && error.status === 401
-        if (!isSignedOut) {
-          console.error("Error checking auth status:", error)
+        if (!isUnauthorized(error)) {
+          console.error("Checking the auth status failed:", error)
         }
         return null
       })
